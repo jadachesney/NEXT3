@@ -1,6 +1,4 @@
 # NEXT3
-OLD NEXT 3 REPOSITORY
-
-REFER TO NEW ONE FOR UPDATED CODE
+next 3 current repository
 
 11/02/2025
