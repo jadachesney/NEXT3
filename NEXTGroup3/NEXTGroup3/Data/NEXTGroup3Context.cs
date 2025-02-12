@@ -15,5 +15,6 @@ namespace NEXTGroup3.Data
         }
 
         public DbSet<NEXTGroup3.Models.Department> Department { get; set; } = default!;
+        public DbSet<NEXTGroup3.Models.Role> Role { get; set; } = default!;
     }
 }

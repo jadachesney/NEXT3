@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\jadaa\\Source\\Repos\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj": {}
+    "C:\\Users\\klw74\\OneDrive\\Documents\\Programming\\university\\professional-software-projects\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jadaa\\Source\\Repos\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj": {
+    "C:\\Users\\klw74\\OneDrive\\Documents\\Programming\\university\\professional-software-projects\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jadaa\\Source\\Repos\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj",
+        "projectUniqueName": "C:\\Users\\klw74\\OneDrive\\Documents\\Programming\\university\\professional-software-projects\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj",
         "projectName": "NEXTGroup3.Client",
-        "projectPath": "C:\\Users\\jadaa\\Source\\Repos\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj",
-        "packagesPath": "C:\\Users\\jadaa\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jadaa\\Source\\Repos\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\obj\\",
+        "projectPath": "C:\\Users\\klw74\\OneDrive\\Documents\\Programming\\university\\professional-software-projects\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj",
+        "packagesPath": "C:\\Users\\klw74\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\klw74\\OneDrive\\Documents\\Programming\\university\\professional-software-projects\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\jadaa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\klw74\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
