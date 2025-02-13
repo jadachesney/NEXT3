@@ -1,0 +1,44 @@
+﻿@page "/roles/details"
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Models
+@inject IDbContextFactory<NEXTGroup3.Data.NEXTGroup3Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Roles</h2>
+    <hr />
+    @if (roles is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+        </dl>
+        <div>
+            <a href="@($"/roles/edit?id={roles.Id}")">Edit</a> |
+            <a href="@($"/roles")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Roles? roles;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        roles = await context.Roles.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (roles is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

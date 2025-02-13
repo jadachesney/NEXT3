@@ -1851,24 +1851,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\klw74\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\jasmi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\klw74\\OneDrive\\Documents\\Programming\\university\\professional-software-projects\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj",
+      "projectUniqueName": "C:\\Users\\jasmi\\Desktop\\TheNEXTProject\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj",
       "projectName": "NEXTGroup3.Client",
-      "projectPath": "C:\\Users\\klw74\\OneDrive\\Documents\\Programming\\university\\professional-software-projects\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj",
-      "packagesPath": "C:\\Users\\klw74\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\klw74\\OneDrive\\Documents\\Programming\\university\\professional-software-projects\\NEXT3\\NEXTGroup3\\NEXTGroup3.Client\\obj\\",
+      "projectPath": "C:\\Users\\jasmi\\Desktop\\TheNEXTProject\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj",
+      "packagesPath": "C:\\Users\\jasmi\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\jasmi\\Desktop\\TheNEXTProject\\NEXTGroup3\\NEXTGroup3.Client\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\klw74\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\jasmi\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1876,6 +1871,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -1892,9 +1888,8 @@
       "restoreAuditProperties": {
         "enableAudit": "true",
         "auditLevel": "low",
-        "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.100"
+        "auditMode": "all"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -1930,7 +1925,23 @@
         "warn": true,
         "downloadDependencies": [
           {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
+            "name": "Microsoft.Net.Sdk.Compilers.Toolset",
+            "version": "[9.0.102, 9.0.102]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
             "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
             "version": "[8.0.12, 8.0.12]"
           }
         ],
@@ -1947,5 +1958,29 @@
         "#import": []
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.Text.Json' 8.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-8g4q-xg66-9fp4",
+      "libraryId": "System.Text.Json",
+      "targetGraphs": [
+        "net8.0",
+        "net8.0/browser-wasm"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.Text.Json' 8.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-hh2w-p6rv-4g7w",
+      "libraryId": "System.Text.Json",
+      "targetGraphs": [
+        "net8.0",
+        "net8.0/browser-wasm"
+      ]
+    }
+  ]
 }

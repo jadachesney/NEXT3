@@ -1,0 +1,39 @@
+﻿@page "/roles/create"
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Models
+@inject IDbContextFactory<NEXTGroup3.Data.NEXTGroup3Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Roles</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Roles" OnValidSubmit="AddRoles" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/roles">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Roles Roles { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddRoles()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Roles.Add(Roles);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/roles");
+    }
+}

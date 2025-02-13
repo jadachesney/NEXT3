@@ -1,0 +1,84 @@
+﻿@page "/roles/edit"
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Models
+@inject IDbContextFactory<NEXTGroup3.Data.NEXTGroup3Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Roles</h2>
+<hr />
+@if (Roles is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Roles" OnValidSubmit="UpdateRoles" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Roles.Id" value="@Roles.Id" />
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/roles">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Roles? Roles { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Roles ??= await context.Roles.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Roles is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateRoles()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Roles!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!RolesExists(Roles!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/roles");
+    }
+
+    private bool RolesExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Roles.Any(e => e.Id == id);
+    }
+}
