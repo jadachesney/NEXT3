@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NEXTGroup3")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+637b077868c7d2874cae33c8281b0faf29d98e65")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f7337cc4b2df7357c9e880b2adb0f8e536663afe")]
 [assembly: System.Reflection.AssemblyProductAttribute("NEXTGroup3")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NEXTGroup3")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
