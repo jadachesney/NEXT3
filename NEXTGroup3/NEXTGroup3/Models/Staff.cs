@@ -3,11 +3,11 @@
     public class Staff : User
     {
         // STAFF ID
-        private int id;
-        public int Id
+        private int staffId;
+        public int StaffId
         {
-            get { return id; }
-            set { id = value; }
+            get { return staffId; }
+            set { staffId = value; }
         }
     }
 }
