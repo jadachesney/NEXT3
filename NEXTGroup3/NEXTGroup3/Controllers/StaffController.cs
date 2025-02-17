@@ -3,27 +3,27 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NEXTGroup3.Controllers
 {
-    public class RolesController : Controller
+    public class StaffController : Controller
     {
-        // GET: RolesController
+        // GET: StaffController
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: RolesController/Details/5
+        // GET: StaffController/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: RolesController/Create
+        // GET: StaffController/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: RolesController/Create
+        // POST: StaffController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -38,13 +38,13 @@ namespace NEXTGroup3.Controllers
             }
         }
 
-        // GET: RolesController/Edit/5
+        // GET: StaffController/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: RolesController/Edit/5
+        // POST: StaffController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -59,13 +59,13 @@ namespace NEXTGroup3.Controllers
             }
         }
 
-        // GET: RolesController/Delete/5
+        // GET: StaffController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: RolesController/Delete/5
+        // POST: StaffController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
