@@ -4,7 +4,7 @@
 @using NEXTGroup3.Models
 @using NEXTGroup3.Data
 @implements IAsyncDisposable
-@inject IDbContextFactory<NEXTGroup3.Data.NEXTGroup3Context> DbFactory
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 
 <PageTitle>Index</PageTitle>
 
@@ -27,7 +27,7 @@
 </QuickGrid>
 
 @code {
-    private NEXTGroup3Context context = default!;
+    private AzureContext context = default!;
 
     protected override void OnInitialized()
     {

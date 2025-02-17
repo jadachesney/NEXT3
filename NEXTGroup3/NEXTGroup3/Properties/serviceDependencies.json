@@ -1,8 +1,12 @@
 {
   "dependencies": {
-    "mssql1": {
+    "secrets1": {
+      "type": "secrets"
+    },
+    "mssql2": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:NEXTGroup3Context"
+      "connectionId": "ConnectionStrings:DatabaseConnection",
+      "dynamicId": null
     }
   }
 }
