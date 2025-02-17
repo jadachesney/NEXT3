@@ -1,0 +1,59 @@
+﻿@page "/staff/create"
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Models
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Staff</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Staff" OnValidSubmit="AddStaff" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="staffid" class="form-label">StaffId:</label> 
+                <InputNumber id="staffid" @bind-Value="Staff.StaffId" class="form-control" /> 
+                <ValidationMessage For="() => Staff.StaffId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label> 
+                <InputText id="email" @bind-Value="Staff.Email" class="form-control" /> 
+                <ValidationMessage For="() => Staff.Email" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label> 
+                <InputText id="password" @bind-Value="Staff.Password" class="form-control" /> 
+                <ValidationMessage For="() => Staff.Password" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="isloggedin" class="form-label">IsLoggedIn:</label> 
+                <InputCheckbox id="isloggedin" @bind-Value="Staff.IsLoggedIn" class="form-check-input" /> 
+                <ValidationMessage For="() => Staff.IsLoggedIn" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/staff">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Staff Staff { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddStaff()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Staff.Add(Staff);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/staff");
+    }
+}
