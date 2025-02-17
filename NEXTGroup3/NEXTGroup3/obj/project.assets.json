@@ -1329,24 +1329,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Liana\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\jasmi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Liana\\Desktop\\NEXTGroup3\\NEXTGroup3\\NEXTGroup3\\NEXTGroup3.csproj",
+      "projectUniqueName": "C:\\Users\\jasmi\\Desktop\\TheNEXTProject\\NEXTGroup3\\NEXTGroup3\\NEXTGroup3.csproj",
       "projectName": "NEXTGroup3",
-      "projectPath": "C:\\Users\\Liana\\Desktop\\NEXTGroup3\\NEXTGroup3\\NEXTGroup3\\NEXTGroup3.csproj",
-      "packagesPath": "C:\\Users\\Liana\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Liana\\Desktop\\NEXTGroup3\\NEXTGroup3\\NEXTGroup3\\obj\\",
+      "projectPath": "C:\\Users\\jasmi\\Desktop\\TheNEXTProject\\NEXTGroup3\\NEXTGroup3\\NEXTGroup3.csproj",
+      "packagesPath": "C:\\Users\\jasmi\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\jasmi\\Desktop\\TheNEXTProject\\NEXTGroup3\\NEXTGroup3\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Liana\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\jasmi\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1361,8 +1356,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Liana\\Desktop\\NEXTGroup3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj": {
-              "projectPath": "C:\\Users\\Liana\\Desktop\\NEXTGroup3\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj"
+            "C:\\Users\\jasmi\\Desktop\\TheNEXTProject\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj": {
+              "projectPath": "C:\\Users\\jasmi\\Desktop\\TheNEXTProject\\NEXTGroup3\\NEXTGroup3.Client\\NEXTGroup3.Client.csproj"
             }
           }
         }
@@ -1375,7 +1370,7 @@
       "restoreAuditProperties": {
         "enableAudit": "true",
         "auditLevel": "low",
-        "auditMode": "direct"
+        "auditMode": "all"
       }
     },
     "frameworks": {
@@ -1398,6 +1393,28 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
+            "name": "Microsoft.Net.Sdk.Compilers.Toolset",
+            "version": "[9.0.102, 9.0.102]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.12, 8.0.12]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -1406,8 +1423,30 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.Text.Json' 8.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-8g4q-xg66-9fp4",
+      "libraryId": "System.Text.Json",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.Text.Json' 8.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-hh2w-p6rv-4g7w",
+      "libraryId": "System.Text.Json",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }
