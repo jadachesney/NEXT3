@@ -26,13 +26,13 @@
         }
 
         // ADD ROLE METHOD
-        public void addRole(Role role)
+        public void AddRole(Role role)
         {
 
         }
 
         // REMOVE ROLE METHOD
-        public void removeRole(Role role)
+        public void RemoveRole(Role role)
         {
 
         }

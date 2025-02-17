@@ -40,13 +40,13 @@ namespace NEXTGroup3.Models
         }
 
         // LOGIN METHOD
-        public void login(bool isLoggedIn)
+        public void Login(bool isLoggedIn)
         {
 
         }
 
         // LOGOUT METHOD
-        public void logout(bool isLoggedIn)
+        public void Logout(bool isLoggedIn)
         {
 
         }
