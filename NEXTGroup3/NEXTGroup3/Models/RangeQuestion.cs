@@ -1,6 +1,6 @@
 ﻿namespace NEXTGroup3.Models
 {
-    public class RangeQuestion
+    public class RangeQuestion : Question
     {
 
         // LEFT DEPARTMENTS LIST
