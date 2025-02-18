@@ -1,0 +1,46 @@
+﻿@page "/rangequestions/details"
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Models
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>RangeQuestion</h2>
+    <hr />
+    @if (rangequestion is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">QuestionText</dt>
+            <dd class="col-sm-10">@rangequestion.QuestionText</dd>
+        </dl>
+        <div>
+            <a href="@($"/rangequestions/edit?id={rangequestion.Id}")">Edit</a> |
+            <a href="@($"/rangequestions")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private RangeQuestion? rangequestion;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        rangequestion = await context.RangeQuestion.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (rangequestion is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

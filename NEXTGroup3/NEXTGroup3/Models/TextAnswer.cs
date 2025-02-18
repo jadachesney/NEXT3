@@ -2,6 +2,10 @@
 {
     public class TextAnswer
     {
+        //ID
+        private int id;
+        public int Id { get { return id; } set { id = value; } }
+
         //ANSWERS 
         private List<string> answers;
         public List<string> Answers

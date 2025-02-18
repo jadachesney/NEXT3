@@ -1,0 +1,36 @@
+﻿@page "/rangequestions"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using NEXTGroup3.Models
+@using NEXTGroup3.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="rangequestions/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.RangeQuestion">
+    <PropertyColumn Property="rangequestion => rangequestion.QuestionText" />
+
+    <TemplateColumn Context="rangequestion">
+        <a href="@($"rangequestions/edit?id={rangequestion.Id}")">Edit</a> |
+        <a href="@($"rangequestions/details?id={rangequestion.Id}")">Details</a> |
+        <a href="@($"rangequestions/delete?id={rangequestion.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private AzureContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
