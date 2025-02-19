@@ -1,10 +1,13 @@
-﻿<h3>Text Based Question</h3>
-<div> 
+﻿<h3>Text Based Question<p style="color:dimgray; font-size:small;">(remove when completed)</p></h3>
+<div class="text-question"> 
     <h5>Select which of the following statements you agree with the most:</h5>
-    @* @foreach(string answerText in answers) *@
-    
+    <div class="text-answer-container">
+        @for(int answerIndex = 0; answerIndex < answers.Count; answerIndex++){
+            var answerText = answers[answerIndex].Answers;
+            <button class="btn btn-outline-dark text-answer-btn">@answerText</button>
+        }
+    </div>  
 </div>
-        @code {
-        // [Parameter] public string[] answers { get; set; }
-
+@code {
+    [Parameter] public List<TextAnswer> answers { get; set; }
 }
