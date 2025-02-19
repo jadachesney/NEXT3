@@ -12,10 +12,6 @@
         private string name;
         public string Name { get { return name; } set { name = value; } }
 
-        //--ROLE DESCRIPTION--// 
-        private string description;
-        public string Description { get { return description; } set { description = value; } }
-
         //--ROLE LINK--//
         private string link;
         public string Link { get { return link; } set { link = value; } }

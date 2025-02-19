@@ -43,7 +43,7 @@ namespace NEXTGroup3.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Candidate");
+                    b.ToTable("Candidate", (string)null);
                 });
 
             modelBuilder.Entity("NEXTGroup3.Models.Department", b =>
@@ -78,7 +78,7 @@ namespace NEXTGroup3.Migrations
 
                     b.HasIndex("RangeQuestionId1");
 
-                    b.ToTable("Department");
+                    b.ToTable("Department", (string)null);
                 });
 
             modelBuilder.Entity("NEXTGroup3.Models.RangeQuestion", b =>
@@ -95,7 +95,7 @@ namespace NEXTGroup3.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RangeQuestion");
+                    b.ToTable("RangeQuestion", (string)null);
                 });
 
             modelBuilder.Entity("NEXTGroup3.Models.Result", b =>
@@ -108,7 +108,7 @@ namespace NEXTGroup3.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Result");
+                    b.ToTable("Result", (string)null);
                 });
 
             modelBuilder.Entity("NEXTGroup3.Models.Role", b =>
@@ -136,9 +136,7 @@ namespace NEXTGroup3.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RolesId");
-
-                    b.ToTable("Role");
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("NEXTGroup3.Models.Roles", b =>
@@ -156,7 +154,7 @@ namespace NEXTGroup3.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("NEXTGroup3.Models.Staff", b =>
@@ -183,7 +181,7 @@ namespace NEXTGroup3.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Staff");
+                    b.ToTable("Staff", (string)null);
                 });
 
             modelBuilder.Entity("NEXTGroup3.Models.Department", b =>
