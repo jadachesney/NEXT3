@@ -49,3 +49,46 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+.question-nav-style {
+    background-color: #000000;
+    color: #f7550d;
+}
+
+.next-logo{
+    color:white;
+}
+
+
+.nav-container{
+
+}
+
+/* QUESTIONS */
+
+.question-container{
+
+}
+
+/* RANGE BASED QUESTIONS */
+.range-question{
+
+}
+
+.range-answer-container{
+
+}
+
+form.range{
+
+}
+
+.range-question .range-answer-btn{
+
+}
+
+/* TEXT BASED QUESTIONS */
+
+
+
+
