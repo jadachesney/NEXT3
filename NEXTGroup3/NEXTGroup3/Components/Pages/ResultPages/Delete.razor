@@ -1,0 +1,51 @@
+﻿@page "/results/delete"
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Models
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<p>Are you sure you want to delete this?</p>
+<div>
+    <h2>Result</h2>
+    <hr />
+    @if (result is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <EditForm method="post" Model="result" OnValidSubmit="DeleteResult" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(result is null)">Delete</button> |
+            <a href="/results">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private Result? result;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        result = await context.Result.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (result is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private async Task DeleteResult()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Result.Remove(result!);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/results");
+    }
+}

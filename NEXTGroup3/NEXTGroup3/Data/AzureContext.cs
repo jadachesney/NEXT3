@@ -15,7 +15,9 @@ namespace NEXTGroup3.Data
         }
       public DbSet<NEXTGroup3.Models.Department> Department { get; set; } = default!;
       public DbSet<NEXTGroup3.Models.Role> Role { get; set; } = default!;
-      public DbSet<NEXTGroup3.Models.Roles> Roles { get; set; } = default!;
         public DbSet<NEXTGroup3.Models.Staff> Staff { get; set; } = default!;
+        public DbSet<NEXTGroup3.Models.Candidate> Candidate { get; set; } = default!;
+        public DbSet<NEXTGroup3.Models.RangeQuestion> RangeQuestion { get; set; } = default!;
+        public DbSet<NEXTGroup3.Models.Result> Result { get; set; } = default!;
     }
 }

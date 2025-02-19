@@ -70,12 +70,7 @@ namespace NEXTGroup3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RolesId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("RolesId");
 
                     b.ToTable("Role");
                 });

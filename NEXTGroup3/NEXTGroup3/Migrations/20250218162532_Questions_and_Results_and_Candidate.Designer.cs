@@ -12,8 +12,8 @@ using NEXTGroup3.Data;
 namespace NEXTGroup3.Migrations
 {
     [DbContext(typeof(AzureContext))]
-    [Migration("20250217125100_Initial")]
-    partial class Initial
+    [Migration("20250218162532_Questions_and_Results_and_Candidate")]
+    partial class Questions_and_Results_and_Candidate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,30 @@ namespace NEXTGroup3.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("NEXTGroup3.Models.Candidate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsLoggedIn")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Candidate");
+                });
 
             modelBuilder.Entity("NEXTGroup3.Models.Department", b =>
                 {
@@ -45,9 +69,49 @@ namespace NEXTGroup3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("RangeQuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RangeQuestionId1")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("RangeQuestionId");
+
+                    b.HasIndex("RangeQuestionId1");
+
                     b.ToTable("Department");
+                });
+
+            modelBuilder.Entity("NEXTGroup3.Models.RangeQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("QuestionText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RangeQuestion");
+                });
+
+            modelBuilder.Entity("NEXTGroup3.Models.Result", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Result");
                 });
 
             modelBuilder.Entity("NEXTGroup3.Models.Role", b =>
@@ -93,6 +157,44 @@ namespace NEXTGroup3.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("NEXTGroup3.Models.Staff", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsLoggedIn")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Staff");
+                });
+
+            modelBuilder.Entity("NEXTGroup3.Models.Department", b =>
+                {
+                    b.HasOne("NEXTGroup3.Models.RangeQuestion", null)
+                        .WithMany("LeftDepartments")
+                        .HasForeignKey("RangeQuestionId");
+
+                    b.HasOne("NEXTGroup3.Models.RangeQuestion", null)
+                        .WithMany("RightDepartments")
+                        .HasForeignKey("RangeQuestionId1");
+                });
+
             modelBuilder.Entity("NEXTGroup3.Models.Role", b =>
                 {
                     b.HasOne("NEXTGroup3.Models.Roles", null)
@@ -109,6 +211,13 @@ namespace NEXTGroup3.Migrations
                         .IsRequired();
 
                     b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("NEXTGroup3.Models.RangeQuestion", b =>
+                {
+                    b.Navigation("LeftDepartments");
+
+                    b.Navigation("RightDepartments");
                 });
 
             modelBuilder.Entity("NEXTGroup3.Models.Roles", b =>

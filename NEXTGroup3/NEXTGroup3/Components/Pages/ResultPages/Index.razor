@@ -1,4 +1,4 @@
-﻿@page "/roles"
+﻿@page "/results"
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using NEXTGroup3.Models
@@ -11,17 +11,16 @@
 <h1>Index</h1>
 
 <p>
-    <a href="roles/create">Create New</a>
+    <a href="results/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Role">
-    <PropertyColumn Property="role => role.Name" />
-    <PropertyColumn Property="role => role.Link" />
+<QuickGrid Class="table" Items="context.Result">
+    <PropertyColumn Property="result => result.Id" />
 
-    <TemplateColumn Context="role">
-        <a href="@($"roles/edit?id={role.Id}")">Edit</a> |
-        <a href="@($"roles/details?id={role.Id}")">Details</a> |
-        <a href="@($"roles/delete?id={role.Id}")">Delete</a>
+    <TemplateColumn Context="result">
+        <a href="@($"results/edit?id={result.Id}")">Edit</a> |
+        <a href="@($"results/details?id={result.Id}")">Details</a> |
+        <a href="@($"results/delete?id={result.Id}")">Delete</a>
     </TemplateColumn>
 </QuickGrid>
 
