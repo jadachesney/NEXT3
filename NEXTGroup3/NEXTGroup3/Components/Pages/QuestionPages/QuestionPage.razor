@@ -1,11 +1,22 @@
 ﻿@page "/questionpage"
 @rendermode InteractiveAuto
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@using NEXTGroup3.Services
+@* @inject RangeQuestionService rangeQuestionService *@
+@inject RoleService roleService
+
 <PageTitle>Question Page</PageTitle>
 
 <h3>QuestionPage</h3>
-<RBQuestion></RBQuestion>
-
+<div class="question-container">
+    <TBQuestion answers=textAnswers></TBQuestion>
+</div>
 
 @code {
+    private List<TextAnswer> textAnswers = new List<TextAnswer>();
+    protected override async Task OnInitializedAsync()
+    {
+        // relatedRoles = await roleService.GetAllRolesInDepartment(department); Fetch data from the API
+    }
 
 }

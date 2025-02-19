@@ -1,0 +1,12 @@
+﻿@using NEXTGroup3.Services
+@inject TextAnswerService textAnswerService
+
+<TBQuestion answers=@textAnswers></TBQuestion>
+@code {
+    [Parameter] public Role role { get; set; }
+
+    private List<TextAnswer> textAnswers = new List<TextAnswer>();
+    protected override async Task OnInitializedAsync(){
+        textAnswers = await textAnswerService.GetAllTextAnswersFromRole(role);
+    }
+}

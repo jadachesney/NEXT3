@@ -17,5 +17,9 @@ namespace NEXTGroup3.Services
         {
             return await context.TextAnswer.AsNoTracking().ToListAsync();
         }
+        public async Task<List<TextAnswer>> GetAllTextAnswersFromRole(Role role)
+        {
+            return await context.TextAnswer.Where(x => x.RoleId == role.Id).AsNoTracking().ToListAsync();
+        }
     }
 }
