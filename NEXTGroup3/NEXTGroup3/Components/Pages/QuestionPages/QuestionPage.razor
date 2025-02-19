@@ -1,4 +1,4 @@
-﻿@page "/questionpage"
+@page "/questionpage"
 @rendermode InteractiveAuto
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
@@ -13,6 +13,8 @@
         <RBQuestion rangeQuestion=question />
     }
 </div>
+
+
 
 @code {
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
