@@ -57,15 +57,13 @@ h1:focus {
 
 .question-nav-style {
     background-color: #000000;
-
-
+    color: #f7550d;
 }
 
 .question-nav-style h2 {
     color: #f7550d;
     font-size: 15px;
 }
-
 
 .next-logo h2{
     font-size:45px;
@@ -77,5 +75,31 @@ h1:focus {
 .nav-container{
 
 }
+
+/* QUESTIONS */
+
+.question-container{
+
+}
+
+/* RANGE BASED QUESTIONS */
+.range-question{
+
+}
+
+.range-answer-container{
+
+}
+
+form.range{
+
+}
+
+.range-question .range-answer-btn{
+
+}
+
+/* TEXT BASED QUESTIONS */
+
 
 

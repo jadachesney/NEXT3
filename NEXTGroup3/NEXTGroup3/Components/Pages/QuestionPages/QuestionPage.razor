@@ -1,22 +1,26 @@
-﻿@page "/questionpage"
+@page "/questionpage"
 @rendermode InteractiveAuto
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@using NEXTGroup3.Services
+@inject RangeQuestionService rangeQuestionService
+
 <PageTitle>Question Page</PageTitle>
 
-
-<body>
-    <h3>QuestionPage</h3>
-
-    <div class="question-container">
-        <RBQuestion></RBQuestion>
-    </div>
-
-
-</body>
-
-
+<h3>QuestionPage</h3>
+<div class="question-container">
+    @foreach (var question in rangeQuestions)
+    {
+        <RBQuestion rangeQuestion=question />
+    }
+</div>
 
 
 
 @code {
+    private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
+    }
 }
