@@ -7,10 +7,10 @@
 <PageTitle>Question Page</PageTitle>
 
 <h3>QuestionPage</h3>
-<div class="range-base-question-container">
+<div class="question-container">
     @foreach (var question in rangeQuestions)
     {
-        <p>@question.QuestionText</p>
+        <RBQuestion rangeQuestion=question />
     }
 </div>
 
@@ -19,6 +19,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        rangeQuestions = await rangeQuestionService.GetAllRangeQuestions(); // Fetch data from the API
+        rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
     }
 }

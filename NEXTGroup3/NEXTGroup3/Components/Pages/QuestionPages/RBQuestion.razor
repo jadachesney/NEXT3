@@ -1,11 +1,11 @@
 ﻿<h1>RBQuestion</h1>
 
 <div class="question-box">
-  <h3>Question 1</h3>
+  <h3>Question @rangeQuestion.Id</h3>
   <p>@rangeQuestion.QuestionText</p>
 </div>
 
 @code {
-    private RangeQuestion? rangeQuestion;
-
+    [Parameter]
+    public RangeQuestion? rangeQuestion { get; set; }
 }
