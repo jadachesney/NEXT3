@@ -7,19 +7,19 @@
         public int Id { get { return id; } set { id = value; } }
 
         //ANSWERS 
-        private List<string> answers;
-        public List<string> Answers
+        private string answers;
+        public string Answers
         {
             get { return answers; }
             set { answers = value; }
         }
 
         //ROLE
-        private Role role;
-        public Role Role
+        private int roleId;
+        public int RoleId
         {
-            get { return role; }
-            set { role = value; }
+            get { return roleId; }
+            set { roleId = value; }
         }
     }
 }
