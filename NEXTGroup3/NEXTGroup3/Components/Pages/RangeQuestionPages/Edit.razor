@@ -1,4 +1,4 @@
-﻿@page "/roles/edit"
+﻿@page "/rangequestions/edit"
 @using Microsoft.EntityFrameworkCore
 @using NEXTGroup3.Models
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
@@ -8,9 +8,9 @@
 
 <h1>Edit</h1>
 
-<h2>Role</h2>
+<h2>RangeQuestion</h2>
 <hr />
-@if (Role is null)
+@if (RangeQuestion is null)
 {
     <p><em>Loading...</em></p>
 }
@@ -18,19 +18,14 @@ else
 {
     <div class="row">
         <div class="col-md-4">
-            <EditForm method="post" Model="Role" OnValidSubmit="UpdateRole" FormName="edit" Enhance>
+            <EditForm method="post" Model="RangeQuestion" OnValidSubmit="UpdateRangeQuestion" FormName="edit" Enhance>
                 <DataAnnotationsValidator />
                 <ValidationSummary role="alert"/>
-                <input type="hidden" name="Role.Id" value="@Role.Id" />
+                <input type="hidden" name="RangeQuestion.Id" value="@RangeQuestion.Id" />
                 <div class="mb-3">
-                    <label for="name" class="form-label">Name:</label>
-                    <InputText id="name" @bind-Value="Role.Name" class="form-control" />
-                    <ValidationMessage For="() => Role.Name" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="link" class="form-label">Link:</label>
-                    <InputText id="link" @bind-Value="Role.Link" class="form-control" />
-                    <ValidationMessage For="() => Role.Link" class="text-danger" />
+                    <label for="questiontext" class="form-label">QuestionText:</label>
+                    <InputText id="questiontext" @bind-Value="RangeQuestion.QuestionText" class="form-control" />
+                    <ValidationMessage For="() => RangeQuestion.QuestionText" class="text-danger" />
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
@@ -39,7 +34,7 @@ else
 }
 
 <div>
-    <a href="/roles">Back to List</a>
+    <a href="/rangequestions">Back to List</a>
 </div>
 
 @code {
@@ -47,14 +42,14 @@ else
     private int Id { get; set; }
 
     [SupplyParameterFromForm]
-    private Role? Role { get; set; }
+    private RangeQuestion? RangeQuestion { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        Role ??= await context.Role.FirstOrDefaultAsync(m => m.Id == Id);
+        RangeQuestion ??= await context.RangeQuestion.FirstOrDefaultAsync(m => m.Id == Id);
 
-        if (Role is null)
+        if (RangeQuestion is null)
         {
             NavigationManager.NavigateTo("notfound");
         }
@@ -62,10 +57,10 @@ else
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task UpdateRole()
+    private async Task UpdateRangeQuestion()
     {
         using var context = DbFactory.CreateDbContext();
-        context.Attach(Role!).State = EntityState.Modified;
+        context.Attach(RangeQuestion!).State = EntityState.Modified;
 
         try
         {
@@ -73,7 +68,7 @@ else
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!RoleExists(Role!.Id))
+            if (!RangeQuestionExists(RangeQuestion!.Id))
             {
                 NavigationManager.NavigateTo("notfound");
             }
@@ -83,12 +78,12 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/roles");
+        NavigationManager.NavigateTo("/rangequestions");
     }
 
-    private bool RoleExists(int id)
+    private bool RangeQuestionExists(int id)
     {
         using var context = DbFactory.CreateDbContext();
-        return context.Role.Any(e => e.Id == id);
+        return context.RangeQuestion.Any(e => e.Id == id);
     }
 }
