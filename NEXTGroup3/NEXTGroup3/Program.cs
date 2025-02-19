@@ -3,6 +3,7 @@ using NEXTGroup3.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NEXTGroup3.Data;
+using NEXTGroup3.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextFactory<AzureContext>(options =>
@@ -26,6 +27,10 @@ else
   connection = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
 }
 
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
+
 //builder.Services.AddDbContext<DbContextNext>(options =>
 //    options.UseSqlServer(connection));
 
@@ -46,6 +51,12 @@ else
     app.UseMigrationsEndPoint();
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+};
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -55,7 +66,6 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(NEXTGroup3.Client._Imports).Assembly);
-
 
 
 app.Run();
