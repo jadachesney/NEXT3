@@ -8,9 +8,7 @@
 
 
 <PageTitle>Question Page</PageTitle>
-
-<h3>QuestionPage</h3>
-  
+ 
   <div class="question-container">
       @foreach (var question in rangeQuestions)
       {
@@ -32,7 +30,6 @@
     private List<Role> roles;
     private bool rolesLoaded = false;
     private Department department = new Department();
-
 
     protected override async Task OnInitializedAsync()
     {
