@@ -16,8 +16,7 @@ namespace NEXTGroup3.Services
 
         public async Task<List<Role>> GetAllRolesInDepartment(Department department)
         {
-            var role = context.Role.Where(x=>x.DepartmentId == department.Id).ToList();
-            return await context.Role.AsNoTracking().ToListAsync();
+            return await context.Role.Where(x=>x.DepartmentId == department.Id).AsNoTracking().ToListAsync();
         }
     }
 }

@@ -15,6 +15,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddScoped<TextAnswerService>();
+builder.Services.AddScoped<RoleService>();
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 
@@ -28,6 +29,15 @@ else
 {
   connection = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
 }
+
+builder.Services.AddDbContextFactory<AzureContext>(options =>
+    options.UseSqlServer("YourConnectionString", sqlOptions => 
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(3),
+            errorNumbersToAdd: null);
+    }), ServiceLifetime.Scoped);
 
 builder.Services.AddEndpointsApiExplorer();
 

@@ -8,15 +8,26 @@
 <PageTitle>Question Page</PageTitle>
 
 <h3>QuestionPage</h3>
-<div class="question-container">
-    <TBQuestion answers=textAnswers></TBQuestion>
-</div>
 
 @code {
-    private List<TextAnswer> textAnswers = new List<TextAnswer>();
+    private List<Role> roles;
+    private bool rolesLoaded = false;
+    private Department department = new Department();
+
+
     protected override async Task OnInitializedAsync()
     {
-        // relatedRoles = await roleService.GetAllRolesInDepartment(department); Fetch data from the API
+        department.Id = 1; //PLACEHOLDER VALUE
+        roles = await roleService.GetAllRolesInDepartment(department); //Fetch data from the API
+        rolesLoaded = true;
     }
-
 }
+<div class="question-container">
+    @if(!rolesLoaded){
+        <p>Loading...</p>
+    }
+    else
+    {
+        <TBCode roles=roles></TBCode>
+    }
+</div>
