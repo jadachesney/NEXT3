@@ -1,10 +1,38 @@
-﻿<h1>RBQuestion</h1>
+﻿<h1>Role Based Question</h1>
 
-<div class="question-box">
-  <h3> Question 1 </h3>
-  <p> How strongly do you feel about this</p>
-  <button type="submit" class="btn btn-primary">Yes</button>
+<div class="range-question">
+  <h3>Question @rangeQuestion.Id</h3>
+  <p>@rangeQuestion.QuestionText</p>
+  <div class="range-answer-container">
+    <form class="range">
+
+      <div class="form-group">
+        <label class="range-answer-label">Very Unlikely</label>
+        <button class="range-answer-btn"></button>
+      </div>
+      <div class="form-group">
+        <label class="range-answer-label">Somewhat Unlikely</label>
+        <button class="range-answer-btn"></button>
+      </div>
+      <div class="form-group">
+        <label class="range-answer-label">Neutral</label>
+        <button class="range-answer-btn"></button>
+      </div>
+      <div class="form-group">
+        <label class="range-answer-label">Somewhat Likely</label>
+        <button class="range-answer-btn"></button>
+      </div>
+      <div class="form-group">
+        <label class="range-answer-label">Very Likely</label>
+        <button class="range-answer-btn"></button>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Yes</button>
+    </form>
+  </div>
 </div>
-@code {
 
+@code {
+    [Parameter]
+    public RangeQuestion? rangeQuestion { get; set; }
 }

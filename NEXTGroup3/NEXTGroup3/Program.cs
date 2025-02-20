@@ -1,4 +1,4 @@
-﻿using NEXTGroup3.Components;
+using NEXTGroup3.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NEXTGroup3.Data;
@@ -16,6 +16,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<TextAnswerService>();
 builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<RangeQuestionService>();
+
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 
