@@ -3,6 +3,8 @@
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
 @inject RangeQuestionService rangeQuestionService
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
 
 <PageTitle>Question Page</PageTitle>
 
@@ -10,11 +12,11 @@
     <div class="range-content">
         <div class="range-question">
             <div class="range-answer-container">
-                @foreach (RangeQuestion rangeQuestion in rangeQuestions)
+                @if (currentQuestionIndex < rangeQuestions.Count)
                 {
-                    <h3>Question @rangeQuestion.Id / @rangeQuestions.Count()</h3>
+                    <h3>Question @rangeQuestions[currentQuestionIndex].Id / @rangeQuestions.Count()</h3>
                     <form class="range">
-                        <RBQuestion rangeQuestion="rangeQuestion" OnAnswerSelected="HandleAnswerSelected" />
+                        <RBQuestion rangeQuestion="rangeQuestions[currentQuestionIndex]" OnAnswerSelected="HandleAnswerSelected" />
                     </form>
                 }
             </div>
@@ -24,6 +26,7 @@
 
 @code {
     public Result result = new Result();
+    private int currentQuestionIndex = 0;
 
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
 
@@ -32,13 +35,27 @@
     {
         rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
     }
-
-    //functionality for range questions
-    private void HandleAnswerSelected(int selectedValue)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        System.Console.WriteLine($"Selected Answer: {selectedValue}");
+        if (firstRender)
+        {
+            var result = await ProtectedSessionStore.GetAsync<int>("CurrentQuestionIndex");
+            currentQuestionIndex = result.Success ? result.Value : 0;
+            StateHasChanged();
+        }
     }
 
-
+    //functionality for range questions
+    private async Task HandleAnswerSelected(int selectedValue)
+    {
+        System.Console.WriteLine($"Selected Answer: {selectedValue}");
+        currentQuestionIndex++;
+        await SaveCurrentQuestionIndex();
+        StateHasChanged();
+    }
+    private async Task SaveCurrentQuestionIndex()
+    {
+        await ProtectedSessionStore.SetAsync("CurrentQuestionIndex", currentQuestionIndex);
+    }
 }
 
