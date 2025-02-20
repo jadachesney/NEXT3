@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NEXTGroup3.Data;
@@ -14,7 +14,7 @@ namespace NEXTGroup3.Controllers
 
         public DataController(AzureContext c)
         {
-            context = c;
+            this.context = c;
         }
 
         // GET: api/data
@@ -24,5 +24,12 @@ namespace NEXTGroup3.Controllers
             var data = await context.RangeQuestion.AsNoTracking().ToListAsync();
             return Ok(data);
         }
+
+        public async Task<ActionResult<IEnumerable<TextAnswer>>> GetAllTextAnswers()
+        {
+            var data = await context.TextAnswer.AsNoTracking().ToListAsync();
+            return Ok(data);
+        }
     }
 }
+

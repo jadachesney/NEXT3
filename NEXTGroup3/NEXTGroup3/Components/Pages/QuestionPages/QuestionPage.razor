@@ -2,10 +2,9 @@
 @rendermode InteractiveAuto
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
+
+@inject RoleService roleService
 @inject RangeQuestionService rangeQuestionService
-
-<PageTitle>Question Page</PageTitle>
-
 <div class="question-container">
     @if (currentQuestionIndex < rangeQuestions.Count)
     {
@@ -20,11 +19,38 @@
 
 
 
+<PageTitle>Question Page</PageTitle>
+ 
+  <div class="question-container">
+      @foreach (var question in rangeQuestions)
+      {
+          <RBQuestion rangeQuestion=question />
+      }
+    
+      @if(!rolesLoaded){
+        <p>Loading...</p>
+      }
+      else
+      {
+          <TBCode roles=roles></TBCode>
+      }
+  </div>
+  
+
+
 @code {
+    private List<Role> roles;
+    private bool rolesLoaded = false;
+    private Department department = new Department();
+
     //Database
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
+
     protected override async Task OnInitializedAsync()
     {
+        department.Id = 1; //PLACEHOLDER VALUE
+        roles = await roleService.GetAllRolesInDepartment(department); //Fetch data from the API
+        rolesLoaded = true;
         rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
     }
 
@@ -50,3 +76,4 @@
     //     testSide = answer.departmentListSide;
     // }
 }
+

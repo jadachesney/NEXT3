@@ -12,6 +12,10 @@
         private string name;
         public string Name { get { return name; } set { name = value; } }
 
+        //--DEPARTMENT ID--//
+        private int departmentId;
+        public int DepartmentId { get; set; }
+
         //--ROLE LINK--//
         private string link;
         public string Link { get { return link; } set { link = value; } }
