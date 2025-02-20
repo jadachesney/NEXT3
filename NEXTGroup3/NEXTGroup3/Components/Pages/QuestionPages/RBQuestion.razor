@@ -1,65 +1,48 @@
 
-<div class="range-content">
-    <div class="range-question">
-    <h3>Question @rangeQuestion.Id / @totalQuestions</h3>
-    <p>@rangeQuestion.QuestionText</p>
-    <div class="range-answer-container">
-      <form class="range">
-          <div class="button-group">
-             
-            @* <div class="form-group">
-              <label class="range-answer-label">Strongly Disagree</label>
-              <input type="radio" @onchange="@(() => {
-                    Console.WriteLine("range answer changed");
-                    finalPointAmount = 2;
-                    finalDepartmentListSide = false;
-                 })" @onclick:preventDefault class="range-answer-btn"></input>
-            </div> *@
-            <div class="form-group">
-              <label class="range-answer-label">Disagree</label>
-              <button @onclick="() => ClickRangeAnswer(1, false)" @onclick:preventDefault class="range-answer-btn"></button>
-            </div>
-            <div class="form-group">
-              <label class="range-answer-label">Neutral</label>
-              <button @onclick="() => ClickRangeAnswer(0, false)" @onclick:preventDefault class="range-answer-btn"></button>
-            </div>
-            <div class="form-group">
-              <label class="range-answer-label">Agree</label>
-              <button @onclick="() => ClickRangeAnswer(1, true)" @onclick:preventDefault class="range-answer-btn"></button>
-            </div>
-            <div class="form-group">
-              <label class="range-answer-label">Strongly Agree</label>
-              <button @onclick="() => ClickRangeAnswer(2, true)" @onclick:preventDefault class="range-answer-btn"></button>
-            </div>
-          </div>
+<p for="radio-button">@rangeQuestion.QuestionText</p>
 
-          <button @onclick="AnswerSelected" @onclick:preventDefault class="range-submit-btn">Next</button>
-      </form>
-    </div>
-  </div>
+<div class="button-group">
+    <InputRadioGroup id="radio-button" @bind-Value="answer">    
+        <div class="form-group">
+            <label class="range-answer-label" for="0">Strongly Disagree</label>
+            <InputRadio Value="0" id="0" class="range-answer-btn"/>
+        </div>
+
+        <div class="form-group">
+            <label class="range-answer-label" for="1">Disagree</label>
+            <InputRadio Value="1" id="1" class="range-answer-btn"/>
+        </div>
+
+        <div class="form-group">
+            <label class="range-answer-label" for="2">Neutral</label>
+            <InputRadio Value="2" id="2" class="range-answer-btn"/> 
+        </div>
+
+        <div class="form-group">
+            <label class="range-answer-label" for="3">Agree</label>
+            <InputRadio Value="3" id="3" class="range-answer-btn"/> 
+        </div>
+
+        <div class="form-group">
+            <label class="range-answer-label" for="4">Strongly Agree</label>
+            <InputRadio Value="4" id="4" class="range-answer-btn"/>
+        </div>
+    </InputRadioGroup>
 </div>
+<button class="range-submit-btn" @onclick="NotifyAnswerSelected">Next</button>
 
 @code {
     [Parameter]
     public RangeQuestion? rangeQuestion { get; set; }
-    [Parameter]
-    public int totalQuestions { get; set; }
-    [Parameter]
-    public EventCallback<(int points, bool departmentListSide)> OnAnswerSelected { get; set; }
+    public int answer = 2;
 
-    public int finalPointAmount = 3;
-    public bool finalDepartmentListSide = false;
 
-    private async Task AnswerSelected()
+    [Parameter]
+    public EventCallback<int> OnAnswerSelected { get; set; }
+
+    private void NotifyAnswerSelected()
     {
-        Console.WriteLine("next button clicked");
-        await OnAnswerSelected.InvokeAsync((finalPointAmount, finalDepartmentListSide));
-        Console.WriteLine("next button clicked 2");
-    }
-    public void ClickRangeAnswer(int points, bool side)
-    {
-        Console.WriteLine("range answer changed");
-        finalPointAmount = points;
-        finalDepartmentListSide = side;
+        System.Console.WriteLine($"Selected answer: {answer}");
+        OnAnswerSelected.InvokeAsync(answer);
     }
 }

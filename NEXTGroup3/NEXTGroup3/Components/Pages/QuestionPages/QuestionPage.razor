@@ -1,5 +1,5 @@
 @page "/"
-@rendermode InteractiveAuto
+@rendermode InteractiveServer
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
 @inject RangeQuestionService rangeQuestionService
@@ -7,38 +7,38 @@
 <PageTitle>Question Page</PageTitle>
 
 <div class="question-container">
-    @if (currentRangeQuestionIndex < rangeQuestions.Count)
-    {
-        <RBQuestion rangeQuestion="rangeQuestions[currentRangeQuestionIndex]" totalQuestions="rangeQuestions.Count()" OnAnswerSelected="AnswerSelected" />
-        <p>@testpoints @testSide</p>
-    }
+    <div class="range-content">
+        <div class="range-question">
+            <div class="range-answer-container">
+                @foreach (RangeQuestion rangeQuestion in rangeQuestions)
+                {
+                    <h3>Question @rangeQuestion.Id / @rangeQuestions.Count()</h3>
+                    <form class="range">
+                        <RBQuestion rangeQuestion="rangeQuestion" OnAnswerSelected="HandleAnswerSelected" />
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
+    public Result result = new Result();
+
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
-    private Department department = new Department();
 
     //Database
     protected override async Task OnInitializedAsync()
     {
-        department.Id = 1;
         rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
     }
 
     //functionality for range questions
-    public int currentRangeQuestionIndex = 0;
-    public int testpoints;
-    public bool testSide;
-
-    public async Task AnswerSelected((int points, bool departmentListSide) answer)
+    private void HandleAnswerSelected(int selectedValue)
     {
-        Console.WriteLine("feedback received");
-        await Task.Delay(500);
-        testpoints = answer.points;
-        testSide = answer.departmentListSide;
-
-        currentRangeQuestionIndex++;
-        StateHasChanged();
+        System.Console.WriteLine($"Selected Answer: {selectedValue}");
     }
+
+
 }
 
