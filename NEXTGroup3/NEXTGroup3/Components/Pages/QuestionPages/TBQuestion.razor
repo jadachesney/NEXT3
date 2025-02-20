@@ -8,13 +8,15 @@
         @for(int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++) //iterates over all selected answers
         {
             var answerText = selectedAnswers[answerIndex].Answers;
-            <button class="btn btn-outline-dark text-answer-btn">@answerText</button>
+            var roleId = selectedAnswers[answerIndex].RoleId;
+            <button class="btn btn-outline-dark text-answer-btn" value="@roleId">@answerText</button>
         }
+        <button class="btn btn-outline-dark text-answer-btn" value=0>None of the above</button>
     </div>  
 </div>
 @code {
     [Parameter] public List<TextAnswer> answers { get; set; }
-    private List<TextAnswer> selectedAnswers = new List<TextAnswer>();
+    private List<TextAnswer> selectedAnswers = new List<TextAnswer>();//stores answers selected by the following function
 
     protected override async void OnParametersSet(){
         //runs when the "answers" parameter is set
@@ -39,5 +41,5 @@
         }
     }
 
-
+    //FUNCTION FOR HADNDLING POINTS NEEDED
 }
