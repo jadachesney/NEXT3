@@ -148,5 +148,38 @@ form.range{
 
 /* TEXT BASED QUESTIONS */
 
+.text-answer-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5%;
+}
+
+.text-answer-btn {
+    height: 250px;
+    width: 250px;
+    margin: 5px;
+    text-wrap: wrap;
+    background-color: #DFDCD2;
+}
+
+    .text-answer-btn:hover {
+        background-color: #000000;
+    }
+
+.text-centering {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
+
+.text-question {
+    margin-top: 3%;
+}
+
 
 
