@@ -1,10 +1,22 @@
-@page "/questionpage"
+@page "/"
 @rendermode InteractiveAuto
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
 
 @inject RoleService roleService
 @inject RangeQuestionService rangeQuestionService
+<div class="question-container">
+    @if (currentQuestionIndex < rangeQuestions.Count)
+    {
+        <RBQuestion rangeQuestion="rangeQuestions[currentQuestionIndex]" OnAnswerSelected="AnswerSelected" />
+        <p>@testpoints @testSide</p>
+    }
+    else
+    {
+        <p>All questions answered</p>
+    }
+</div>
+
 
 
 <PageTitle>Question Page</PageTitle>
@@ -14,22 +26,25 @@
       {
           <RBQuestion rangeQuestion=question />
       }
-  </div>
-  
-  <div class="question-container">
+    
       @if(!rolesLoaded){
-          <p>Loading...</p>
+        <p>Loading...</p>
       }
       else
       {
           <TBCode roles=roles></TBCode>
       }
   </div>
+  
+
 
 @code {
     private List<Role> roles;
     private bool rolesLoaded = false;
     private Department department = new Department();
+
+    //Database
+    private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,10 +54,26 @@
         rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
     }
 
-    private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
+    //functionality for range questions
+    public int currentQuestionIndex = 0;
+    public int testpoints;
+    public bool testSide;
 
-    // protected override async Task OnInitializedAsync()
+    public async Task AnswerSelected((int points, bool departmentListSide) answer)
+    {
+        Console.WriteLine("feedback received");
+        await Task.Delay(500);
+        testpoints = answer.points;
+        testSide = answer.departmentListSide;
+
+        currentQuestionIndex++;
+        StateHasChanged();
+    }
+
+    // public void AnswerSelected((int points, bool departmentListSide) answer)
     // {
-    //     rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
+    //     testpoints = answer.points;
+    //     testSide = answer.departmentListSide;
     // }
-  }
+}
+

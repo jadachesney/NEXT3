@@ -1,33 +1,34 @@
-﻿<div class="range-content">
-  <div class="range-question">
+
+<div class="range-content">
+    <div class="range-question">
     <h3>Question @rangeQuestion.Id</h3>
     <p>@rangeQuestion.QuestionText</p>
     <div class="range-answer-container">
       <form class="range">
-        <div class="button-group">
-          <div class="form-group">
-            <label class="range-answer-label">Very Unlikely</label>
-            <button class="range-answer-btn"></button>
+          <div class="button-group">
+            <div class="form-group">
+              <label class="range-answer-label">Strongly Disagree</label>
+              <button @onclick="() => ClickRangeAnswer(2, false)" class="range-answer-btn"></button>
+            </div>
+            <div class="form-group">
+              <label class="range-answer-label">Disagree</label>
+              <button @onclick="() => ClickRangeAnswer(1, false)" class="range-answer-btn"></button>
+            </div>
+            <div class="form-group">
+              <label class="range-answer-label">Neutral</label>
+              <button @onclick="() => ClickRangeAnswer(0, false)" class="range-answer-btn"></button>
+            </div>
+            <div class="form-group">
+              <label class="range-answer-label">Agree</label>
+              <button @onclick="() => ClickRangeAnswer(1, true)" class="range-answer-btn"></button>
+            </div>
+            <div class="form-group">
+              <label class="range-answer-label">Strongly Agree</label>
+              <button @onclick="() => ClickRangeAnswer(2, true)" class="range-answer-btn"></button>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="range-answer-label">Somewhat Unlikely</label>
-            <button class="range-answer-btn"></button>
-          </div>
-          <div class="form-group">
-            <label class="range-answer-label">Neutral</label>
-            <button class="range-answer-btn"></button>
-          </div>
-          <div class="form-group">
-            <label class="range-answer-label">Somewhat Likely</label>
-            <button class="range-answer-btn"></button>
-          </div>
-          <div class="form-group">
-            <label class="range-answer-label">Very Likely</label>
-            <button class="range-answer-btn"></button>
-          </div>
-        </div>
 
-        <button type="submit" class="range-submit-btn">Submit</button>
+          <button @onclick="AnswerSelected" @onclick:preventDefault class="btn btn-primary">Next</button>
       </form>
     </div>
   </div>
@@ -36,4 +37,22 @@
 @code {
     [Parameter]
     public RangeQuestion? rangeQuestion { get; set; }
+    [Parameter]
+    public EventCallback<(int points, bool departmentListSide)> OnAnswerSelected { get; set; }
+
+    public int finalPointAmount = 3;
+    public bool finalDepartmentListSide = false;
+
+    private async Task AnswerSelected()
+    {
+        Console.WriteLine("next button clicked");
+        await OnAnswerSelected.InvokeAsync((finalPointAmount, finalDepartmentListSide));
+        Console.WriteLine("next button clicked 2");
+    }
+    public void ClickRangeAnswer(int points, bool side)
+    {
+        Console.WriteLine("range answer changed");
+        finalPointAmount = points;
+        finalDepartmentListSide = side;
+    }
 }
