@@ -8,6 +8,17 @@
 
 
 <PageTitle>Question Page</PageTitle>
+
+    <div class="question-container">
+        @if (!rolesLoaded)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            <TBCode roles=roles></TBCode>
+        }
+    </div>
  
   <div class="question-container">
       @foreach (var question in rangeQuestions)
@@ -16,15 +27,6 @@
       }
   </div>
   
-  <div class="question-container">
-      @if(!rolesLoaded){
-          <p>Loading...</p>
-      }
-      else
-      {
-          <TBCode roles=roles></TBCode>
-      }
-  </div>
 
 @code {
     private List<Role> roles;

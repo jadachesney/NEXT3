@@ -178,8 +178,15 @@ form.range{
     margin-top: 2%;
 }
 
-.text-question {
-    margin-top: 3%;
+
+/* PROGRESS BAR */
+
+.progress {
+    background-color: #DFDCD2;
+}
+
+.progress-bar {
+    background-color: #f7550d;
 }
 
 
