@@ -24,12 +24,6 @@ namespace NEXTGroup3.Controllers
             var data = await context.RangeQuestion.AsNoTracking().ToListAsync();
             return Ok(data);
         }
-
-        public async Task<ActionResult<IEnumerable<TextAnswer>>> GetAllTextAnswers()
-        {
-            var data = await context.TextAnswer.AsNoTracking().ToListAsync();
-            return Ok(data);
-        }
     }
 }
 
