@@ -1,4 +1,4 @@
-﻿using NEXTGroup3.Components;
+using NEXTGroup3.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NEXTGroup3.Data;
@@ -14,7 +14,10 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddScoped<TextAnswerService>();
+builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<RangeQuestionService>();
+
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 
@@ -28,6 +31,15 @@ else
 {
   connection = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
 }
+
+builder.Services.AddDbContextFactory<AzureContext>(options =>
+    options.UseSqlServer("YourConnectionString", sqlOptions => 
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(3),
+            errorNumbersToAdd: null);
+    }), ServiceLifetime.Scoped);
 
 builder.Services.AddEndpointsApiExplorer();
 
