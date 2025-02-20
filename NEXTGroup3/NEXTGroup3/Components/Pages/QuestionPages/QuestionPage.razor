@@ -3,26 +3,46 @@
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
 @inject RangeQuestionService rangeQuestionService
+@inject RoleService roleService
 
 <PageTitle>Question Page</PageTitle>
 
 <div class="question-container">
-    @if (currentRangeQuestionIndex < rangeQuestions.Count)
-    {
-        <RBQuestion rangeQuestion="rangeQuestions[currentRangeQuestionIndex]" totalQuestions="rangeQuestions.Count()" OnAnswerSelected="AnswerSelected" />
-        <p>@testpoints @testSide</p>
+    @if (currentRangeQuestionIndex < rangeQuestions.Count) 
+     { 
+         <RBQuestion rangeQuestion="rangeQuestions[currentRangeQuestionIndex]" totalQuestions="rangeQuestions.Count()" OnAnswerSelected="AnswerSelected" />
+         <p>@testpoints @testSide</p> 
+     } 
+     else{ 
+        //inserts TBCode if the roles list has been populated 
+        if(!rolesSelected){
+            <p>Loading...</p>
+        }else{
+            <TBCode roles=roles></TBCode>
+        }
     }
 </div>
 
 @code {
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
-    private Department department = new Department();
+
+    private List<Role> roles = new List<Role>(); //stores the roles to be sent to the TBCode component
+    private Department department = new Department(); //stores the department result from rangeQuestions
+    private bool rolesSelected = false; // a flag for whether or not roles has been populated
+
 
     //Database
     protected override async Task OnInitializedAsync()
     {
-        department.Id = 1;
+        //---RANGE BASED FUNCTIONS---//
         rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
+
+        //---TEXT BASED FUNCTIONS---//
+        department.Id = 1; //temporary, until department is obtained by range questions
+
+        roles = await roleService.GetAllRolesInDepartment(department);
+
+        rolesSelected = true; //flags true when roles related to the department have been populated
     }
 
     //functionality for range questions
