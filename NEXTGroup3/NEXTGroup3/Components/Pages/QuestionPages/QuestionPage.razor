@@ -1,4 +1,4 @@
-﻿@page "/questionpage"
+﻿@page "/"
 @rendermode InteractiveAuto
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
@@ -6,19 +6,45 @@
 
 <PageTitle>Question Page</PageTitle>
 
-<h3>QuestionPage</h3>
 <div class="question-container">
-    @foreach (var question in rangeQuestions)
+    @if (currentQuestionIndex < rangeQuestions.Count)
     {
-        <RBQuestion rangeQuestion=question />
+        <RBQuestion rangeQuestion="rangeQuestions[currentQuestionIndex]" OnAnswerSelected="AnswerSelected" />
+        <p>@testpoints @testSide</p>
+    }
+    else
+    {
+        <p>All questions answered</p>
     }
 </div>
 
 @code {
+    //Database
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
-
     protected override async Task OnInitializedAsync()
     {
         rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
     }
+
+    //functionality for range questions
+    public int currentQuestionIndex = 0;
+    public int testpoints;
+    public bool testSide;
+
+    public async Task AnswerSelected((int points, bool departmentListSide) answer)
+    {
+        Console.WriteLine("feedback received");
+        await Task.Delay(500);
+        testpoints = answer.points;
+        testSide = answer.departmentListSide;
+
+        currentQuestionIndex++;
+        StateHasChanged();
+    }
+
+    // public void AnswerSelected((int points, bool departmentListSide) answer)
+    // {
+    //     testpoints = answer.points;
+    //     testSide = answer.departmentListSide;
+    // }
 }
