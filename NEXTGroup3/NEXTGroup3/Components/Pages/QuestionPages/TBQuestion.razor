@@ -5,7 +5,7 @@
     <h5>Select which of the following statements you agree with the most:</h5>
 
     <div class="text-answer-container">
-        @for(int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++)
+        @for(int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++) //iterates over all selected answers
         {
             var answerText = selectedAnswers[answerIndex].Answers;
             <button class="btn btn-outline-dark text-answer-btn">@answerText</button>
@@ -17,17 +17,23 @@
     private List<TextAnswer> selectedAnswers = new List<TextAnswer>();
 
     protected override async void OnParametersSet(){
+        //runs when the "answers" parameter is set
 
         if(selectedAnswers.Count < 5){
+            //Randomly selects 5 unique answers from textAnswers
 
-            Random rng = new Random();
+            Random rng = new Random(); //new random number generator
 
             for (int i = 0; i < 5;){
                 TextAnswer current = answers[rng.Next(answers.Count)];
 
                 if(!selectedAnswers.Contains(current)){
+                    //ensures answer uniqueness and only increments if a unique answer is added 
                     selectedAnswers.Add(current);
                     i++;
+                }
+                else if (selectedAnswers.Count == answers.Count){
+                    i = 5; //closes the loop if all available answers have been selected
                 }
             }
         }
