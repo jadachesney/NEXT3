@@ -43,6 +43,6 @@
     private async Task NotifyAnswerSelected()
     {
         System.Console.WriteLine($"Selected answer: {answer}");
-        OnAnswerSelected.InvokeAsync(answer);
+        await OnAnswerSelected.InvokeAsync(answer);
     }
 }
