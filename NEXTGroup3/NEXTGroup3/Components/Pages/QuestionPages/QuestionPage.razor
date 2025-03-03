@@ -3,29 +3,37 @@
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
 @inject RangeQuestionService rangeQuestionService
+@inject TextAnswerService textAnswerService
 @inject RoleService roleService
 
 <PageTitle>Question Page</PageTitle>
 
 <div class="question-container">
-    @if (currentRangeQuestionIndex < rangeQuestions.Count) 
-     { 
-         <RBQuestion rangeQuestion="rangeQuestions[currentRangeQuestionIndex]" totalQuestions="rangeQuestions.Count()" OnAnswerSelected="AnswerSelected" />
-         <p>@testpoints @testSide</p> 
-     } 
-     else{ 
-        //inserts TBCode if the roles list has been populated 
-        if(!rolesSelected){
-            <p>Loading...</p>
-        }else{
-            <TBCode roles=roles></TBCode>
-        }
+    @* @if (currentRangeQuestionIndex < rangeQuestions.Count)  *@
+    @*  {  *@
+    @*      <RBQuestion rangeQuestion="rangeQuestions[currentRangeQuestionIndex]" totalQuestions="rangeQuestions.Count()" OnAnswerSelected="AnswerSelected" /> *@
+    @*      <p>@testpoints @testSide</p>  *@
+    @*  }  *@
+    @*  else{  *@
+    @* //inserts TBCode if the roles list has been populated  *@
+    @if(!rolesSelected){
+        <p>Loading...</p>
+    }else{
+        <form class="text">
+            @* <TBCode roles=roles></TBCode> *@
+            <TBQuestion answers=textAnswers/>
+        </form>
     }
+    @* } *@
 </div>
 
 @code {
+    public int currentQuestionIndex = 0;
+
+    //dynamic
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
 
+    private List<TextAnswer> textAnswers = new List<TextAnswer>();
     private List<Role> roles = new List<Role>(); //stores the roles to be sent to the TBCode component
     private Department department = new Department(); //stores the department result from rangeQuestions
     private bool rolesSelected = false; // a flag for whether or not roles has been populated
@@ -35,30 +43,45 @@
     protected override async Task OnInitializedAsync()
     {
         //---RANGE BASED FUNCTIONS---//
-        rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
+        // rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
 
         //---TEXT BASED FUNCTIONS---//
         department.Id = 1; //temporary, until department is obtained by range questions
 
-        roles = await roleService.GetAllRolesInDepartment(department);
+         textAnswers = await textAnswerService.GetAllTextQuestionsFromRolesInDepartment(department);
 
         rolesSelected = true; //flags true when roles related to the department have been populated
     }
+    
 
     //functionality for range questions
-    public int currentRangeQuestionIndex = 0;
     public int testpoints;
     public bool testSide;
 
-    public async Task AnswerSelected((int points, bool departmentListSide) answer)
-    {
-        Console.WriteLine("feedback received");
-        await Task.Delay(500);
-        testpoints = answer.points;
-        testSide = answer.departmentListSide;
+    //variables for text based point handling
+    public int currentTextQuestionIndex = 0;
+    public int textPoints;
 
-        currentRangeQuestionIndex++;
-        StateHasChanged();
-    }
+    public int currentTextAnswer = 0; 
+
+    // protected override async Task OnAfterRenderAsync(bool firstRender){
+    //     if(firstRender){
+    //         var result = await ProtectedSessionStore.GetAsync<int>("CurrentQuestionIndex");
+    //         currentRangeQuestionIndex = result.Success ? result.VAlue : 0;
+    //         StateHasChanged();
+    //     }
+    // }
+
+    // private async Task HandleAnswerSelected(int selectedValue)
+    // {
+    //     System.Console.WriteLine($"Selected Answer: {selectedValue}");
+    //     currentQuestionIndex++;
+    //     await SaveCurrentQuestionIndex();
+    //     StateHasChanged();
+    // }
+    // private async Task SaveCurrentQuestionIndex()
+    // {
+    //     await ProtectedSessionStore.SetAsync("CurrentQuestionIndex", currentQuestionIndex);
+    // }
 }
 

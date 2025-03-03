@@ -148,5 +148,7 @@ form.range{
 
 /* TEXT BASED QUESTIONS */
 
-
+.text-answer-radio:checked+label{
+    background-color: orange;
+}
 

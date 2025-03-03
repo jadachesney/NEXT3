@@ -3,21 +3,42 @@
 <div class="text-question"> 
 
     <h5>Select which of the following statements you agree with the most:</h5>
+    <p>@answer</p>
 
     <div class="text-answer-container">
-        @for(int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++) //iterates over all selected answers
-        {
-            var answerText = selectedAnswers[answerIndex].Answers;
-            var roleId = selectedAnswers[answerIndex].RoleId;
-            <button class="btn btn-outline-dark text-answer-btn" value="@roleId">@answerText</button>
-        }
-        <button class="btn btn-outline-dark text-answer-btn" value=0>None of the above</button>
+        <InputRadioGroup id="radio-button" @bind-Value="answer">
+            @for(int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++) //iterates over all selected answers
+            {
+                var answerText = selectedAnswers[answerIndex].Answers;
+                var answerId = selectedAnswers[answerIndex].Id;
+                var answerIdString = "text-answer-" + answerId.ToString();
+
+                <div id="" class="text-answer-form-group form-group ">
+
+
+                    <InputRadio Value=@answerId id="@answerIdString" class="text-answer-radio" hidden 
+                    /><label class="btn btn-outline-dark text-answer-btn" for="@answerIdString">@answerText</label>
+                </div>
+            }
+            <div id="" class="text-answer-form-group form-group">
+
+
+                <InputRadio Value=0 id="text-answer-0" class="text-answer-radio" hidden
+                /><label class="btn btn-outline-dark text-answer-btn" for="text-answer-0">None of the above</label>
+            </div>
+        </InputRadioGroup>
     </div>  
+    <button class="text-submit-button" @onclick="NotifyAnswerSelected">Next</button>
 </div>
 @code {
     [Parameter] public List<TextAnswer> answers { get; set; }
+    [Parameter] public EventCallback<int> OnAnswerSelected{ get; set; }
+
     private List<TextAnswer> selectedAnswers = new List<TextAnswer>();//stores answers selected by the following function
 
+    public int answer; //Stores the answer to be returned to QuestionPage
+
+    //Randomly Selects up to 5 of the relevant answers to display
     protected override async void OnParametersSet(){
         //runs when the "answers" parameter is set
 
@@ -25,9 +46,10 @@
             //Randomly selects 5 unique answers from textAnswers
 
             Random rng = new Random(); //new random number generator
+            
 
             for (int i = 0; i < 5;){
-                TextAnswer current = answers[rng.Next(answers.Count)];
+                TextAnswer current = answers[rng.Next(0, answers.Count-1)];
 
                 if(!selectedAnswers.Contains(current)){
                     //ensures answer uniqueness and only increments if a unique answer is added 
@@ -41,5 +63,13 @@
         }
     }
 
-    //FUNCTION FOR HADNDLING POINTS NEEDED
+    //Sends answer's ID back to QuestionPage
+    private async Task NotifyAnswerSelected(){
+        await OnAnswerSelected.InvokeAsync(answer);
+    }
+
+    //Changes the value that is currently selected
+    public void SelectValue(int val){
+        answer = val;
+    }
 }
