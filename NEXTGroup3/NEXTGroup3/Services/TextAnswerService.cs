@@ -19,7 +19,12 @@ namespace NEXTGroup3.Services
             //var DbFactory = new AzureContextFactory();
             //contextSecondary = DbFactory.CreateDbContext();
         }
-
+        public async Task<List<TextAnswer>> GetAllTextQuestionsFromRolesInDepartment(Department department)
+        {
+            var context = contextFactory.CreateDbContext();
+            var roles = await context.Role.Where(x => x.DepartmentId == department.Id).AsNoTracking().ToListAsync();
+            return await GetTextAnswersFromRoles(roles);
+        }
         public async Task<List<TextAnswer>> GetTextAnswersFromRoles(List<Role> roles)
         {
 
@@ -29,7 +34,6 @@ namespace NEXTGroup3.Services
                 using (var context = contextFactory.CreateDbContext())
                 {
                     var result = await GetAllTextAnswersFromRole(role, context);
-                    Console.WriteLine($"Fetched {result.Count} answers for RoleId: {role.Id}");
                     return result;
                 }
             }).ToList();
@@ -37,6 +41,7 @@ namespace NEXTGroup3.Services
                 var results = await Task.WhenAll(tasks);
                 return results.SelectMany(x => x).ToList();
         }
+        
         private async Task<List<TextAnswer>> GetAllTextAnswersFromRole(Role role, AzureContext context)
         {
             return await context.TextAnswer.Where(x => x.RoleId == role.Id).ToListAsync();
