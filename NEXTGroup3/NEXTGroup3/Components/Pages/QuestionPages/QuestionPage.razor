@@ -9,12 +9,32 @@
 <PageTitle>Question Page</PageTitle>
 
 <div class="question-container">
-    @* @if (currentRangeQuestionIndex < rangeQuestions.Count)  *@
-    @*  {  *@
-    @*      <RBQuestion rangeQuestion="rangeQuestions[currentRangeQuestionIndex]" totalQuestions="rangeQuestions.Count()" OnAnswerSelected="AnswerSelected" /> *@
-    @*      <p>@testpoints @testSide</p>  *@
-    @*  }  *@
-    @*  else{  *@
+    <div class="range-content">
+        <div class="range-question">
+            <div class="range-answer-container">
+                @for(int i = 0; i < rangeQuestions.Count(); i++)
+                {
+                    if (rangeQuestionService.CurrentQuestionIndex == i)
+                    {
+                        <h3>Question @(i + 1) / @rangeQuestions.Count()</h3>
+                        <p>@rangeQuestions[i].QuestionText</p>
+                        <div class="button-group">
+                            <InputRadioGroup id="radio-button" @bind-Value="answer"> 
+                                @for(int v = 0; v < 5; v++)
+                                {
+                                    <div class="form-group">
+                                        <label class="range-answer-label" for=@v> @(rangeAnswerChoices[v]) </label>
+                                        <InputRadio Value=@v id=@v class="range-answer-btn"/>
+                                    </div>
+                                }
+                            </InputRadioGroup>
+                        </div>
+                        <button class="range-submit-btn" @onclick="HandleAnswerSelected">Next</button>
+                    }
+                }
+            </div>
+        </div>
+    </div>
     @* //inserts TBQuestion if the roles list has been populated  *@
     @if(!rolesSelected) {
         <p>Loading...</p>
@@ -23,14 +43,13 @@
             <TBQuestion answers=textAnswers OnAnswerSelected="HandleAnswerSelected"/>
         </form>
     }
-    @* } *@
 </div>
 
 @code {
-    public int currentQuestionIndex = 0;
-
-    //dynamic
+    public Result result = new Result();
+    public int answer = 2;
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
+    private string[] rangeAnswerChoices = { "Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree" };
 
     private List<TextAnswer> textAnswers = new List<TextAnswer>();  
     private List<Role> roles = new List<Role>(); //stores the roles to be sent to the TBCode component
@@ -42,45 +61,23 @@
     protected override async Task OnInitializedAsync()
     {
         //---RANGE BASED FUNCTIONS---//
-        // rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
+        rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
 
         //---TEXT BASED FUNCTIONS---//
         department.Id = 1; //temporary, until department is obtained by range questions
 
-         textAnswers = await textAnswerService.GetAllTextQuestionsFromRolesInDepartment(department);
+        textAnswers = await textAnswerService.GetAllTextQuestionsFromRolesInDepartment(department);
 
         rolesSelected = true; //flags true when roles related to the department have been populated
     }
     
 
     //functionality for range questions
-    public int testpoints;
-    public bool testSide;
-
-    //variables for text based point handling
-    public int currentTextQuestionIndex = 0;
-    public int textPoints;
-
-    public int currentTextAnswer = 0; 
-
-    // protected override async Task OnAfterRenderAsync(bool firstRender){
-    //     if(firstRender){
-    //         var result = await ProtectedSessionStore.GetAsync<int>("CurrentQuestionIndex");
-    //         currentRangeQuestionIndex = result.Success ? result.VAlue : 0;
-    //         StateHasChanged();
-    //     }
-    // }
-
-    private async Task HandleAnswerSelected(int selectedValue)
+    private void HandleAnswerSelected()
     {
-        System.Console.WriteLine($"Selected Answer: {selectedValue}");
-        currentQuestionIndex++;
-        await SaveCurrentQuestionIndex();
+        System.Console.WriteLine($"Selected Answer: {answer}");
+        rangeQuestionService.CurrentQuestionIndex++;
         StateHasChanged();
     }
-    // private async Task SaveCurrentQuestionIndex()
-    // {
-    //     await ProtectedSessionStore.SetAsync("CurrentQuestionIndex", currentQuestionIndex);
-    // }
 }
 
