@@ -3,8 +3,6 @@
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
 @inject RangeQuestionService rangeQuestionService
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject ProtectedSessionStorage ProtectedSessionStore
 
 <PageTitle>Question Page</PageTitle>
 
@@ -12,12 +10,25 @@
     <div class="range-content">
         <div class="range-question">
             <div class="range-answer-container">
-                @if (currentQuestionIndex < rangeQuestions.Count)
+                @for(int i = 0; i < rangeQuestions.Count(); i++)
                 {
-                    <h3>Question @rangeQuestions[currentQuestionIndex].Id / @rangeQuestions.Count()</h3>
-                    <form class="range">
-                        <RBQuestion rangeQuestion="rangeQuestions[currentQuestionIndex]" OnAnswerSelected="HandleAnswerSelected" />
-                    </form>
+                    if (rangeQuestionService.CurrentQuestionIndex == i)
+                    {
+                        <h3>Question @(i + 1) / @rangeQuestions.Count()</h3>
+                        <p>@rangeQuestions[i].QuestionText</p>
+                        <div class="button-group">
+                            <InputRadioGroup id="radio-button" @bind-Value="answer"> 
+                                @for(int v = 0; v < 5; v++)
+                                {
+                                    <div class="form-group">
+                                        <label class="range-answer-label" for=@v> @(rangeAnswerChoices[v]) </label>
+                                        <InputRadio Value=@v id=@v class="range-answer-btn"/>
+                                    </div>
+                                }
+                            </InputRadioGroup>
+                        </div>
+                        <button class="range-submit-btn" @onclick="HandleAnswerSelected">Next</button>
+                    }
                 }
             </div>
         </div>
@@ -26,37 +37,22 @@
 
 @code {
     public Result result = new Result();
-    private int currentQuestionIndex = 0;
-    //dynamic
-
+    public int answer = 2;
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
+    private string[] rangeAnswerChoices = { "Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree" };
 
     //Database
     protected override async Task OnInitializedAsync()
     {
         rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
     }
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            var result = await ProtectedSessionStore.GetAsync<int>("CurrentQuestionIndex");
-            currentQuestionIndex = result.Success ? result.Value : 0;
-            StateHasChanged();
-        }
-    }
 
     //functionality for range questions
-    private async Task HandleAnswerSelected(int selectedValue)
+    private void HandleAnswerSelected()
     {
-        System.Console.WriteLine($"Selected Answer: {selectedValue}");
-        currentQuestionIndex++;
-        await SaveCurrentQuestionIndex();
+        System.Console.WriteLine($"Selected Answer: {answer}");
+        rangeQuestionService.CurrentQuestionIndex++;
         StateHasChanged();
-    }
-    private async Task SaveCurrentQuestionIndex()
-    {
-        await ProtectedSessionStore.SetAsync("CurrentQuestionIndex", currentQuestionIndex);
     }
 }
 
