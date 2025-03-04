@@ -1,5 +1,5 @@
 @page "/"
-@rendermode InteractiveAuto
+@rendermode InteractiveServer
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
 @inject RangeQuestionService rangeQuestionService
@@ -15,13 +15,12 @@
     @*      <p>@testpoints @testSide</p>  *@
     @*  }  *@
     @*  else{  *@
-    @* //inserts TBCode if the roles list has been populated  *@
-    @if(!rolesSelected){
+    @* //inserts TBQuestion if the roles list has been populated  *@
+    @if(!rolesSelected) {
         <p>Loading...</p>
     }else{
         <form class="text">
-            @* <TBCode roles=roles></TBCode> *@
-            <TBQuestion answers=textAnswers/>
+            <TBQuestion answers=textAnswers OnAnswerSelected="HandleAnswerSelected"/>
         </form>
     }
     @* } *@
@@ -33,7 +32,7 @@
     //dynamic
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
 
-    private List<TextAnswer> textAnswers = new List<TextAnswer>();
+    private List<TextAnswer> textAnswers = new List<TextAnswer>();  
     private List<Role> roles = new List<Role>(); //stores the roles to be sent to the TBCode component
     private Department department = new Department(); //stores the department result from rangeQuestions
     private bool rolesSelected = false; // a flag for whether or not roles has been populated
@@ -72,13 +71,13 @@
     //     }
     // }
 
-    // private async Task HandleAnswerSelected(int selectedValue)
-    // {
-    //     System.Console.WriteLine($"Selected Answer: {selectedValue}");
-    //     currentQuestionIndex++;
-    //     await SaveCurrentQuestionIndex();
-    //     StateHasChanged();
-    // }
+    private async Task HandleAnswerSelected(int selectedValue)
+    {
+        System.Console.WriteLine($"Selected Answer: {selectedValue}");
+        currentQuestionIndex++;
+        await SaveCurrentQuestionIndex();
+        StateHasChanged();
+    }
     // private async Task SaveCurrentQuestionIndex()
     // {
     //     await ProtectedSessionStore.SetAsync("CurrentQuestionIndex", currentQuestionIndex);

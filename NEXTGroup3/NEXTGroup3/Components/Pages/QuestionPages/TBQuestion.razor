@@ -6,7 +6,7 @@
     <p>@answer</p>
 
     <div class="text-answer-container">
-        <InputRadioGroup id="radio-button" @bind-Value="answer">
+        <InputRadioGroup id="radio-button" @bind-Value="@answer">
             @for(int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++) //iterates over all selected answers
             {
                 var answerText = selectedAnswers[answerIndex].Answers;
@@ -28,7 +28,7 @@
             </div>
         </InputRadioGroup>
     </div>  
-    <button class="text-submit-button" @onclick="NotifyAnswerSelected">Next</button>
+    <button class="text-submit-button" onclick="@NotifyAnswerSelected()">Next</button>
 </div>
 @code {
     [Parameter] public List<TextAnswer> answers { get; set; }
@@ -46,7 +46,7 @@
             //Randomly selects 5 unique answers from textAnswers
 
             Random rng = new Random(); //new random number generator
-            
+
 
             for (int i = 0; i < 5;){
                 TextAnswer current = answers[rng.Next(0, answers.Count-1)];
@@ -65,7 +65,8 @@
 
     //Sends answer's ID back to QuestionPage
     private async Task NotifyAnswerSelected(){
-        await OnAnswerSelected.InvokeAsync(answer);
+        await OnAnswerSelected.InvokeAsync(answer);        
+        Console.WriteLine($"Selected Answer: {answer}");
     }
 
     //Changes the value that is currently selected

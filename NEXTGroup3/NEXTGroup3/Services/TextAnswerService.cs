@@ -34,7 +34,6 @@ namespace NEXTGroup3.Services
                 using (var context = contextFactory.CreateDbContext())
                 {
                     var result = await GetAllTextAnswersFromRole(role, context);
-                    Console.WriteLine($"Fetched {result.Count} answers for RoleId: {role.Id}");
                     return result;
                 }
             }).ToList();
