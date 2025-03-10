@@ -61,6 +61,7 @@ h1:focus {
     border-color: #929292;
 }
 
+
 .question-nav-style {
     background-color: #000000;
     color: #f7550d;
@@ -167,14 +168,14 @@ form.range{
 main > .container{
     display:flex;
     flex-direction: row;
-    width: 100%;   
+    min-width: 100%;   
     margin:0px;
     padding:0px;
     padding-left:0px;
 }
 .sidebar {
     width: 30vh !important;
-    height: 100vh !important;
+    min-height: 100vh !important;
     background-color: black;
 }
 .nav-scrollable {
@@ -204,7 +205,6 @@ main > .container{
     font-size: 20px;
     text-decoration: none;
     color: white;
-
     width: 100%;
     text-align: start;
     display: flex;
@@ -236,8 +236,65 @@ main > .container{
     font-weight:600;
 }
 
+table {
+    border: 2px solid #000000 !important;
+    max-width: 100%;
+}
+
+thead{
+    background-color:black;
+    color:white;
+}
+
+td {
+    border: 2px solid #000000 !important;
+}
+
+.smaller-link {
+    font-size: 0.85rem;
+}
+
+.nav-header:hover {
+    color: #fff !important;
+}
+
+.nav-header {
+    font-size: 20px;
+    text-decoration: none;
+    color: white;
+    width: 100%;
+    text-align: start;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.dropdown-list {
+    display: none;
+    opacity: 0;
+}
+
+    .dropdown-list.is-active {
+        display: block;
+        opacity: 1;
+    }
 
 
+.fa-pen {
+    color: #017e97;
+}
 
+.fa-info {
+    color: #017e97;
+}
+
+
+.fa-trash {
+    color: #017e97;
+}
+
+.icon-tb {
+    width: 75px !important;
+    padding: 2px !important;
+}
 
 

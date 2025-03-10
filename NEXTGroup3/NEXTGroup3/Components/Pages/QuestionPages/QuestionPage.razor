@@ -40,8 +40,4 @@
 
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
 
-    protected override async Task OnInitializedAsync()
-    {
-        rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
-    }
   }
