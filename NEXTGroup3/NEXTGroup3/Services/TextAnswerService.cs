@@ -11,13 +11,12 @@ namespace NEXTGroup3.Services
         //private readonly AzureContext context;
         //private readonly AzureContext contextSecondary;
         private readonly IDbContextFactory<AzureContext> contextFactory;
+        public int CurrentQuestionIndex { get; set; } = -1;
+        //functions are run once before refering to text questions, so current index increases by one before starting the set of quesitons
 
         public TextAnswerService(IDbContextFactory<AzureContext> c)
         {
             contextFactory = c;
-            //context = c;
-            //var DbFactory = new AzureContextFactory();
-            //contextSecondary = DbFactory.CreateDbContext();
         }
         public async Task<List<TextAnswer>> GetAllTextQuestionsFromRolesInDepartment(Department department)
         {
@@ -38,14 +37,13 @@ namespace NEXTGroup3.Services
                 }
             }).ToList();
 
-                var results = await Task.WhenAll(tasks);
-                return results.SelectMany(x => x).ToList();
+            var results = await Task.WhenAll(tasks);
+            return results.SelectMany(x => x).ToList();
         }
         
         private async Task<List<TextAnswer>> GetAllTextAnswersFromRole(Role role, AzureContext context)
         {
             return await context.TextAnswer.Where(x => x.RoleId == role.Id).ToListAsync();
-            
         }
     }
 }
