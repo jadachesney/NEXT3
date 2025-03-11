@@ -297,4 +297,12 @@ td {
     padding: 2px !important;
 }
 
+.bar-styling{
+   border-style:solid;
+   width:50%;
+   padding:2px;
+}
+
+
+
 
