@@ -62,12 +62,12 @@ h1:focus {
 }
 
 
-.question-nav-style {
+.menu-bar-style {
     background-color: #000000;
     color: #f7550d;
 }
 
-.question-nav-style h2 {
+.menu-bar-style h2 {
     color: #f7550d;
     font-weight: 400;
     margin: 0;
@@ -75,7 +75,7 @@ h1:focus {
     margin-right: 5px;
 }
 
-.question-nav-style h2:hover{
+.menu-bar-style h2:hover{
     color: #fff;
 }
 
@@ -219,6 +219,7 @@ main > .container{
     color: #f7550d !important;
 }
 
+/*DASHBOARD*/
 
 .dashboard-container {
     width: 100%;
@@ -236,23 +237,7 @@ main > .container{
     font-weight:600;
 }
 
-table {
-    border: 2px solid #000000 !important;
-    max-width: 100%;
-}
-
-thead{
-    background-color:black;
-    color:white;
-}
-
-td {
-    border: 2px solid #000000 !important;
-}
-
-.smaller-link {
-    font-size: 0.85rem;
-}
+/*DASHBOARD MENU*/
 
 .nav-header:hover {
     color: #fff !important;
@@ -273,11 +258,38 @@ td {
     opacity: 0;
 }
 
-    .dropdown-list.is-active {
-        display: block;
-        opacity: 1;
-    }
+.dropdown-list.is-active {
+    display: block;
+    opacity: 1;
+}
 
+.bar-styling {
+    border-style: solid;
+    width: 50%;
+    padding: 2px;
+}
+
+
+
+/*DB TABLE*/
+
+table {
+    border: 2px solid #000000 !important;
+    max-width: 100%;
+}
+
+thead{
+    background-color:black;
+    color:white;
+}
+
+td {
+    border: 2px solid #000000 !important;
+}
+
+.smaller-link {
+    font-size: 0.85rem;
+}
 
 .fa-pen {
     color: #017e97;
@@ -297,11 +309,6 @@ td {
     padding: 2px !important;
 }
 
-.bar-styling{
-   border-style:solid;
-   width:50%;
-   padding:2px;
-}
 
 
 
