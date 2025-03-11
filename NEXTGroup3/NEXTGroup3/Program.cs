@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NEXTGroup3.Data;
 using NEXTGroup3.Controllers;
 using NEXTGroup3.Services;
+using NEXTGroup3.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextFactory<AzureContext>(options =>
@@ -17,6 +18,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<TextAnswerService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<RangeQuestionService>();
+builder.Services.AddScoped<ResultService>();
+builder.Services.AddScoped<DepartmentService>();
 
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
