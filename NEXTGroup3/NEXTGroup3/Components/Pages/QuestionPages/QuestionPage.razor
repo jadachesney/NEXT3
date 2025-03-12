@@ -40,7 +40,8 @@
                         }
                         else if (rangeQuestionService.CurrentQuestionIndex == rangeQuestions.Count())
                         {
-                            rangeQuestionService.OnTextQuestions = true;
+                            // triggers a flag to ensure the questionnaire moves to text based questions correctly
+                            rangeQuestionService.OnTextQuestions = true; 
                             GetTextAnswersFromDepartment();
                         }
                     }
@@ -63,12 +64,12 @@
                                 <InputRadioGroup id="radio-button" @bind-Value="@answer">
                                     @for (int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++) //iterates over all selected answers
                                     {
-                                        answerText = selectedAnswers[answerIndex].Answers;
-                                        answerId = selectedAnswers[answerIndex].Id;
-                                        answerIdString = "text-answer-" + answerId.ToString();
+                                        var answerText = selectedAnswers[answerIndex].Answers;
+                                        var roleId = selectedAnswers[answerIndex].RoleId;
+                                        var answerIdString = "text-answer-" + roleId.ToString();
 
                                         <div id="" class="text-answer-form-group form-group ">
-                                            <InputRadio Value=@answerId id="@answerIdString" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="@answerIdString">@answerText</label>
+                                            <InputRadio Value=@roleId id="@answerIdString" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="@answerIdString">@answerText</label>
                                         </div>
                                     }
                                     <div id="" class="text-answer-form-group form-group">
@@ -100,9 +101,6 @@
     private Department departmentForTextQuestions = new Department(); //stores the department result from rangeQuestions
     private bool rolesSelected = false; // a flag for whether or not roles has been populated
     private List<TextAnswer> selectedAnswers = new List<TextAnswer>();//stores answers selected by the following function
-    private string answerText;
-    private int answerId;
-    private string answerIdString;
     private bool nextTextQuestion = true;
 
 
@@ -127,6 +125,9 @@
         }
         else
         {
+            //handles point values for the answer provided
+            if(textAnswerService.CurrentQuestionIndex >= 0) AddRolePoints(answer);
+            //moves onto the next text based question
             textAnswerService.CurrentQuestionIndex++;
             nextTextQuestion = true;
             answer = 0;
@@ -161,6 +162,19 @@
         }
     }
 
+    //adds points to the correct role in rolePoints
+    public void AddRolePoints(int id)
+    {
+        //finds correct point object
+        foreach (var point in resultService.result.RolePoints)
+        {
+            if (point.Id == id)
+            {
+                point.Points += 3;
+            }
+        }
+    }
+                          
     private void AddDepartmentPoints()
     {
         switch (answer)
@@ -204,7 +218,8 @@
 
         // departmentForTextQuestions.Id = 1;
 
-        textAnswers = await textAnswerService.GetAllTextQuestionsFromRolesInDepartment(departmentForTextQuestions);
+        textAnswers = await textAnswerService.GetTextAnswersFromDepartment(departmentForTextQuestions);
         rolesSelected = true; //flags true when roles related to the department have been populated
+        resultService.InitializeRolePoints(departmentForTextQuestions);
     }
 }

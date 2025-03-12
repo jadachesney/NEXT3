@@ -22,7 +22,7 @@ namespace NEXTGroup3.Models
         [NotMapped] public Point[] DepartmentPoints { get { return departmentPoints; } set { departmentPoints = value; } }
 
         ////---ROLES POINTS---//
-        [NotMapped] private List<Point> rolePoints;
+        [NotMapped] private List<Point> rolePoints = new List<Point>();
         [NotMapped] public List<Point> RolePoints { get { return rolePoints; } set { rolePoints = value; } }
 
         public string SerializingDepartmentPoints()
