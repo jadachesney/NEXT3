@@ -5,6 +5,7 @@
 @inject RangeQuestionService rangeQuestionService
 @inject TextAnswerService textAnswerService
 @inject RoleService roleService
+@inject ResultService resultService;
 
 <PageTitle>Question Page</PageTitle>
 
@@ -32,7 +33,14 @@
                                 </InputRadioGroup>
                             </div>
 
-                            @if (i == rangeQuestions.Count() - 1) rangeQuestionService.OnTextQuestions = true;
+                            @if (i == rangeQuestions.Count() - 1) 
+                            {
+                                //creates a list to store points for each role in the selected department
+                                resultService.InitializeRolePoints(department);
+
+                                // triggers a flag to ensure the questionnaire moves to text based questions correctly
+                                rangeQuestionService.OnTextQuestions = true; 
+                            }
 
                             <button class="range-submit-btn" @onclick="HandleAnswerSelected">Next</button>
                         }
@@ -56,12 +64,12 @@
                                 <InputRadioGroup id="radio-button" @bind-Value="@answer">
                                     @for (int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++) //iterates over all selected answers
                                     {
-                                        answerText = selectedAnswers[answerIndex].Answers;
-                                        answerId = selectedAnswers[answerIndex].Id;
-                                        answerIdString = "text-answer-" + answerId.ToString();
+                                        var answerText = selectedAnswers[answerIndex].Answers;
+                                        var roleId = selectedAnswers[answerIndex].RoleId;
+                                        var answerIdString = "text-answer-" + roleId.ToString();
 
                                         <div id="" class="text-answer-form-group form-group ">
-                                            <InputRadio Value=@answerId id="@answerIdString" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="@answerIdString">@answerText</label>
+                                            <InputRadio Value=@roleId id="@answerIdString" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="@answerIdString">@answerText</label>
                                         </div>
                                     }
                                     <div id="" class="text-answer-form-group form-group">
@@ -79,7 +87,6 @@
 </div>
 
 @code {
-    public Result result = new Result();
     public int answer = 2;
 
     // RANGE BASED VARIABLES
@@ -87,14 +94,10 @@
     private string[] rangeAnswerChoices = { "Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree" };
 
     // TEXT BASED VARIABLES
-    private List<TextAnswer> textAnswers = new List<TextAnswer>();  
-    private List<Role> roles = new List<Role>(); //stores the roles to be sent to the TBCode component
+    private List<TextAnswer> textAnswers = new List<TextAnswer>();
     private Department department = new Department(); //stores the department result from rangeQuestions
     private bool rolesSelected = false; // a flag for whether or not roles has been populated
     private List<TextAnswer> selectedAnswers = new List<TextAnswer>();//stores answers selected by the following function
-    private string answerText;
-    private int answerId;
-    private string answerIdString;
     private bool nextTextQuestion = true;
 
 
@@ -107,7 +110,8 @@
         //---TEXT BASED FUNCTIONS---//
         department.Id = 1; //temporary, until department is obtained by range questions
 
-        textAnswers = await textAnswerService.GetAllTextQuestionsFromRolesInDepartment(department);
+        // retrieves all available text answers related to the provided department
+        textAnswers = await textAnswerService.GetTextAnswersFromDepartment(department);
 
         rolesSelected = true; //flags true when roles related to the department have been populated
     }
@@ -124,6 +128,9 @@
         }
         else
         {
+            //handles point values for the answer provided
+            if(textAnswerService.CurrentQuestionIndex >= 0) AddRolePoints(answer);
+            //moves onto the next text based question
             textAnswerService.CurrentQuestionIndex++;
             nextTextQuestion = true;
             answer = 0;
@@ -155,6 +162,19 @@
                 {
                     i = 5; //closes the loop if all available answers have been selected
                 }
+            }
+        }
+    }
+
+    //adds points to the correct role in rolePoints
+    public void AddRolePoints(int id)
+    {
+        //finds correct point object
+        foreach (var point in resultService.result.RolePoints)
+        {
+            if (point.Id == id)
+            {
+                point.Points += 3;
             }
         }
     }

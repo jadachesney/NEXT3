@@ -16,7 +16,7 @@ namespace NEXTGroup3.Models
         [NotMapped] public List<Point> DepartmentPoints { get { return departmentPoints; } set { departmentPoints = value; } }
 
         ////---ROLES POINTS---//
-        [NotMapped] private List<Point> rolePoints;
+        [NotMapped] private List<Point> rolePoints = new List<Point>();
         [NotMapped] public List<Point> RolePoints { get { return rolePoints; } set { rolePoints = value; } }
 
         public string SerializingDepartmentPoints()
@@ -58,7 +58,7 @@ namespace NEXTGroup3.Models
         private int points;
         private int id;
 
-        public Point(int points, int id)
+        public Point(int id, int points = default)
         {
             this.Points = points;
             this.Id = id;

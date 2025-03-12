@@ -17,6 +17,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<TextAnswerService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<RangeQuestionService>();
+builder.Services.AddScoped<ResultService>();
 
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
