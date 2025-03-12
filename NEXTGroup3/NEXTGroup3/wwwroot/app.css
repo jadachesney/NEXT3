@@ -111,13 +111,15 @@ h1:focus {
 .progress {
   margin-left: auto;
   margin-right: auto;
-  width: 400px;
+  width: 450px;
   height: 20px;
 }
 
-.progress-bar {
+.progress-bar{
   background-color: #f7550d;
+  color: #000000;
 }
+
 
 form.range{
   display: flex;
