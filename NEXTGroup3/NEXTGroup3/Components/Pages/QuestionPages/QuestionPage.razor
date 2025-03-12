@@ -103,6 +103,7 @@
     private List<TextAnswer> selectedAnswers = new List<TextAnswer>();//stores answers selected by the following function
     private bool nextTextQuestion = true;
 
+    private Role roleWithBestMatch = new Role();
 
     //Database
     protected override async Task OnInitializedAsync()
@@ -162,7 +163,7 @@
         }
     }
 
-    //adds points to the correct role in rolePoints
+    //adds points to the correct role in RolePoints
     public void AddRolePoints(int id)
     {
         //finds correct point object
@@ -174,7 +175,8 @@
             }
         }
     }
-                          
+
+    //adds points to the correct department in DepartmentPoints
     private void AddDepartmentPoints()
     {
         switch (answer)
@@ -203,6 +205,7 @@
         }
     }
 
+    //retrieves text answers from the highest scoring department
     private async void GetTextAnswersFromDepartment()
     {
         int maxPoint = resultService.Result.DepartmentPoints.Max(p => p.Points);
@@ -220,5 +223,20 @@
         textAnswers = await textAnswerService.GetTextAnswersFromDepartment(departmentForTextQuestions);
         rolesSelected = true; //flags true when roles related to the department have been populated
         resultService.InitializeRolePoints(departmentForTextQuestions);
+    }
+
+    //checks and stores which role has the highest score
+    private async void CheckMaxRolePoint()
+    {
+        List<Role> roles = await roleService.GetAllRolesInDepartment(departmentForTextQuestions);
+
+        int maxPoint = resultService.Result.RolePoints.Max(p => p.Points);
+        Point[] rolesWithMaxPoint = resultService.Result.RolePoints.Where(p => p.Points == maxPoint).ToArray();
+
+        if (rolesWithMaxPoint.Count() > 1)
+        {
+            roleWithBestMatch = roles.Where(r => r.Id == rolesWithMaxPoint[0].Id).First();
+        }
+        else roleWithBestMatch = roles.Where(r => r.Id == rolesWithMaxPoint[0].Id).First();
     }
 }
