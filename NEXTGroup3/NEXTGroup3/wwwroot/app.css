@@ -237,6 +237,14 @@ main > .container{
     font-weight:600;
 }
 
+.retake-btn{
+    background-color:lightgrey;
+    border:solid 2px black;
+    color:black;
+    text-decoration:none;
+    text-align:center;
+}
+
 /*DASHBOARD MENU*/
 
 .nav-header:hover {

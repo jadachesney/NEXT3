@@ -4,6 +4,7 @@
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Services
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
 <div class="dashboard-container">
     <div class = "dashboard-header">
@@ -15,14 +16,58 @@
     </div>
 </div>
 
-<button class="mt-2">Retake Questionnaire</button>
+
+<NavLink href="questionpage" class="mt-2 retake-btn">
+    Retake Questionnaire
+</NavLink>
 
 
-@code {
+<canvas id="bar-chart" width="400" height="300" class="bar-styling mt-2"></canvas>
 
-    protected override async Task OnInitializedAsync()
-    {
 
-    }
+<script>
 
-}
+    new Chart(document.getElementById("bar-chart"), {
+        type: 'bar',
+        data: {
+            labels: ["IT", "Finance", "Marketing", "Design", "Trading", "Merchandising"],
+            datasets: [
+                {
+                    label: "Match %",
+                    backgroundColor: ["#000000", "#f7550d", "#000000", "#000000", "#f7550d", "#000000"],
+                    data: [20, 40, 10, 8, 2, 10, 20],
+                    borderWidth: 1
+
+
+                }
+            ]
+        },
+        options: {
+            legend: { display: false },
+            responsive: false,
+            title: {
+                display: true,
+                text: ''
+            },
+
+            scales:
+            {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Match Percentage',
+                        color: '#000000'
+                    }
+                }],
+
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Department',
+                        color: '#000000'
+                    }
+                }]
+            }
+        }
+    });
+</script>
