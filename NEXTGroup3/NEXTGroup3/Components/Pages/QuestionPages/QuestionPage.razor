@@ -5,7 +5,8 @@
 @inject RangeQuestionService rangeQuestionService
 @inject TextAnswerService textAnswerService
 @inject RoleService roleService
-@inject ResultService resultService;
+@inject ResultService resultService
+@inject DepartmentService departmentService
 
 <PageTitle>Question Page</PageTitle>
 
@@ -18,6 +19,7 @@
                     {
                         if (rangeQuestionService.CurrentQuestionIndex < rangeQuestions.Count() && rangeQuestionService.CurrentQuestionIndex == i)
                         {
+                            // maybe back button
                             <h5>Section 1 / 2</h5>
                             <h3>Question @(i + 1) / @rangeQuestions.Count()</h3>
                             <p>@rangeQuestions[i].QuestionText</p>
@@ -33,16 +35,14 @@
                                 </InputRadioGroup>
                             </div>
 
-                            @if (i == rangeQuestions.Count() - 1) 
-                            {
-                                //creates a list to store points for each role in the selected department
-                                resultService.InitializeRolePoints(department);
-
-                                // triggers a flag to ensure the questionnaire moves to text based questions correctly
-                                rangeQuestionService.OnTextQuestions = true; 
-                            }
-
                             <button class="range-submit-btn" @onclick="HandleAnswerSelected">Next</button>
+
+                        }
+                        else if (rangeQuestionService.CurrentQuestionIndex == rangeQuestions.Count())
+                        {
+                            // triggers a flag to ensure the questionnaire moves to text based questions correctly
+                            rangeQuestionService.OnTextQuestions = true; 
+                            GetTextAnswersFromDepartment();
                         }
                     }
                 }
@@ -90,12 +90,15 @@
     public int answer = 2;
 
     // RANGE BASED VARIABLES
-    private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
+    private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>(); // list of all range questions
+    private List<Department> departments = new List<Department>();
     private string[] rangeAnswerChoices = { "Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree" };
+    private List<DepartmentRangeQuestion> departmentRangeQuestions = new List<DepartmentRangeQuestion>();   // list of the all relationships between departments and questions
 
     // TEXT BASED VARIABLES
-    private List<TextAnswer> textAnswers = new List<TextAnswer>();
-    private Department department = new Department(); //stores the department result from rangeQuestions
+    private List<TextAnswer> textAnswers = new List<TextAnswer>();  
+    private List<Role> roles = new List<Role>(); //stores the roles to be sent to the TBCode component
+    private Department departmentForTextQuestions = new Department(); //stores the department result from rangeQuestions
     private bool rolesSelected = false; // a flag for whether or not roles has been populated
     private List<TextAnswer> selectedAnswers = new List<TextAnswer>();//stores answers selected by the following function
     private bool nextTextQuestion = true;
@@ -105,24 +108,18 @@
     protected override async Task OnInitializedAsync()
     {
         //---RANGE BASED FUNCTIONS---//
+        departments = await departmentService.GetAllDepartments();
+        departmentRangeQuestions = await resultService.GetAllDepartmentRangeQuestions();
         rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
-
-        //---TEXT BASED FUNCTIONS---//
-        department.Id = 1; //temporary, until department is obtained by range questions
-
-        // retrieves all available text answers related to the provided department
-        textAnswers = await textAnswerService.GetTextAnswersFromDepartment(department);
-
-        rolesSelected = true; //flags true when roles related to the department have been populated
+        foreach (RangeQuestion rq in rangeQuestions)
+            rq.SetDepartments(departmentRangeQuestions, departments);
     }
 
-    //functionality for range questions
     private void HandleAnswerSelected()
     {
-        System.Console.WriteLine($"Selected Answer: {answer}");
-
         if (rangeQuestionService.OnTextQuestions == false)
         {
+            AddDepartmentPoints();
             rangeQuestionService.CurrentQuestionIndex++;
             answer = 2;
         }
@@ -138,7 +135,6 @@
         StateHasChanged();
     }
 
-    //functionality for text questions
     private void SelectTextAnswers()
     {
         selectedAnswers.Clear();
@@ -177,5 +173,53 @@
                 point.Points += 3;
             }
         }
+    }
+                          
+    private void AddDepartmentPoints()
+    {
+        switch (answer)
+        {
+            case 0:
+                foreach (Department department in rangeQuestions[rangeQuestionService.CurrentQuestionIndex].LeftDepartments)
+                    resultService.Result.DepartmentPoints[department.Id - 1].Points += 4;
+                break;
+            case 1:
+                foreach (Department department in rangeQuestions[rangeQuestionService.CurrentQuestionIndex].LeftDepartments)
+                    resultService.Result.DepartmentPoints[department.Id - 1].Points += 2;
+                break;
+            case 2:
+                break;
+            case 3:
+                foreach (Department department in rangeQuestions[rangeQuestionService.CurrentQuestionIndex].RightDepartments)
+                    resultService.Result.DepartmentPoints[department.Id - 1].Points += 2;
+                break;
+            case 4:
+                foreach (Department department in rangeQuestions[rangeQuestionService.CurrentQuestionIndex].RightDepartments)
+                    resultService.Result.DepartmentPoints[department.Id - 1].Points += 4;
+                break;
+            default:
+                Console.WriteLine("Error distributing points");
+                break;
+        }
+    }
+
+    private async void GetTextAnswersFromDepartment()
+    {
+        int maxPoint = resultService.Result.DepartmentPoints.Max(p => p.Points);
+        Point[] departmentsWithMaxPoint = resultService.Result.DepartmentPoints.Where(p => p.Points == maxPoint).ToArray();
+
+        if (departmentsWithMaxPoint.Count() > 1)
+        {
+            // we make it possible to insert 2 departments for the text questions?
+            departmentForTextQuestions = departments.Where(d => d.Id == departmentsWithMaxPoint[0].Id).First();
+            //validation for no max
+        }
+        else departmentForTextQuestions = departments.Where(d => d.Id == departmentsWithMaxPoint[0].Id).First();
+
+        // departmentForTextQuestions.Id = 1;
+
+        textAnswers = await textAnswerService.GetTextAnswersFromDepartment(departmentForTextQuestions);
+        rolesSelected = true; //flags true when roles related to the department have been populated
+        resultService.InitializeRolePoints(departmentForTextQuestions);
     }
 }

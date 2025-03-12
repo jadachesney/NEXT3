@@ -12,8 +12,14 @@ namespace NEXTGroup3.Models
         public int Id { get { return id; } set { id = value; } }
 
         //---DEPARTMENT POINTS---//
-        [NotMapped] private List<Point> departmentPoints;
-        [NotMapped] public List<Point> DepartmentPoints { get { return departmentPoints; } set { departmentPoints = value; } }
+        [NotMapped] private Point[] departmentPoints = 
+            { new Point(1), 
+            new Point(2), 
+            new Point(3), 
+            new Point(4), 
+            new Point(5), 
+            new Point(6), };
+        [NotMapped] public Point[] DepartmentPoints { get { return departmentPoints; } set { departmentPoints = value; } }
 
         ////---ROLES POINTS---//
         [NotMapped] private List<Point> rolePoints = new List<Point>();
@@ -38,7 +44,7 @@ namespace NEXTGroup3.Models
             {
                 string[] pointItems = pointObject.Split('+');
                 Point p = new Point(Convert.ToInt32(pointItems[0]), Convert.ToInt32(pointItems[1]));
-                DepartmentPoints.Add(p);
+                DepartmentPoints[p.Id].Points = p.Points;
             }
         }
         public void DeserializingRolePoints(string serializedText)

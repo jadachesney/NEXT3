@@ -7,25 +7,25 @@ namespace NEXTGroup3.Services
     public class ResultService
     {
         private IDbContextFactory<AzureContext> contextFactory;
-        public Result result { get; set; }= new Result();
+        public Result result { get; set; }
 
         public ResultService(IDbContextFactory<AzureContext> c)
         {
             contextFactory = c;
+            Result = new Result();
         }
-
-        //
-        //
-        // SPACE FOR RANGE BASED HANDLING
-        //
-        //
+        
+        // gets the relationship between departments and range questions
+        public async Task<List<DepartmentRangeQuestion>> GetAllDepartmentRangeQuestions()
+        {
+            return await context.DepartmentRangeQuestion.AsNoTracking().ToListAsync();
+        }
 
         // fills rolePoints list based on the selected department
         public void InitializeRolePoints(Department department)
         {
             var context = contextFactory.CreateDbContext();
 
-            result = new Result();
             //finds all roles within the given department
             var roles = context.Role.Where(x => x.DepartmentId == department.Id).AsNoTracking().ToList();
 
@@ -36,7 +36,5 @@ namespace NEXTGroup3.Services
                 result.RolePoints.Add(point);
             }
         }
-
-        
     }
 }

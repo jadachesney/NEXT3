@@ -23,9 +23,7 @@ namespace NEXTGroup3.Services
         public async Task<List<TextAnswer>> GetTextAnswersFromDepartment(Department department)
         {            
             var context = contextFactory.CreateDbContext();
-
-            var roles = await context.Role.Where(x => x.DepartmentId == department.Id).AsNoTracking().ToListAsync();
-
+            var roles = context.Role.Where(x => x.DepartmentId == department.Id).AsNoTracking().ToList();
             return await GetTextAnswersFromRoles(roles);
         }
         
