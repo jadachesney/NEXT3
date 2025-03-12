@@ -166,7 +166,7 @@
     public void AddRolePoints(int id)
     {
         //finds correct point object
-        foreach (var point in resultService.result.RolePoints)
+        foreach (var point in resultService.Result.RolePoints)
         {
             if (point.Id == id)
             {
@@ -212,7 +212,6 @@
         {
             // we make it possible to insert 2 departments for the text questions?
             departmentForTextQuestions = departments.Where(d => d.Id == departmentsWithMaxPoint[0].Id).First();
-            //validation for no max
         }
         else departmentForTextQuestions = departments.Where(d => d.Id == departmentsWithMaxPoint[0].Id).First();
 
