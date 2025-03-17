@@ -104,8 +104,7 @@ h1:focus {
 }
 
 .range-progress-container {
-  padding: 20px;
-
+  margin: 20px;
 }
 
 .progress {
