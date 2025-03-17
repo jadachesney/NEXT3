@@ -12,6 +12,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
+
 <div class="question-container">
   <div class="range-content">
     <div class="range-question">
@@ -32,11 +33,11 @@
                         var incrementBtn = $(".range-submit-btn");
 
                         var currentWidth = 0;
-                        var incrementAmount = 10;
+                        var incrementAmount = (1/13)*450;
 
                         incrementBtn.click(function() {
                           currentWidth += incrementAmount;
-                          progressBar.css("width", currentWidth + "%");
+                          progressBar.css("width", currentWidth + "px");
                         });
                       });
                     </script>

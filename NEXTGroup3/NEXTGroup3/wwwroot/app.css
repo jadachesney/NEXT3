@@ -131,6 +131,7 @@ h1:focus {
 .progress-bar{
   background-color: #f7550d;
   color: #000000;
+  font-weight: bold;
 }
 
 
@@ -201,6 +202,7 @@ main > .container{
     margin:0px;
     padding:0px;
     padding-left:0px;
+    justify-content: center;
 }
 .sidebar {
     width: 30vh !important;
