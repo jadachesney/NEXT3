@@ -8,6 +8,7 @@ namespace NEXTGroup3.Services
     public class RangeQuestionService
     {
         private readonly AzureContext context;
+        public int CurrentQuestionIndex = 0;
 
         public RangeQuestionService(AzureContext c)
         {
