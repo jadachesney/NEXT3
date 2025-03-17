@@ -25,8 +25,11 @@ a, .btn-link {
     padding-top: 1.1rem;
     display: flex;
     flex-direction: column;
-    margin: auto;
+    text-align: left;
+    width: 90%;
 }
+
+
 
 h1:focus {
     outline: none;
@@ -58,21 +61,32 @@ h1:focus {
     border-color: #929292;
 }
 
-.question-nav-style {
+
+.menu-bar-style {
     background-color: #000000;
     color: #f7550d;
 }
 
-.question-nav-style h2 {
+.menu-bar-style h2 {
     color: #f7550d;
-    font-size: 15px;
+    font-weight: 400;
+    margin: 0;
+    padding:0;
+    margin-right: 5px;
 }
 
-.next-logo h2{
-    font-size:45px;
+.menu-bar-style h2:hover{
+    color: #fff;
 }
 
-.return-button
+.next-logo{
+    padding:10px
+}
+
+.next-logo img{
+    width:80px;
+    height:40px;
+}
 
 
 .nav-container{
@@ -178,4 +192,161 @@ form.range{
 .text-answer-radio:checked+label{
     background-color: orange;
 }
+
+/*Nav Styling*/
+main > .container{
+    display:flex;
+    flex-direction: row;
+    min-width: 100%;   
+    margin:0px;
+    padding:0px;
+    padding-left:0px;
+}
+.sidebar {
+    width: 30vh !important;
+    min-height: 100vh !important;
+    background-color: black;
+}
+.nav-scrollable {
+    background-color: black;
+    height:100% !important;
+}
+
+.nav{
+    display:flex;
+    justify-content:end;
+}
+
+.nav-item {
+    display: flex;
+    justify-content:end;
+    margin-bottom: 0px;
+    padding:0px !important;
+    display:block;
+}
+
+.nav-item:hover{
+    background-color:white;
+    color: #000000 !important;
+}
+
+.nav-link{
+    font-size: 20px;
+    text-decoration: none;
+    color: white;
+    width: 100%;
+    text-align: start;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.nav-link:hover {
+    color: #000000 !important;
+}
+
+.nav-link::after {
+    color: #f7550d !important;
+}
+
+/*DASHBOARD*/
+
+.dashboard-container {
+    width: 100%;
+    border-bottom: 3px #000000 solid;
+    padding-bottom:20px;
+    color:#000000;
+}
+
+.dashboard-container h1 h3 {
+    color: #000000;
+}
+
+.active-link {
+    color: #f7550d !important;
+    font-weight:600;
+}
+
+.retake-btn{
+    background-color:lightgrey;
+    border:solid 2px black;
+    color:black;
+    text-decoration:none;
+    text-align:center;
+}
+
+/*DASHBOARD MENU*/
+
+.nav-header:hover {
+    color: #fff !important;
+}
+
+.nav-header {
+    font-size: 20px;
+    text-decoration: none;
+    color: white;
+    width: 100%;
+    text-align: start;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.dropdown-list {
+    display: none;
+    opacity: 0;
+}
+
+.dropdown-list.is-active {
+    display: block;
+    opacity: 1;
+}
+
+.bar-styling {
+    border-style: solid;
+    width: 50%;
+    padding: 2px;
+}
+
+
+
+/*DB TABLE*/
+
+table {
+    border: 2px solid #000000 !important;
+    max-width: 100%;
+}
+
+thead{
+    background-color:black;
+    color:white;
+}
+
+td {
+    border: 2px solid #000000 !important;
+}
+
+.smaller-link {
+    font-size: 0.85rem;
+}
+
+.fa-pen {
+    color: #017e97;
+}
+
+.fa-info {
+    color: #017e97;
+}
+
+
+.fa-trash {
+    color: #017e97;
+}
+
+.icon-tb {
+    width: 75px !important;
+    padding: 2px !important;
+}
+
+
+
+
 
