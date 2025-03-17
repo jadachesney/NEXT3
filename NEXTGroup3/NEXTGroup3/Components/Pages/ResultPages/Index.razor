@@ -1,10 +1,12 @@
 ﻿@page "/results"
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
+@using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Models
 @using NEXTGroup3.Data
 @implements IAsyncDisposable
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@layout StaffDashboardLayout
 
 <PageTitle>Index</PageTitle>
 
