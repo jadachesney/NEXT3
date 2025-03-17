@@ -2,82 +2,185 @@
 @rendermode InteractiveServer
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
+@using System.Globalization
 @inject RangeQuestionService rangeQuestionService
 @inject TextAnswerService textAnswerService
 @inject RoleService roleService
 
 <PageTitle>Question Page</PageTitle>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
 
 <div class="question-container">
-    <div class="range-content">
-        <div class="range-question">
-            <div class="range-answer-container">
-                @for(int i = 0; i < rangeQuestions.Count(); i++)
-                {
-                    if (rangeQuestionService.CurrentQuestionIndex == i)
-                    {
-                        <h3>Question @(i + 1) / @rangeQuestions.Count()</h3>
-                        <p>@rangeQuestions[i].QuestionText</p>
-                        <div class="button-group">
-                            <InputRadioGroup id="radio-button" @bind-Value="answer"> 
-                                @for(int v = 0; v < 5; v++)
-                                {
-                                    <div class="form-group">
-                                        <label class="range-answer-label" for=@v> @(rangeAnswerChoices[v]) </label>
-                                        <InputRadio Value=@v id=@v class="range-answer-btn"/>
-                                    </div>
-                                }
-                            </InputRadioGroup>
-                        </div>
-                        <button class="range-submit-btn" @onclick="HandleAnswerSelected">Next</button>
-                    }
-                }
-            </div>
-        </div>
+  <div class="range-content">
+    <div class="range-question">
+      <div class="range-answer-container">
+        @if(rangeQuestionService.OnTextQuestions == false){
+          @for (int i = 0; i < rangeQuestions.Count(); i++)
+          {
+            if (rangeQuestionService.CurrentQuestionIndex < rangeQuestions.Count() && rangeQuestionService.CurrentQuestionIndex == i)
+            {
+              <h5 class="range-header">Section 1 / 2</h5>
+              <div class="range-progess-container">
+                <div class="progress">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@(i + 1)" aria-valuemin="0" aria-valuemax="@rangeQuestions.Count()">
+                    @(i + 1) / @rangeQuestions.Count()
+                    <script>
+                        $(document).ready(function() {
+                        var progressBar = $(".progress-bar");
+                        var incrementBtn = $(".range-submit-btn");
+
+                        var currentWidth = 0;
+                        var incrementAmount = (1/13)*450;
+
+                        incrementBtn.click(function() {
+                          currentWidth += incrementAmount;
+                          progressBar.css("width", currentWidth + "px");
+                        });
+                      });
+                    </script>
+                  </div>
+                </div>
+              </div>
+              <p class="range-question-text">@rangeQuestions[i].QuestionText</p>
+              <div class="button-group">
+                <InputRadioGroup id="radio-button" @bind-Value="answer"> 
+                  @for(int v = 0; v < 5; v++)
+                  {
+                    <div class="form-group">
+                      <label class="range-answer-label" for=@v> @(rangeAnswerChoices[v]) </label>
+                      <InputRadio Value=@v id=@v class="range-answer-btn"/>
+                    </div>
+                  }
+                </InputRadioGroup>
+              </div>
+
+              @if (i == rangeQuestions.Count() - 1) rangeQuestionService.OnTextQuestions = true;
+
+              <button class="range-submit-btn" @onclick="HandleAnswerSelected">Next</button>
+            }
+          }
+        }
+        else
+        {
+          for(int i = 0; i < textAnswers.Count(); i++)
+          {
+            if (textAnswerService.CurrentQuestionIndex < textAnswers.Count() && textAnswerService.CurrentQuestionIndex == i)
+            {
+              if (nextTextQuestion)
+              {
+                SelectTextAnswers();
+                nextTextQuestion = false;
+              }
+              <h5>Section 2 / 2</h5>
+              <h3>Question @(i + 1) / @textAnswers.Count()</h3>
+              <h5>Select which of the following statements you agree with the most:</h5>
+              <div class="text-answer-container">
+                <InputRadioGroup id="radio-button" @bind-Value="@answer">
+                  @for (int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++) //iterates over all selected answers
+                  {
+                    answerText = selectedAnswers[answerIndex].Answers;
+                    answerId = selectedAnswers[answerIndex].Id;
+                    answerIdString = "text-answer-" + answerId.ToString();
+
+                    <div id="" class="text-answer-form-group form-group ">
+                      <InputRadio Value=@answerId id="@answerIdString" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="@answerIdString">@answerText</label>
+                    </div>
+                  }
+                  <div id="" class="text-answer-form-group form-group">
+                    <InputRadio Value=0 id="text-answer-0" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="text-answer-0">None of the above</label>
+                  </div>
+                </InputRadioGroup>
+              </div>
+              <button class="text-submit-button" @onclick="HandleAnswerSelected">Next</button>
+            }
+          }
+        }
+      </div>
     </div>
-    @* //inserts TBQuestion if the roles list has been populated  *@
-    @if(!rolesSelected) {
-        <p>Loading...</p>
-    }else{
-        <form class="text">
-            <TBQuestion answers=textAnswers OnAnswerSelected="HandleAnswerSelected"/>
-        </form>
-    }
+  </div>
 </div>
 
 @code {
-    public Result result = new Result();
-    public int answer = 2;
-    private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
-    private string[] rangeAnswerChoices = { "Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree" };
+  public Result result = new Result();
+  public int answer = 2;
 
-    private List<TextAnswer> textAnswers = new List<TextAnswer>();  
-    private List<Role> roles = new List<Role>(); //stores the roles to be sent to the TBCode component
-    private Department department = new Department(); //stores the department result from rangeQuestions
-    private bool rolesSelected = false; // a flag for whether or not roles has been populated
+  // RANGE BASED VARIABLES
+  private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>();
+  private string[] rangeAnswerChoices = { "Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree" };
 
+  // TEXT BASED VARIABLES
+  private List<TextAnswer> textAnswers = new List<TextAnswer>();  
+  private List<Role> roles = new List<Role>(); //stores the roles to be sent to the TBCode component
+  private Department department = new Department(); //stores the department result from rangeQuestions
+  private bool rolesSelected = false; // a flag for whether or not roles has been populated
+  private List<TextAnswer> selectedAnswers = new List<TextAnswer>();//stores answers selected by the following function
+  private string answerText;
+  private int answerId;
+  private string answerIdString;
+  private bool nextTextQuestion = true;
 
-    //Database
-    protected override async Task OnInitializedAsync()
+  //Database
+  protected override async Task OnInitializedAsync()
+  {
+    //---RANGE BASED FUNCTIONS---//
+    rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
+
+    //---TEXT BASED FUNCTIONS---//
+    department.Id = 1; //temporary, until department is obtained by range questions
+
+    textAnswers = await textAnswerService.GetAllTextQuestionsFromRolesInDepartment(department);
+
+    rolesSelected = true; //flags true when roles related to the department have been populated
+  }
+
+  //functionality for range questions
+  private void HandleAnswerSelected()
+  {
+    System.Console.WriteLine($"Selected Answer: {answer}");
+
+    if (rangeQuestionService.OnTextQuestions == false)
     {
-        //---RANGE BASED FUNCTIONS---//
-        rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
-
-        //---TEXT BASED FUNCTIONS---//
-        department.Id = 1; //temporary, until department is obtained by range questions
-
-        textAnswers = await textAnswerService.GetAllTextQuestionsFromRolesInDepartment(department);
-
-        rolesSelected = true; //flags true when roles related to the department have been populated
+      rangeQuestionService.CurrentQuestionIndex++;
+      answer = 2;
     }
-    
-
-    //functionality for range questions
-    private void HandleAnswerSelected()
+    else
     {
-        System.Console.WriteLine($"Selected Answer: {answer}");
-        rangeQuestionService.CurrentQuestionIndex++;
-        StateHasChanged();
+      textAnswerService.CurrentQuestionIndex++;
+      nextTextQuestion = true;
+      answer = 0;
     }
+    StateHasChanged();
+  }
+
+  //functionality for text questions
+  private void SelectTextAnswers()
+  {
+    selectedAnswers.Clear();
+    //runs when the "answers" parameter is set
+    if (selectedAnswers.Count < 5)
+    {
+      //Randomly selects 5 unique answers from textAnswers
+      Random rng = new Random(); //new random number generator
+
+      for (int i = 0; i < 5;)
+      {
+        TextAnswer current = textAnswers[rng.Next(0, textAnswers.Count - 1)];
+
+        if (!selectedAnswers.Contains(current))
+        {
+          //ensures answer uniqueness and only increments if a unique answer is added
+          selectedAnswers.Add(current);
+          i++;
+        }
+        else if (selectedAnswers.Count == textAnswers.Count)
+        {
+          i = 5; //closes the loop if all available answers have been selected
+        }
+      }
+    }
+  }
+
 }
-
