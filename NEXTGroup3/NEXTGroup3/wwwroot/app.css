@@ -96,7 +96,7 @@ h1:focus {
 /* QUESTIONS */
 
 .question-container{
-
+  margin: 80px;
 }
 
 /* RANGE BASED QUESTIONS */
@@ -104,9 +104,35 @@ h1:focus {
   
 }
 
+.range-header {
+  font-size: 30px;
+}
+
+.range-question-text{
+  margin: 20px;
+  font-size: 20px;
+}
+
 .range-answer-container{
 
 }
+
+.range-progress-container {
+  margin: 20px;
+}
+
+.progress {
+  margin-left: auto;
+  margin-right: auto;
+  width: 450px;
+  height: 20px;
+}
+
+.progress-bar{
+  background-color: #f7550d;
+  color: #000000;
+}
+
 
 form.range{
   display: flex;
@@ -119,6 +145,7 @@ form.range{
   flex-direction: row;
   gap: 20px;
   padding-block: 20px;
+  justify-content: center;
 }
 
 .form-group{
