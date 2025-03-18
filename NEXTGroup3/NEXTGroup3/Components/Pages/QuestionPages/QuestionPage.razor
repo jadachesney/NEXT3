@@ -190,6 +190,14 @@
                     resultService.Result.DepartmentPoints[department.Id - 1].Points += 2;
                 break;
             case 2:
+                foreach (Department department in departments)
+                {
+                    if (!rangeQuestions[rangeQuestionService.CurrentQuestionIndex].LeftDepartments.Contains(department) &&
+                        !rangeQuestions[rangeQuestionService.CurrentQuestionIndex].RightDepartments.Contains(department))
+                    {
+                        resultService.Result.DepartmentPoints[department.Id - 1].Points += 1;
+                    }
+                }
                 break;
             case 3:
                 foreach (Department department in rangeQuestions[rangeQuestionService.CurrentQuestionIndex].RightDepartments)
