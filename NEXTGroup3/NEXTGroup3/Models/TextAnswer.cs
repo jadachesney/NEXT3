@@ -21,5 +21,12 @@
             get { return roleId; }
             set { roleId = value; }
         }
+
+        private Role role;
+        public Role Role
+        {
+            get { return role; }
+            set { role = value; }
+        }
     }
 }
