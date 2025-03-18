@@ -347,11 +347,17 @@ video {
   padding: 10px 20px;
   width: 200px;
   font-family: 'next-bold';
+  font-size: 20px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.start-btn:hover {
+    color: #f7550d;
 }
 
 .start-quiz-column {
-  align-items: center;
-  width: 100%
+    align-items: center;
+    width: 100%
 }
 
 /*Nav Styling*/
