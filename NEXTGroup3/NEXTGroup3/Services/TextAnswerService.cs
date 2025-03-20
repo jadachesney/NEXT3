@@ -13,9 +13,12 @@ namespace NEXTGroup3.Services
         private readonly IDbContextFactory<AzureContext> contextFactory;
 
         //functions are run once before refering to text questions, so current index increases by one before starting the set of quesitons
+        private int currentQuestionIndex;
         public int CurrentQuestionIndex { get; set; } = default;
 
         public int QuestionMax { get; set; } = default;
+
+        public Dictionary<int, int> countAnswerDisplay { get; set; } = new Dictionary<int, int>();
 
         public TextAnswerService(IDbContextFactory<AzureContext> c)
         {
@@ -92,7 +95,7 @@ namespace NEXTGroup3.Services
         // calculates the maximum amount if questions corresponding to the amount of answers for this department
         public async Task CalculateQuestionMax(int possibleAnswerCount)
         {
-            QuestionMax = (int)Math.Ceiling((Convert.ToDouble(possibleAnswerCount) * 2) / 5);
+            QuestionMax = (int)Math.Ceiling((Convert.ToDouble(possibleAnswerCount) * 2) / 3);
         }
         //public async Task<Role> GetRoleFromTextAnswerId(int id)
         //{
