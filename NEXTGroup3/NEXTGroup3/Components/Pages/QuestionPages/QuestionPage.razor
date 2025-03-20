@@ -14,8 +14,9 @@
     <div class="range-content">
         <div class="range-question">
             <div class="range-answer-container">
-                @if(rangeQuestionService.OnTextQuestions == false){
-                    @for (int i = 0; i <= rangeQuestions.Count(); i++)
+                @if(!rangeQuestionService.OnTextQuestions)
+                {
+                    @for (int i = 0; i < rangeQuestions.Count(); i++)
                     {
                         if (i == 0 && rangeQuestionService.OnRangeQuestions == false)
                         {
@@ -47,42 +48,32 @@
                             </div>
                             <button class="range-submit-btn" @onclick="HandleAnswerSelected">Next</button>
                         }
-                        @* else if (rangeQuestionService.CurrentQuestionIndex == rangeQuestions.Count()) *@
-                        @* { *@
-                        @*     // triggers a flag to ensure the questionnaire moves to text based questions correctly *@
-                        @*     rangeQuestionService.OnTextQuestions = true;  *@
-                        @*     GetTextAnswersFromDepartment(); *@
-                        @* } *@
                     }
                 }
-                else
+                @if(rangeQuestionService.OnTextQuestions)
                 {
-                    for(int i = 0; i < textAnswers.Count(); i++)
+                    int questionCount = textAnswerService.QuestionMax;
+                    for(int i = 0; i < questionCount; i++)
                     {
-                        if (textAnswerService.CurrentQuestionIndex < textAnswers.Count() && textAnswerService.CurrentQuestionIndex == i)
+                        if (textAnswerService.CurrentQuestionIndex < questionCount && textAnswerService.CurrentQuestionIndex == i)
                         {
-                            if (nextTextQuestion)
-                            {
-                                SelectTextAnswers();
-                                nextTextQuestion = false;
-                            }
                             <h5>Section 2 / 2</h5>
-                            <h3>Question @(i + 1) / @textAnswers.Count()</h3>
+                            <h3>Question @(i + 1) / @questionCount</h3>
                             <h5>Select which of the following statements you agree with the most:</h5>
                             <div class="text-answer-container">
                                 <InputRadioGroup id="radio-button" @bind-Value="@answer">
                                     @for (int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++) //iterates over all selected answers
                                     {
                                         var answerText = selectedAnswers[answerIndex].Answers;
-                                        var roleId = selectedAnswers[answerIndex].RoleId;
-                                        var answerIdString = "text-answer-" + roleId.ToString();
+                                        var answerId = selectedAnswers[answerIndex].Id;
+                                        var answerIdString = "text-answer-" + selectedAnswers[answerIndex].Id.ToString();
 
-                                        <div id="" class="text-answer-form-group form-group ">
-                                            <InputRadio Value=@roleId id="@answerIdString" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="@answerIdString">@answerText</label>
+                                        <div id="" class="text-answer-form-group form-group">
+                                            <InputRadio Value=@answerId id="@answerIdString" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="@answerIdString">@answerText</label>
                                         </div>
                                     }
                                     <div id="" class="text-answer-form-group form-group">
-                                        <InputRadio Value=0 id="text-answer-0" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="text-answer-0">None of the above</label>
+                                        <InputRadio Value=0 id="text-answer-0" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="text-answer-0">None</label>
                                     </div>
                                 </InputRadioGroup>
                             </div>
@@ -115,11 +106,6 @@
     private List<TextAnswer> selectedAnswers = new List<TextAnswer>();//stores answers selected by the following function
     private bool nextTextQuestion = true;
 
-
-    // what is this needed for?
-    private Role roleWithBestMatch = new Role();
-
-
     //Database
     protected override async Task OnInitializedAsync()
     {
@@ -140,60 +126,85 @@
         rangeQuestionService.OnRangeQuestions = true;
     }
 
-    private void HandleAnswerSelected()
+    private async Task HandleAnswerSelected()
     {
         if (rangeQuestionService.OnTextQuestions == false)
         {
+
             AddDepartmentPoints();
             rangeQuestionService.CurrentQuestionIndex++;
             answer = 2;
+            if (rangeQuestionService.CurrentQuestionIndex == rangeQuestions.Count())
+                await GetHighestDepartmentTextAnswers();
         }
         else
         {
             //handles point values for the answer provided
             if(textAnswerService.CurrentQuestionIndex >= 0) AddRolePoints(answer);
-            //moves onto the next text based question
+
+            //selects a new set of text answers
+            await SelectTextAnswers();
+
+            //moves onto the next text based question and resets answer to none of the above
             textAnswerService.CurrentQuestionIndex++;
-            nextTextQuestion = true;
-            answer = 0;
         }
         StateHasChanged();
     }
 
-    private void SelectTextAnswers()
+    private async Task SelectTextAnswers()
     {
         selectedAnswers.Clear();
         //runs when the "answers" parameter is set
-        if (selectedAnswers.Count < 5)
+        if (selectedAnswers.Count < 3)
         {
             //Randomly selects 5 unique answers from textAnswers
             Random rng = new Random(); //new random number generator
 
-            for (int i = 0; i < 5;)
+            for (int i = 0; i < 3;)
             {
-                TextAnswer current = textAnswers[rng.Next(0, textAnswers.Count - 1)];
+                TextAnswer current = textAnswers[rng.Next(0, textAnswers.Count())];
 
-                if (!selectedAnswers.Contains(current))
+                if(!selectedAnswers.Contains(current) 
+                && textAnswerService.CurrentQuestionIndex >= textAnswerService.QuestionMax / 2 
+                && textAnswerService.countAnswerDisplay[current.Id] == 0)
+                {
+
+                    //ensures answer uniqueness and only increments if a unique answer is added
+                    selectedAnswers.Add(current);
+
+                    // increments both the selected answer's counter and the loop
+                    textAnswerService.countAnswerDisplay[current.Id]++; i++;
+                }
+
+                else if (!selectedAnswers.Contains(current) 
+                    && textAnswerService.countAnswerDisplay[current.Id] != 2)
                 {
                     //ensures answer uniqueness and only increments if a unique answer is added
                     selectedAnswers.Add(current);
-                    i++;
+
+                    // increments both the selected answer's counter and the loop
+                    textAnswerService.countAnswerDisplay[current.Id]++; i++;
                 }
                 else if (selectedAnswers.Count == textAnswers.Count)
                 {
-                    i = 5; //closes the loop if all available answers have been selected
+                    i = 3; //closes the loop if all available answers have been selected
+                }
+                else if(textAnswerService.countAnswerDisplay.Values.Distinct().Count() == 1){
+                    i = 3; // closes loop if no more answers are available
                 }
             }
+            answer = 0;
         }
     }
 
     //adds points to the correct role in RolePoints
-    private void AddRolePoints(int id)
+    private void AddRolePoints(int answerId)
     {
+        int roleId = roleService.GetRoleIdFromTextQuestion(answerId);
         //finds correct point object
         foreach (var point in resultService.Result.RolePoints)
         {
-            if (point.Id == id)
+            if (point.Id == roleId)
             {
                 point.Points += 3;
             }
@@ -238,7 +249,7 @@
     }
 
     //retrieves text answers from the highest scoring department
-    private async void GetTextAnswersFromDepartment()
+    private async Task GetHighestDepartmentTextAnswers()
     {
         int maxPoint = resultService.Result.DepartmentPoints.Max(p => p.Points);
         Point[] departmentsWithMaxPoint = resultService.Result.DepartmentPoints.Where(p => p.Points == maxPoint).ToArray();
@@ -250,11 +261,39 @@
         }
         else departmentForTextQuestions = departments.Where(d => d.Id == departmentsWithMaxPoint[0].Id).First();
 
-        // departmentForTextQuestions.Id = 1;
+        // departmentForTextQuestions.Id = 1; 
 
+        await InitializeTextAnswers();
+        // textAnswerService.QuestionMax = (int)Math.Floor(Convert.ToDouble(textAnswers.Count) * 0.8);
+    }
+
+    //retrieves text answers
+    private async Task InitializeTextAnswers(){
+
+        //
         textAnswers = await textAnswerService.GetTextAnswersFromDepartment(departmentForTextQuestions);
-        rolesSelected = true; //flags true when roles related to the department have been populated
+
+        // 
+        for (int i = 0; i < textAnswers.Count(); i++) {
+            textAnswerService.countAnswerDisplay.Add(textAnswers[i].Id, 0);
+        }
+
+        //
+        await textAnswerService.CalculateQuestionMax(textAnswers.Count());
+
+        //
+        await SelectTextAnswers();
+
+
+        
+        //
         resultService.InitializeRolePoints(departmentForTextQuestions);
+        
+        //flags true when roles related to the department have been populated
+        rolesSelected = true; 
+
+        //
+        rangeQuestionService.OnTextQuestions = true;
     }
 
     //checks and stores which role has the highest score
