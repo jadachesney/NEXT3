@@ -102,9 +102,25 @@ h1:focus {
   margin: 80px;
 }
 
+/* INITIAL DEPARTMENT QUESTION */
+.initial-department-questions{
+    width: fit-content;
+    margin: auto;
+    padding: 20px;
+}
+.initial-department-question{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+}
+.initial-department-question input[type=checkbox] {
+    width: 15px;
+    accent-color: #f7550d;
+}
+
 /* RANGE BASED QUESTIONS */
-.range-question{
-  
+.range-question {
 }
 
 .range-header {

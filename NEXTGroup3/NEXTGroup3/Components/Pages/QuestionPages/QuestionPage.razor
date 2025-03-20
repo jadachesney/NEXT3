@@ -22,12 +22,16 @@
                         {
                             <h5>Please start by selecting any of the below departments you are particularly interested in:</h5>
                             <p>You may continue without selecting any</p>
-                            foreach (InitiallySelectedDepartments department in initiallySelectedDepartments)
-                            {
-                                <InputCheckbox id=@department.Department.Id @bind-value="@department.IsSelected"/>
-                                <label for=@department.Department.Id>@department.Department.Name</label>
-                                <br />
-                            }
+                            <div class="initial-department-questions">
+                                @foreach (InitiallySelectedDepartments department in initiallySelectedDepartments)
+                                {
+                                    <div class="initial-department-question">
+                                        <InputCheckbox id=@department.Department.Id @bind-value="@department.IsSelected"/>
+                                        <label for=@department.Department.Id>@department.Department.Name</label>
+                                        <br />
+                                    </div>
+                                }
+                            </div>
                             <button class="range-submit-btn" @onclick="HandleInitialDepartmentSelected">Next</button>
                         }
                         else if (rangeQuestionService.OnRangeQuestions == true && rangeQuestionService.CurrentQuestionIndex < rangeQuestions.Count() && rangeQuestionService.CurrentQuestionIndex == i - 1)
