@@ -3,8 +3,9 @@ main{
   width:100%;
 }
 
-:root{
+:root {
   --error: #D91C1C;
+  --verification: #D91C1C;
 }
 
 html, body {
@@ -536,7 +537,7 @@ td {
 
 /* STAFF LOGIN PAGE */
 
-.staff-login-container {
+.login-container {
   padding: 5vw 0 0;
   margin: 0 auto;
   font-family: 'next-regular';
@@ -546,7 +547,7 @@ td {
   font-family: 'next-regular';
   src: url('fonts/nextdisplay-regular.ttf') format('truetype');
 }
-.staff-h1 {
+.login-header {
   text-align: center;
   font-size: 2.5em;
   font-weight: 300;
@@ -562,12 +563,12 @@ td {
   word-break: keep-all;
 }
 
-.email-row-validation, .id-row-validation, .password-row-validation {
+.row-validation{
   color: var(--error);
   font-size: 1rem;
 }
 
-.email-input-row, .id-input-row, .password-input-row {
+.input-row {
   border-radius: 5px;
   padding: 0 25px;
   width: 100%;
@@ -615,6 +616,24 @@ td {
   position: relative;
 }
 
+.verification-star {
+  color: #D91C1C;
+}
 
+.input-spacer {
+  padding-top: 20px;
+}
+/* REGISTER ACCOUNT */
 
+.register-container {
+  padding: 5vw 0 0;
+  margin: 0 auto;
+  font-family: 'next-regular';
+}
+
+.register-header {
+  text-align: center;
+  font-size: 2.5em;
+  font-weight: 300;
+}
 

@@ -7,39 +7,77 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_left" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_right" />
 
-
-<h1>Candidate Login</h1>
-
-<EditForm Model="@Model" OnValidSubmit="Authenticate" FormName="LoginForm">
-    <DataAnnotationsValidator />
-    <!-- CANDIDATE EMAIL -->
-        <InputText @bind-Value="Model.Email" placeholder="Email" />
-        <ValidationMessage For="() => Model.Email" />
-
-    <!-- CANDIDATE PASSWORD -->
-        <InputText @bind-Value="Model.Password" type="password" placeholder="Password" />
-        <ValidationMessage For="() => Model.Password" />
-
-    <span class="text-danger">@errorMessage</span>
-
-    <footer class="buttons-bar">
-        <div class="buttons-bar-inner">
-            <NavLink href="/" class="login-btn">
+<body>
+  <div class="login-container">
+    <header>
+      <h1 class="login-header">
+        Manage Your Candidate Profile
+      </h1>
+    </header>
+    <div class="login-form">
+      <section class="login-content">
+        <div class="text-row">
+          <p1 class="login-text">
+            Enter your credentials linked to your candidate profile. Once your identity is confirmed, you will be able to manage your profile.
+          </p1>
+        </div>
+        <EditForm Model="@Model" OnValidSubmit="Authenticate" FormName="LoginForm">
+          <DataAnnotationsValidator />
+          <div class="login-input">
+            <!-- CANDIDATE EMAIL -->
+            <div class="input-spacer">
+              <div class="email-text">
+                <label class="email-input">
+                  <span>
+                    Email Address
+                  </span>
+                  <span class="verification-star">
+                    *
+                  </span>
+                </label>
+              </div>
+              <InputText @bind-Value="Model.Email" placeholder="Email" class="input-row" />
+              <ValidationMessage For="() => Model.Email" />
+            </div>
+            <!-- CANDIDATE PASSWORD -->
+            <div class="input-spacer">
+              <div class="password-text">
+                <label class="password-input">
+                  <span>
+                    Password
+                  </span>
+                  <span class="verification-star">
+                    *
+                  </span>
+                </label>
+              </div>
+              <InputText @bind-Value="Model.Password" type="password" placeholder="Password" class="input-row" />
+              <ValidationMessage For="() => Model.Password" />
+            </div>
+          </div>
+          <span class="text-danger">@errorMessage</span>
+          <footer class="buttons-bar">
+            <div class="buttons-bar-inner">
+              <NavLink href="/" class="login-btn">
                 <span class="button-label">Back</span>
                 <span class="material-symbols-outlined-left button-arrow button-arrow-left">
                     arrow_left
                 </span>
-            </NavLink>
-            <div class="buttons-spacer"></div>
-            <button type="submit" class="login-btn">
+              </NavLink>
+              <div class="buttons-spacer"></div>
+              <button type="submit" class="login-btn">
                 <span class="button-label">Login</span>
                 <span class="material-symbols-outlined button-arrow button-arrow-right">
                     arrow_right
                 </span>
-            </button>
-        </div>
-    </footer>
-</EditForm>
+              </button>
+            </div>
+          </footer>
+        </EditForm>
+      </section>
+    </div>
+  </div>
+</body>
 
 
 

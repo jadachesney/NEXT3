@@ -1,0 +1,74 @@
+﻿@page "/register"
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_left" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_right" />
+
+
+<body>
+  <div class="register-container">
+    <header>
+      <h1 class="register-header">
+        Register a Candidate Account
+      </h1>
+    </header>
+    <div class="register-form">
+      <section class="register-content">
+        <div class="text-row">
+          <p1 class="register-text">
+            Enter your information to save your results and receive marketing insights from potential employers.
+          </p1>
+        </div>
+        <div class="information-input">
+          <div class="email-text">
+            <label class="email-input">
+              <span class="email-input-label">
+                Email Address
+              </span>
+              <span class="verification-star">
+                *
+              </span>
+            </label>
+          </div>
+          <input class="email-input-row" />
+          <p class="email-row-validation">
+            Email Address field is required.
+          </p>
+          <div class="password-text">
+            <label class="password-input">
+              <span class="password-input-label">
+                Password
+              </span>
+              <span class="verification-star">
+                *
+              </span>
+            </label>
+          </div>
+          <input class="password-input-row" />
+          <p class="password-row-validation">
+            Password field is required.
+          </p>
+        </div>
+      </section>
+    </div>
+    <footer class="buttons-bar">
+      <div class="buttons-bar-inner">
+        <NavLink href="/" class="login-btn">
+          <span class="button-label">Back</span>
+          <span class="material-symbols-outlined-left button-arrow button-arrow-left">
+            arrow_left
+          </span>
+        </NavLink>
+        <div class="buttons-spacer"></div>
+        <NavLink href="/candidatedashboard" class="login-btn">
+          <span class="button-label">Register</span>
+          <span class="material-symbols-outlined button-arrow button-arrow-right">
+            arrow_right
+          </span>
+        </NavLink>
+      </div>
+    </footer>
+  </div>
+</body>
+
+@code {
+
+}

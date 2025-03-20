@@ -1,55 +1,60 @@
 ﻿@page "/StaffLogin"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager navigationManager
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_left" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_right" />
 
 <body>
-  <div class="staff-login-container">
+  <div class="login-container">
     <header>
-      <h1 class="staff-h1">
+      <h1 class="login-header">
         Manage Your Staff Profile
       </h1>
     </header>
     <div class="login-form">
       <section class="login-content">
         <div class="text-row">
-          <p1 class="staff-login-text">
+          <p1 class="login-text">
             Enter your credentials linked to your staff profile. Once your identity is confirmed, you will be able to manage your profile.
           </p1>
          </div>
         <div class="login-input">
-          <div class="staff-id-text">
+          <div class="input-spacer">
             <label class="staff-id-input">
               <span class="id-input-label">
                 Staff ID
               </span> 
+              <span class="verification-star">
+                *
+              </span>
             </label>
+            <input class="input-row" />
           </div>
-            <input class="id-input-row" />
-            <p class="id-row-validation">
-              Staff ID field is required.
-            </p>
-          <div class="email-text">
+          <div class="input-spacer">
             <label class="email-input">
               <span class="email-input-label">
                 Email Address
               </span>
+              <span class="verification-star">
+                *
+              </span>
             </label>
+            <input class="input-row" />
           </div>
-          <input class="email-input-row" />
-          <p class="email-row-validation">
-            Email Address field is required.
-          </p>
-          <div class="password-text">
+          <div class="input-spacer">
             <label class="password-input">
               <span class="password-input-label">
                 Password
               </span>
+              <span class="verification-star">
+                *
+              </span>
             </label>
+            <input class="input-row" />
           </div>
-          <input class="password-input-row" />
-          <p class="password-row-validation">
-            Password field is required.
-          </p>
         </div>
       </section>
     </div>
@@ -75,5 +80,38 @@
 
 
 @code {
+  [CascadingParameter] public HttpContext? HttpContext { get; set; }
+  [SupplyParameterFromForm] public Staff Model { get; set; } = new();
+  private string? errorMessage;
+
+  private async Task Authenticate()
+  {
+    using var dbContext = DbFactory.CreateDbContext();
+
+    //Checks details exist in database
+    var staff = dbContext.Staff.FirstOrDefault(x => x.Email == Model.Email);
+
+    if (staff == null || staff.Password != Model.Password)
+    {
+      errorMessage = "Invalid credentials";
+      return;
+    }
+    //List of claims created to authenticate the candidate
+    var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, Model.Email),
+            new Claim(ClaimTypes.NameIdentifier, staff.Id.ToString())
+        };
+
+    //Identity created based on claims
+    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+    var principal = new ClaimsPrincipal(identity);
+
+    //Signs candidate in and stores claims in an authentication cookie
+    await HttpContext.SignInAsync(principal);
+
+    //Redirected to candidate dashboard
+    navigationManager.NavigateTo("/StaffDashboard");
+  }
 
 }
