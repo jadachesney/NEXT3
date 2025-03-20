@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextFactory<AzureContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AzureContext") ?? throw new InvalidOperationException("Connection string 'AzureContext' not found.")));
 
+builder.Services.AddDbContext<AzureContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("AzureContext")));
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
