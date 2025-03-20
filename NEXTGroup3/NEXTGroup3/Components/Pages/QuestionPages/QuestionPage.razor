@@ -16,7 +16,7 @@
             <div class="range-answer-container">
                 @if(!rangeQuestionService.OnTextQuestions)
                 {
-                    @for (int i = 0; i < rangeQuestions.Count(); i++)
+                    @for (int i = 0; i <= rangeQuestions.Count(); i++)
                     {
                         if (i == 0 && rangeQuestionService.OnRangeQuestions == false)
                         {
@@ -122,7 +122,7 @@
     {
         foreach (InitiallySelectedDepartments department in initiallySelectedDepartments)
             if(department.IsSelected)
-                resultService.Result.DepartmentPoints[department.Department.Id - 1].Points += 4;
+                resultService.Result.DepartmentPoints[department.Department.Id - 1].Points += 3;
         rangeQuestionService.OnRangeQuestions = true;
     }
 
@@ -130,7 +130,6 @@
     {
         if (rangeQuestionService.OnTextQuestions == false)
         {
-
             AddDepartmentPoints();
             rangeQuestionService.CurrentQuestionIndex++;
             answer = 2;
@@ -269,30 +268,19 @@
 
     //retrieves text answers
     private async Task InitializeTextAnswers(){
-
-        //
         textAnswers = await textAnswerService.GetTextAnswersFromDepartment(departmentForTextQuestions);
 
-        // 
         for (int i = 0; i < textAnswers.Count(); i++) {
             textAnswerService.countAnswerDisplay.Add(textAnswers[i].Id, 0);
         }
-
-        //
         await textAnswerService.CalculateQuestionMax(textAnswers.Count());
 
-        //
         await SelectTextAnswers();
 
-
-        
-        //
         resultService.InitializeRolePoints(departmentForTextQuestions);
         
         //flags true when roles related to the department have been populated
         rolesSelected = true; 
-
-        //
         rangeQuestionService.OnTextQuestions = true;
     }
 
@@ -303,12 +291,6 @@
 
         int maxPoint = resultService.Result.RolePoints.Max(p => p.Points);
         Point[] rolesWithMaxPoint = resultService.Result.RolePoints.Where(p => p.Points == maxPoint).ToArray();
-
-        if (rolesWithMaxPoint.Count() > 1)
-        {
-            roleWithBestMatch = roles.Where(r => r.Id == rolesWithMaxPoint[0].Id).First();
-        }
-        else roleWithBestMatch = roles.Where(r => r.Id == rolesWithMaxPoint[0].Id).First();
     }
 
     class InitiallySelectedDepartments
