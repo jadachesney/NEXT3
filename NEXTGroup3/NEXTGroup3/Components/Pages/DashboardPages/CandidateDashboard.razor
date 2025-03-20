@@ -2,9 +2,11 @@
 @layout CandidateDashboardLayout
 @rendermode InteractiveAuto
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@using Microsoft.AspNetCore.Authorization
 @using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Services
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+@attribute [Authorize]
 
 <div class="dashboard-container">
     <div class = "dashboard-header">
