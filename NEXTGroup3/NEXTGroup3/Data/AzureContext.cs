@@ -20,5 +20,6 @@ namespace NEXTGroup3.Data
         public DbSet<NEXTGroup3.Models.RangeQuestion> RangeQuestion { get; set; } = default!;
         public DbSet<NEXTGroup3.Models.Result> Result { get; set; } = default!;
         public DbSet<NEXTGroup3.Models.TextAnswer> TextAnswer { get; set; } = default!;
+        public DbSet<NEXTGroup3.Models.DepartmentRangeQuestion> DepartmentRangeQuestion { get; set; } = default!;
     }
 }

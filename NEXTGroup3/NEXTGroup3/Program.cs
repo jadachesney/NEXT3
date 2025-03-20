@@ -4,10 +4,14 @@ using Microsoft.Extensions.DependencyInjection;
 using NEXTGroup3.Data;
 using NEXTGroup3.Controllers;
 using NEXTGroup3.Services;
+using NEXTGroup3.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextFactory<AzureContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AzureContext") ?? throw new InvalidOperationException("Connection string 'AzureContext' not found.")));
+
+builder.Services.AddDbContext<AzureContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("AzureContext")));
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -17,6 +21,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<TextAnswerService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<RangeQuestionService>();
+builder.Services.AddScoped<ResultService>();
+builder.Services.AddScoped<DepartmentService>();
 
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
