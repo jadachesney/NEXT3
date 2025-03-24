@@ -14,21 +14,19 @@ builder.Services.AddDbContextFactory<AzureContext>(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.Cookie.Name = "candidate_auth_token";
-        options.LoginPath = "/CandidateLogin";
-        options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
-        options.AccessDeniedPath = "/access-denied";
-    });
-
-//Cookie-based auth for staff
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+      options.Cookie.Name = "candidate_auth_token";
+      options.LoginPath = "/CandidateLogin";
+      options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+      options.AccessDeniedPath = "/access-denied";
+    })
+    .AddCookie("staff", options =>
     {
       options.Cookie.Name = "staff_auth_token";
-      options.LoginPath = "/StaffLogin";
+      options.LoginPath = "/stafflogin";
       options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
       options.AccessDeniedPath = "/access-denied";
     });
+
 
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
@@ -68,9 +66,6 @@ builder.Services.AddDbContextFactory<AzureContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
-
-//builder.Services.AddDbContext<DbContextNext>(options =>
-//    options.UseSqlServer(connection));
 
 var app = builder.Build();
 
