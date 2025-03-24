@@ -20,61 +20,67 @@
           <p1 class="login-text">
             Enter your credentials linked to your staff profile. Once your identity is confirmed, you will be able to manage your profile.
           </p1>
-         </div>
-        <div class="login-input">
-          <div class="input-spacer">
-            <label class="staff-id-input">
-              <span class="id-input-label">
-                Staff ID
-              </span> 
-              <span class="verification-star">
-                *
-              </span>
-            </label>
-            <input class="input-row" />
-          </div>
-          <div class="input-spacer">
-            <label class="email-input">
-              <span class="email-input-label">
-                Email Address
-              </span>
-              <span class="verification-star">
-                *
-              </span>
-            </label>
-            <input class="input-row" />
-          </div>
-          <div class="input-spacer">
-            <label class="password-input">
-              <span class="password-input-label">
-                Password
-              </span>
-              <span class="verification-star">
-                *
-              </span>
-            </label>
-            <input class="input-row" />
-          </div>
         </div>
+        <EditForm Model="@Model" OnValidSubmit="Authenticate" FormName="LoginForm">
+          <div class="login-input">
+            <div class="input-spacer">
+              <label class="staff-id-input">
+                <span class="id-input-label">
+                  Staff ID
+                </span>
+                <span class="verification-star">
+                  *
+                </span>
+              </label>
+              <InputNumber @bind-Value="Model.StaffId" placeholder="Staff ID" class="input-row" />
+              <ValidationMessage For="() => Model.StaffId" />
+            </div>
+            <div class="input-spacer">
+              <label class="email-input">
+                <span class="email-input-label">
+                  Email Address
+                </span>
+                <span class="verification-star">
+                  *
+                </span>
+              </label>
+              <InputText @bind-Value="Model.Email" placeholder="Email" class="input-row" />
+              <ValidationMessage For="() => Model.Email" />
+            </div>
+            <div class="input-spacer">
+              <label class="password-input">
+                <span class="password-input-label">
+                  Password
+                </span>
+                <span class="verification-star">
+                  *
+                </span>
+              </label>
+              <InputText @bind-Value="Model.Password" type="password" placeholder="Password" class="input-row" />
+              <ValidationMessage For="() => Model.Password" />
+            </div>
+          </div>
+          <span class="text-danger">@errorMessage</span>
+          <footer class="buttons-bar">
+            <div class="buttons-bar-inner">
+              <NavLink href="/" class="login-btn">
+                <span class="button-label">Back</span>
+                <span class="material-symbols-outlined-left button-arrow button-arrow-left">
+                  arrow_left
+                </span>
+              </NavLink>
+              <div class="buttons-spacer"></div>
+              <button type="submit" class="login-btn">
+                <span class="button-label">Login</span>
+                <span class="material-symbols-outlined button-arrow button-arrow-right">
+                  arrow_right
+                </span>
+              </button>
+            </div>
+          </footer>
+        </EditForm>
       </section>
     </div>
-    <footer class="buttons-bar">
-      <div class="buttons-bar-inner">
-        <NavLink href="/" class="login-btn">
-          <span class="button-label">Back</span>
-          <span class="material-symbols-outlined-left button-arrow button-arrow-left">
-            arrow_left
-          </span>
-        </NavLink>
-        <div class="buttons-spacer"></div>
-        <NavLink href="staffdashboard" class="login-btn">
-          <span class="button-label">Login</span>
-          <span class="material-symbols-outlined button-arrow button-arrow-right">
-            arrow_right
-          </span>
-        </NavLink>
-      </div>
-    </footer>
   </div>
 </body>
 
@@ -89,19 +95,19 @@
     using var dbContext = DbFactory.CreateDbContext();
 
     //Checks details exist in database
-    var staff = dbContext.Staff.FirstOrDefault(x => x.Email == Model.Email);
+    var staff = dbContext.Staff.FirstOrDefault(x => x.Email == Model.Email && x.StaffId == Model.StaffId);
 
     if (staff == null || staff.Password != Model.Password)
     {
-      errorMessage = "Invalid credentials";
+      errorMessage = "Invalid credentials.";
       return;
     }
-    //List of claims created to authenticate the candidate
+    //List of claims created to authenticate the staff
     var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, Model.Email),
-            new Claim(ClaimTypes.NameIdentifier, staff.Id.ToString())
-        };
+    {
+      new Claim(ClaimTypes.Name, Model.Email),
+      new Claim(ClaimTypes.NameIdentifier, staff.StaffId.ToString())
+    };
 
     //Identity created based on claims
     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -110,8 +116,7 @@
     //Signs candidate in and stores claims in an authentication cookie
     await HttpContext.SignInAsync(principal);
 
-    //Redirected to candidate dashboard
+    //Redirected to staff dashboard
     navigationManager.NavigateTo("/StaffDashboard");
   }
-
 }

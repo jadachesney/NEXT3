@@ -12,24 +12,20 @@ builder.Services.AddDbContextFactory<AzureContext>(options =>
 
 //Cookie-based authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie("candidate",options =>
+    .AddCookie(options =>
     {
-        options.Cookie.Name = "candidate_auth_token";
-        options.LoginPath = "/CandidateLogin";
-        options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
-        options.AccessDeniedPath = "/access-denied";
-    }
-    )
-
-    .AddCookie("staff",options =>
+      options.Cookie.Name = "candidate_auth_token";
+      options.LoginPath = "/CandidateLogin";
+      options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+      options.AccessDeniedPath = "/access-denied";
+    })
+    .AddCookie("staff", options =>
     {
-        options.Cookie.Name = "staff";
-        options.LoginPath = "/staff";
-        options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
-        options.AccessDeniedPath = "/access-denied";
-    }
-);
-
+      options.Cookie.Name = "staff_auth_token";
+      options.LoginPath = "/stafflogin";
+      options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+      options.AccessDeniedPath = "/access-denied";
+    });
 
 
 builder.Services.AddAuthorization();
@@ -70,9 +66,6 @@ builder.Services.AddDbContextFactory<AzureContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
-
-//builder.Services.AddDbContext<DbContextNext>(options =>
-//    options.UseSqlServer(connection));
 
 var app = builder.Build();
 
