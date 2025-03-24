@@ -1,6 +1,8 @@
 ﻿@page "/candidates/create"
 @using Microsoft.EntityFrameworkCore
 @using NEXTGroup3.Models
+@using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+@using System.Security.Cryptography;
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @inject NavigationManager NavigationManager
 
@@ -39,6 +41,8 @@
     <a href="/candidates">Back to List</a>
 </div>
 
+
+
 @code {
     [SupplyParameterFromForm]
     private Candidate Candidate { get; set; } = new();
@@ -51,4 +55,5 @@
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/candidates");
     }
+
 }

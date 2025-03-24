@@ -91,7 +91,7 @@
         using var dbContext = DbFactory.CreateDbContext();
 
         //Checks details exist in database
-        var candidate = dbContext.Candidate.FirstOrDefault(x => x.Email == Model.Email);
+        var candidate = dbContext.Candidate.FirstOrDefault(x => x.Email == Model.Email) ;
 
         if (candidate == null || candidate.Password != Model.Password)
         {
