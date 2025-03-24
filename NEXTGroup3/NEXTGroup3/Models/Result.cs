@@ -11,7 +11,12 @@ namespace NEXTGroup3.Models
         private int id;
         public int Id { get { return id; } set { id = value; } }
 
+        //---CANDIDATE ID---//
+        private int candidateId;
+        public int CandidateId { get; set; }
+
         //---DEPARTMENT POINTS---//
+
         [NotMapped] private Point[] departmentPoints = 
             { new Point(1), 
             new Point(2), 
@@ -19,23 +24,30 @@ namespace NEXTGroup3.Models
             new Point(4), 
             new Point(5), 
             new Point(6), };
-        [NotMapped] public Point[] DepartmentPoints { get { return departmentPoints; } set { departmentPoints = value; } }
+        [NotMapped] public Point[] DepartmentPointsArray { get { return departmentPoints; } set { departmentPoints = value; } }
+        private string DepartmentPoints = "";
 
         ////---ROLES POINTS---//
-        [NotMapped] private List<Point> rolePoints = new List<Point>();
-        [NotMapped] public List<Point> RolePoints { get { return rolePoints; } set { rolePoints = value; } }
-
-        public string SerializingDepartmentPoints()
+        ///
+        [NotMapped] private List<Point> rolePointsList = new List<Point>();
+        [NotMapped] public List<Point> RolePointsList { get { return rolePointsList; } set { rolePointsList = value; } }
+        private string RolePoints = "";
+        public void SerializeBothPoints()
+        {
+            SerializeDepartmentPoints(); 
+            SerializeRolePoints();
+        }
+        public void SerializeDepartmentPoints()
         {
             string depPoints = "";
-            DepartmentPoints.Select(p => depPoints += $"{p.Points}+{p.Id},");
-            return depPoints;
+            DepartmentPointsArray.Select(p => depPoints += $"{p.Points}+{p.Id},");
+            DepartmentPoints = depPoints;
         }
-        public string SerializingRolePoints()
+        public void SerializeRolePoints()
         {
             string rolePoints = "";
-            RolePoints.Select(p => rolePoints += $"{p.Points}+{p.Id},");
-            return rolePoints;
+            RolePointsList.Select(p => rolePoints += $"{p.Points}+{p.Id},");
+            this.RolePoints = rolePoints;
         }
         public void DeserializingDepartmentPoints(string serializedText)
         {
@@ -44,7 +56,7 @@ namespace NEXTGroup3.Models
             {
                 string[] pointItems = pointObject.Split('+');
                 Point p = new Point(Convert.ToInt32(pointItems[0]), Convert.ToInt32(pointItems[1]));
-                DepartmentPoints[p.Id].Points = p.Points;
+                DepartmentPointsArray[p.Id].Points = p.Points;
             }
         }
         public void DeserializingRolePoints(string serializedText)
@@ -54,7 +66,7 @@ namespace NEXTGroup3.Models
             {
                 string[] pointItems = pointObject.Split('+');
                 Point p = new Point(Convert.ToInt32(pointItems[0]), Convert.ToInt32(pointItems[1]));
-                RolePoints.Add(p);
+                RolePointsList.Add(p);
             }
         }
     }
