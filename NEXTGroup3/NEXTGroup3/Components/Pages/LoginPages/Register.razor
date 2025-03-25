@@ -1,13 +1,16 @@
 ﻿@page "/register"
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_left" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_right" />
+@using Microsoft.AspNetCore.Identity
 @using NEXTGroup3.Models
+@using NEXTGroup3.Services
 @using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 @using System.Security.Cryptography;
 @using Microsoft.AspNetCore.Identity;
 @using System.Runtime.CompilerServices
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject LoginManagerService loginManagerService
 
 <body>
   <div class="register-container">
@@ -80,29 +83,50 @@
   </div>
 </body>
 
+<EditForm method="post" Model="Candidate" OnValidSubmit="AddCandidate" FormName="create" Enhance>
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" role="alert" />
+    <div class="mb-3">
+        <label for="email" class="form-label">Email:</label>
+        <InputText id="email" @bind-Value="Candidate.Email" class="form-control" />
+        <ValidationMessage For="() => Candidate.Email" class="text-danger" />
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password:</label>
+        <InputText id="password" @bind-Value="Candidate.Password" class="form-control" />
+        <ValidationMessage For="() => Candidate.Password" class="text-danger" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</EditForm>
 
 @code {
   [SupplyParameterFromForm] private Candidate Candidate { get; set; } = new();
 
   private string? errorMessage;
 
-  private async Task AddCandidate()
-  {
 
-    using var context = DbFactory.CreateDbContext();
-    if (!context.Candidate.Any(x => x.Email == Candidate.Email))
+    private async Task AddCandidate()
     {
-      // Candidate.Password = HashPassword(Candidate.Password);
-      context.Candidate.Add(Candidate);
-      await context.SaveChangesAsync();
-      NavigationManager.NavigateTo("/CandidateLogin");
+
+        using var context = DbFactory.CreateDbContext();
+        // Check if the email already exists
+        if (!context.Candidate.Any(x => x.Email == Candidate.Email))
+        {
+            Candidate.Password = loginManagerService.HashPassword(Candidate.Password);
+
+            context.Candidate.Add(Candidate);
+            await context.SaveChangesAsync();
+
+            NavigationManager.NavigateTo("/CandidateLogin");
+        }
+        else
+        {
+            Console.WriteLine("ERROR: Candidate with this email already exists.");
+        }
+
     }
-    else
-    {
-      errorMessage = "Account email already exists.";
-      return;
-    }
-   
-  }
+
+
 }
 

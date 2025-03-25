@@ -27,8 +27,9 @@ namespace NEXTGroup3.Models
 
         public string Password
         {
-          get { return password; }
-          set { password = value; }
-        }   
+            get { return password; }
+            set { password = value; }
+        }
+
     }
 }
