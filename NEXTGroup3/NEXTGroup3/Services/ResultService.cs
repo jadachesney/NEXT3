@@ -2,18 +2,29 @@
 using Microsoft.Extensions.DependencyModel;
 using NEXTGroup3.Data;
 using NEXTGroup3.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NEXTGroup3.Services
 {
     public class ResultService
     {
         private IDbContextFactory<AzureContext> contextFactory;
-        public Result Result { get; set; }
+
+        public Point[] DepartmentPoints { get; set; } =
+            { new Point(1),
+            new Point(2),
+            new Point(3),
+            new Point(4),
+            new Point(5),
+            new Point(6), 
+        };
+
+        public List<Point> RolePoints { get; set; } = new List<Point>();
+
 
         public ResultService(IDbContextFactory<AzureContext> c)
         {
             contextFactory = c;
-            Result = new Result();
         }
         
         // gets the relationship between departments and range questions
@@ -35,7 +46,7 @@ namespace NEXTGroup3.Services
             for (int i = 0; i < roles.Count(); i++)
             {
                 var point = new Point(roles[i].Id);
-                Result.RolePointsList.Add(point);
+                RolePoints.Add(point);
             }
         }
 
@@ -50,21 +61,24 @@ namespace NEXTGroup3.Services
         //}
 
         // Fetches all results 
-        public async Task<List<Result>> GetAllResults()
-        {
-            var context = contextFactory.CreateDbContext();
+        //public async Task<List<Result>> GetAllResults()
+        //{
+        //    var context = contextFactory.CreateDbContext();
 
-            return await context.Result.ToListAsync();
-        }
+        //    return await context.Result.ToListAsync();
+        //}
 
         // saves a result to the database
         public void SaveResult()
         {
-            Result.CandidateId = 1;
-            Result.SerializeBothPoints();
+            Result newResult = new Result();
+            newResult.SerializeBothPoints(DepartmentPoints, RolePoints);
 
             var context = contextFactory.CreateDbContext();
-            context.Result.Add(Result);
+            context.Result.Add(newResult);
+            
+            //context.SaveChanges();
+            Console.WriteLine(newResult.DepartmentPoints + " " + newResult.RolePoints);
         }
     }
 }

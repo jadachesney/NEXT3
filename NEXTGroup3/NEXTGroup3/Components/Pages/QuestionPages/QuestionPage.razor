@@ -120,7 +120,7 @@
     {
         foreach (InitiallySelectedDepartments department in initiallySelectedDepartments)
             if(department.IsSelected)
-                resultService.Result.DepartmentPointsArray[department.Department.Id - 1].Points += 3;
+                resultService.DepartmentPoints[department.Department.Id - 1].Points += 3;
         rangeQuestionService.OnRangeQuestions = true;
     }
 
@@ -143,11 +143,11 @@
 
                 //handles point values for the answer provided
                 if(currentQuestionIndex >= 0 && currentQuestionIndex < questionMax - 1) 
-                AddRolePoints(answer);
+                    AddRolePoints(answer);
 
                 else if (textAnswerService.CurrentQuestionIndex == textAnswerService.QuestionMax - 1 && textAnswerService.CurrentQuestionIndex != 0) 
-                EndQuestionnaire();
-                    
+                    EndQuestionnaire();
+
 
                 //selects a new set of text answers
                 await SelectTextAnswers();
@@ -157,7 +157,7 @@
             }
 
             // ending the questionnaire
-            
+
             StateHasChanged();
         }
     }
@@ -172,11 +172,11 @@
             Random rng = new Random(); //new random number generator
 
             for (int i = 0; i < 3;)
-             {
+            {
                 TextAnswer current = textAnswers[rng.Next(0, textAnswerService.availableAnswers.Count())];
 
-                if(!selectedAnswers.Contains(current) 
-                && textAnswerService.CurrentQuestionIndex >= textAnswerService.QuestionMax / 2 
+                if (!selectedAnswers.Contains(current)
+                && textAnswerService.CurrentQuestionIndex >= textAnswerService.QuestionMax / 2
                 && textAnswerService.countAnswerDisplay[current.Id] == 0)
                 {
 
@@ -195,14 +195,15 @@
                     // increments both the selected answer's counter and the loop
                     textAnswerService.countAnswerDisplay[current.Id]++; i++;
 
-                    if (textAnswerService.countAnswerDisplay[current.Id] == 2)
-                    {
-                        textAnswerService.availableAnswers.Remove(current);
-                    }
+                    if (textAnswerService.countAnswerDisplay[current.Id] == 2) textAnswerService.availableAnswers.Remove(current);
+
+
                 }
-                if(textAnswerService.availableAnswers.Count == 0){
-                    i = 3; // closes loop if no more answers are available
-                }
+
+                else if (textAnswerService.availableAnswers.Count() != 0) textAnswerService.countAnswerDisplay[current.Id] = 2;
+
+                if(textAnswerService.availableAnswers.Count == 0) i = 3; // closes loop if no more answers are available
+                
             }
             answer = -1;
         }
@@ -213,7 +214,7 @@
     {
         int roleId = roleService.GetRoleIdFromTextQuestion(answerId);
         //finds correct point object
-        foreach (var point in resultService.Result.RolePointsList)
+        foreach (var point in resultService.RolePoints)
         {
             if (point.Id == roleId)
             {
@@ -229,11 +230,11 @@
         {
             case 0:
                 foreach (Department department in rangeQuestions[rangeQuestionService.CurrentQuestionIndex].LeftDepartments)
-                    resultService.Result.DepartmentPointsArray[department.Id - 1].Points += 4;
+                    resultService.DepartmentPoints[department.Id - 1].Points += 4;
                 break;
             case 1:
                 foreach (Department department in rangeQuestions[rangeQuestionService.CurrentQuestionIndex].LeftDepartments)
-                    resultService.Result.DepartmentPointsArray[department.Id - 1].Points += 2;
+                    resultService.DepartmentPoints[department.Id - 1].Points += 2;
                 break;
             case 2:
                 foreach (Department department in departments)
@@ -241,17 +242,17 @@
                     if (!rangeQuestions[rangeQuestionService.CurrentQuestionIndex].LeftDepartments.Contains(department) &&
                         !rangeQuestions[rangeQuestionService.CurrentQuestionIndex].RightDepartments.Contains(department))
                     {
-                        resultService.Result.DepartmentPointsArray[department.Id - 1].Points += 1;
+                        resultService.DepartmentPoints[department.Id - 1].Points += 1;
                     }
                 }
                 break;
             case 3:
                 foreach (Department department in rangeQuestions[rangeQuestionService.CurrentQuestionIndex].RightDepartments)
-                    resultService.Result.DepartmentPointsArray[department.Id - 1].Points += 2;
+                    resultService.DepartmentPoints[department.Id - 1].Points += 2;
                 break;
             case 4:
                 foreach (Department department in rangeQuestions[rangeQuestionService.CurrentQuestionIndex].RightDepartments)
-                    resultService.Result.DepartmentPointsArray[department.Id - 1].Points += 4;
+                    resultService.DepartmentPoints[department.Id - 1].Points += 4;
                 break;
             default:
                 Console.WriteLine("Error distributing points");
@@ -262,8 +263,8 @@
     //retrieves text answers from the highest scoring department
     private async Task GetHighestDepartmentTextAnswers()
     {
-        int maxPoint = resultService.Result.DepartmentPointsArray.Max(p => p.Points);
-        Point[] departmentsWithMaxPoint = resultService.Result.DepartmentPointsArray.Where(p => p.Points == maxPoint).ToArray();
+        int maxPoint = resultService.DepartmentPoints.Max(p => p.Points);
+        Point[] departmentsWithMaxPoint = resultService.DepartmentPoints.Where(p => p.Points == maxPoint).ToArray();
 
         if (departmentsWithMaxPoint.Count() > 1)
         {
@@ -304,16 +305,17 @@
     {
         List<Role> roles = await roleService.GetAllRolesInDepartment(departmentForTextQuestions);
 
-        int maxPoint = resultService.Result.RolePointsList.Max(p => p.Points);
-        Point[] rolesWithMaxPoint = resultService.Result.RolePointsList.Where(p => p.Points == maxPoint).ToArray();
+        int maxPoint = resultService.RolePoints.Max(p => p.Points);
+        Point[] rolesWithMaxPoint = resultService.RolePoints.Where(p => p.Points == maxPoint).ToArray();
     }
+
     public void EndQuestionnaire(){
 
         // saving result to database
-        // resultService.SaveResult();
+        resultService.SaveResult();
 
         // redirect to result page
-        NavManager.NavigateTo("/ResultPage");
+        NavManager.NavigateTo("/results");
     }
 
     class InitiallySelectedDepartments
