@@ -166,13 +166,14 @@
     {
         selectedAnswers.Clear();
         //runs when the "answers" parameter is set
-        if (selectedAnswers.Count < 3)
+        if (selectedAnswers.Count < 3 && textAnswerService.availableAnswers.Count() > 0)
         {
             //Randomly selects 5 unique answers from textAnswers
             Random rng = new Random(); //new random number generator
 
             for (int i = 0; i < 3;)
             {
+
                 TextAnswer current = textAnswers[rng.Next(0, textAnswerService.availableAnswers.Count())];
 
                 if (!selectedAnswers.Contains(current)
@@ -200,7 +201,11 @@
 
                 }
 
-                else if (textAnswerService.availableAnswers.Count() != 0) textAnswerService.countAnswerDisplay[current.Id] = 2;
+                else if (textAnswerService.availableAnswers.Count() != 0) { 
+
+                    textAnswerService.countAnswerDisplay[current.Id] = 2; 
+                    textAnswerService.availableAnswers.Remove(current); 
+                }
 
                 if(textAnswerService.availableAnswers.Count == 0) i = 3; // closes loop if no more answers are available
                 

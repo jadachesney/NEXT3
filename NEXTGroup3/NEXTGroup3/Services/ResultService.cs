@@ -77,7 +77,7 @@ namespace NEXTGroup3.Services
             var context = contextFactory.CreateDbContext();
             context.Result.Add(newResult);
             
-            //context.SaveChanges();
+            context.SaveChanges();
             Console.WriteLine(newResult.DepartmentPoints + " " + newResult.RolePoints);
         }
     }

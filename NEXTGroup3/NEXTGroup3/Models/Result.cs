@@ -16,14 +16,17 @@ namespace NEXTGroup3.Models
         public int? CandidateId { get; set; } = null;
 
         //---DEPARTMENT POINTS---//
-        public string DepartmentPoints = "";
+        public string DepartmentPoints { get; set; } = "";
 
         //---ROLES POINTS---//
-        public string RolePoints = "";
+        public string RolePoints { get; set; } = "";
 
-        //public Result(int? ci = null) {
-        //    CandidateId = ci;
-        //}
+        public DateTime Timestamp { get; set; }
+        
+        public Result()
+        {
+            Timestamp = DateTime.Now;
+        }
 
         public void SerializeBothPoints(Point[] departmentPoints, List<Point> rolePoints)
         {
@@ -51,14 +54,6 @@ namespace NEXTGroup3.Models
                 departmentPointArray[i] = p;
             }
             return departmentPointArray;
-
-            //---LEGACY---//
-            //foreach (string pointObject in pointObjects)
-            //{
-            //    string[] pointItems = pointObject.Split('+');
-            //    Point p = new Point(Convert.ToInt32(pointItems[0]), Convert.ToInt32(pointItems[1]));
-            //    departmentPointArray[p.Id].Points = p.Points;
-            //}
         }
         public Point[] DeserializingRolePoints()
         {
@@ -73,13 +68,6 @@ namespace NEXTGroup3.Models
             }
             return rolePointArray;
             
-            //---LEGACY---//
-            //foreach (string pointObject in pointObjects)
-            //{
-            //    string[] pointItems = pointObject.Split('+');
-            //    Point p = new Point(Convert.ToInt32(pointItems[0]), Convert.ToInt32(pointItems[1]));
-            //    rolePointArray[p.Id].Points = p.Points;
-            //}
         }
     }
     [NotMapped]
