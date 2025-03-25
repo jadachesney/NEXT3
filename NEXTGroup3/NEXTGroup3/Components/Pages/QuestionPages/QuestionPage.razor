@@ -1,11 +1,11 @@
-@page "/question"
+@page "/questionnaire"
 @rendermode InteractiveServer
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @using NEXTGroup3.Services
 @inject RangeQuestionService rangeQuestionService
 @inject TextAnswerService textAnswerService
 @inject RoleService roleService
-@inject ResultService resultService
+@* @inject ResultService resultService *@
 @inject DepartmentService departmentService
 
 <PageTitle>Question Page</PageTitle>
@@ -85,12 +85,26 @@
                         }
                     }
                 }
+                @if (textAnswerService.CompletedQuestionnaire)
+                {
+                    CalculateResultValues();
+                    <Result topRoles="topRoles" topDepartment="topDepartment" />
+                }
             </div>
         </div>
     </div>
 </div>
 
 @code {
+
+    private void DeselectDepartments()
+    {
+        initiallySelectedDepartments.Select(d => d.IsSelected = false);
+    }
+
+    [Inject]
+    public ResultService resultService { get; set; } = default!;
+
     public int answer = 2;
 
     // INITIAL DEPARTMENT SELECTION
@@ -98,17 +112,20 @@
 
     // RANGE BASED VARIABLES
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>(); // list of all range questions
-    private List<Department> departments = new List<Department>();
+    public List<Department> departments = new List<Department>();
     private string[] rangeAnswerChoices = { "Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree" };
     private List<DepartmentRangeQuestion> departmentRangeQuestions = new List<DepartmentRangeQuestion>();   // list of the all relationships between departments and questions
 
     // TEXT BASED VARIABLES
     private List<TextAnswer> textAnswers = new List<TextAnswer>();  
-    private List<Role> roles = new List<Role>(); //stores the roles to be sent to the TBCode component
     private Department departmentForTextQuestions = new Department(); //stores the department result from rangeQuestions
     private bool rolesSelected = false; // a flag for whether or not roles has been populated
     private List<TextAnswer> selectedAnswers = new List<TextAnswer>();//stores answers selected by the following function
     private bool nextTextQuestion = true;
+
+    // RESULT VARIABLES
+    private List<Role> topRoles = new List<Role>();
+    private Department topDepartment = new Department();
 
     //Database
     protected override async Task OnInitializedAsync()
@@ -150,6 +167,8 @@
 
             //moves onto the next text based question and resets answer to none of the above
             textAnswerService.CurrentQuestionIndex++;
+            if (textAnswerService.CurrentQuestionIndex == textAnswerService.QuestionMax)
+                textAnswerService.CompletedQuestionnaire = true;
         }
         StateHasChanged();
     }
@@ -282,19 +301,19 @@
         await SelectTextAnswers();
 
         resultService.InitializeRolePoints(departmentForTextQuestions);
-        
+
         //flags true when roles related to the department have been populated
         rolesSelected = true; 
         rangeQuestionService.OnTextQuestions = true;
     }
 
-    //checks and stores which role has the highest score
-    private async void CheckMaxRolePoint()
+    private void CalculateResultValues()
     {
-        List<Role> roles = await roleService.GetAllRolesInDepartment(departmentForTextQuestions);
-
-        int maxPoint = resultService.Result.RolePoints.Max(p => p.Points);
-        Point[] rolesWithMaxPoint = resultService.Result.RolePoints.Where(p => p.Points == maxPoint).ToArray();
+        var topPoints = resultService.Result.RolePoints.OrderBy(p => p.Points).Take(3);
+        topRoles = textAnswerService.roles.Where(r => topPoints.Any(p => r.Id == p.Id)).ToList();
+        
+        var sortedDepartments = resultService.Result.DepartmentPoints.OrderByDescending(p => p.Points);
+        topDepartment = departments.Where(d => d.Id == sortedDepartments.ElementAt(0).Id).First();
     }
 
     class InitiallySelectedDepartments

@@ -13,8 +13,9 @@ namespace NEXTGroup3.Services
         private readonly IDbContextFactory<AzureContext> contextFactory;
 
         //functions are run once before refering to text questions, so current index increases by one before starting the set of quesitons
-        private int currentQuestionIndex;
         public int CurrentQuestionIndex { get; set; } = default;
+        public bool CompletedQuestionnaire { get; set; } = false;
+        public List<Role> roles { get; set; }
 
         public int QuestionMax { get; set; } = default;
 
@@ -29,16 +30,16 @@ namespace NEXTGroup3.Services
         public async Task<List<TextAnswer>> GetTextAnswersFromDepartment(Department department)
         {            
             var context = contextFactory.CreateDbContext();
-            var roles = context.Role
+            roles = context.Role
                                .Where(x => x.DepartmentId == department.Id)
                                .AsNoTracking()
                                .ToList();
-            Console.WriteLine($"successfully found roles in {department.Name} department");
-            return await GetTextAnswersFromRoles(roles, context);
+            
+            return await GetTextAnswersFromRoles(context);
         }
 
         // retrieves the text answers from all roles in the derpartment
-        public async Task<List<TextAnswer>> GetTextAnswersFromRoles(List<Role> roles, AzureContext context)
+        public async Task<List<TextAnswer>> GetTextAnswersFromRoles(AzureContext context)
         {
             var tasks = roles.Select(async role =>
             {
