@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace NEXTGroup3.Models
 {
@@ -26,29 +27,8 @@ namespace NEXTGroup3.Models
 
         public string Password
         {
-            get { return password; }
-            set { password = value; }
-        }
-
-        // USER LOGGED IN
-        private bool isLoggedIn;
-
-        public bool IsLoggedIn
-        {
-            get { return isLoggedIn; }
-            set { isLoggedIn = value; }
-        }
-
-        // LOGIN METHOD
-        public void Login(bool isLoggedIn)
-        {
-
-        }
-
-        // LOGOUT METHOD
-        public void Logout(bool isLoggedIn)
-        {
-
-        }
+          get { return password; }
+          set { password = value; }
+        }   
     }
 }

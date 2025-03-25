@@ -58,7 +58,7 @@
           <span class="text-danger">@errorMessage</span>
           <footer class="buttons-bar">
             <div class="buttons-bar-inner">
-              <NavLink href="/staffdashboard" class="login-btn">
+              <NavLink href="/" class="login-btn">
                 <span class="button-label">Back</span>
                 <span class="material-symbols-outlined-left button-arrow button-arrow-left">
                     arrow_left
@@ -91,7 +91,7 @@
         using var dbContext = DbFactory.CreateDbContext();
 
         //Checks details exist in database
-        var candidate = dbContext.Candidate.FirstOrDefault(x => x.Email == Model.Email) ;
+        var candidate = dbContext.Candidate.FirstOrDefault(x => x.Email == Model.Email);
 
         if (candidate == null || candidate.Password != Model.Password)
         {

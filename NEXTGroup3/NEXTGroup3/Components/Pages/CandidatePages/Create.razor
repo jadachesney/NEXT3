@@ -27,11 +27,6 @@
                 <InputText id="password" @bind-Value="Candidate.Password" class="form-control" /> 
                 <ValidationMessage For="() => Candidate.Password" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
-                <label for="isloggedin" class="form-label">IsLoggedIn:</label> 
-                <InputCheckbox id="isloggedin" @bind-Value="Candidate.IsLoggedIn" class="form-check-input" /> 
-                <ValidationMessage For="() => Candidate.IsLoggedIn" class="text-danger" /> 
-            </div>        
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>

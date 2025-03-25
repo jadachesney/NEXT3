@@ -4,6 +4,8 @@
 @using NEXTGroup3.Models
 @using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 @using System.Security.Cryptography;
+@using Microsoft.AspNetCore.Identity;
+@using System.Runtime.CompilerServices
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @inject NavigationManager NavigationManager
 
@@ -14,123 +16,93 @@
         Register a Candidate Account
       </h1>
     </header>
-    <div class="register-form">
-      <section class="register-content">
-        <div class="text-row">
-          <p1 class="register-text">
-            Enter your information to save your results and receive marketing insights from potential employers.
-          </p1>
-        </div>
-        <div class="information-input">
-          <div class="email-text">
-            <label class="email-input">
-              <span class="email-input-label">
-                Email Address
-              </span>
-              <span class="verification-star">
-                *
-              </span>
-            </label>
+    <EditForm method="post" Model="Candidate" OnValidSubmit="AddCandidate" FormName="create" Enhance>
+      <DataAnnotationsValidator />
+      <ValidationSummary class="text-danger" role="alert" />
+      <div class="register-form">
+        <section class="register-content">
+          <div class="text-row">
+            <p1 class="register-text">
+              Enter your information to save your results and receive marketing insights from potential employers.
+            </p1>
           </div>
-          <input class="email-input-row" />
-          <p class="email-row-validation">
-            Email Address field is required.
-          </p>
-          <div class="password-text">
-            <label class="password-input">
-              <span class="password-input-label">
-                Password
-              </span>
-              <span class="verification-star">
-                *
-              </span>
-            </label>
+          <div class="information-input">
+            <div class="input-spacer">
+              <div class="email-text">
+                <label class="email-input">
+                  <span class="email-input-label">
+                    Email Address
+                  </span>
+                  <span class="verification-star">
+                    *
+                  </span>
+                </label>
+              </div>
+              <InputText id="email" @bind-Value="Candidate.Email" class="input-row" />
+              <ValidationMessage For="() => Candidate.Email" class="text-danger" />
+            </div>
+            <div class="input-spacer">
+              <div class="password-text">
+                <label class="password-input">
+                  <span class="password-input-label">
+                    Password
+                  </span>
+                  <span class="verification-star">
+                    *
+                  </span>
+                </label>
+              </div>
+              <InputText id="password" @bind-Value="Candidate.Password" class="input-row" />
+              <ValidationMessage For="() => Candidate.Password" class="text-danger" />
+            </div>
           </div>
-          <input class="password-input-row" />
-          <p class="password-row-validation">
-            Password field is required.
-          </p>
-        </div>
-      </section>
-    </div>
-    <footer class="buttons-bar">
-      <div class="buttons-bar-inner">
-        <NavLink href="/" class="login-btn">
-          <span class="button-label">Back</span>
-          <span class="material-symbols-outlined-left button-arrow button-arrow-left">
-            arrow_left
-          </span>
-        </NavLink>
-        <div class="buttons-spacer"></div>
-        <NavLink href="/candidatedashboard" class="login-btn">
-          <span class="button-label">Register</span>
-          <span class="material-symbols-outlined button-arrow button-arrow-right">
-            arrow_right
-          </span>
-        </NavLink>
+        </section>
       </div>
-    </footer>
+      <span class="text-danger"> @errorMessage</span>
+      <footer class="buttons-bar">
+        <div class="buttons-bar-inner">
+          <NavLink href="/" class="login-btn">
+            <span class="button-label">Back</span>
+            <span class="material-symbols-outlined-left button-arrow button-arrow-left">
+              arrow_left
+            </span>
+          </NavLink>
+          <div class="buttons-spacer"></div>
+          <button type="submit" class="login-btn">
+            <span class="button-label">Create</span>
+            <span class="material-symbols-outlined button-arrow button-arrow-right">
+              arrow_right
+            </span>
+          </button>
+        </div>
+      </footer>
+    </EditForm>
   </div>
 </body>
 
-<EditForm method="post" Model="Candidate" OnValidSubmit="AddCandidate" FormName="create" Enhance>
-    <DataAnnotationsValidator />
-    <ValidationSummary class="text-danger" role="alert" />
-    <div class="mb-3">
-        <label for="email" class="form-label">Email:</label>
-        <InputText id="email" @bind-Value="Candidate.Email" class="form-control" />
-        <ValidationMessage For="() => Candidate.Email" class="text-danger" />
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Password:</label>
-        <InputText id="password" @bind-Value="Candidate.Password" class="form-control" />
-        <ValidationMessage For="() => Candidate.Password" class="text-danger" />
-    </div>
-    <div class="mb-3">
-        <label for="isloggedin" class="form-label">IsLoggedIn:</label>
-        <InputCheckbox id="isloggedin" @bind-Value="Candidate.IsLoggedIn" class="form-check-input" />
-        <ValidationMessage For="() => Candidate.IsLoggedIn" class="text-danger" />
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-</EditForm>
 
 @code {
-    [SupplyParameterFromForm]
-    private Candidate Candidate { get; set; } = new();
+  [SupplyParameterFromForm] private Candidate Candidate { get; set; } = new();
 
-    private async Task AddCandidate()
+  private string? errorMessage;
+
+  private async Task AddCandidate()
+  {
+
+    using var context = DbFactory.CreateDbContext();
+    if (!context.Candidate.Any(x => x.Email == Candidate.Email))
     {
-        Candidate.Password = HashPassword(Candidate.Password);
-
-        using var context = DbFactory.CreateDbContext();
-        context.Candidate.Add(Candidate);
-        await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/CandidateLogin");
+      // Candidate.Password = HashPassword(Candidate.Password);
+      context.Candidate.Add(Candidate);
+      await context.SaveChangesAsync();
+      NavigationManager.NavigateTo("/CandidateLogin");
     }
-
-    public string HashPassword(string password)
+    else
     {
-        if (password == null) throw new ArgumentNullException("password");
-
-        int saltSize = 16;
-        int iterations = 4000;
-
-        byte[] salt;
-        byte[] bytes;
-
-        using (Rfc2898DeriveBytes rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, saltSize, iterations))
-        {
-            salt = rfc2898DeriveBytes.Salt;
-            bytes = rfc2898DeriveBytes.GetBytes(32);
-        }
-
-        byte[] inArray = new byte[saltSize + 32];
-        Buffer.BlockCopy((Array)salt, 0, (Array)inArray, 0, saltSize);
-        Buffer.BlockCopy((Array)bytes, 0, (Array)inArray, saltSize, 32);
-        return Convert.ToBase64String(inArray);
+      errorMessage = "Account email already exists.";
+      return;
     }
-
-
-
+   
+  }
 }
 
