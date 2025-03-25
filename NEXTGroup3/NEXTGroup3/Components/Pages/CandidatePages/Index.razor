@@ -17,7 +17,6 @@
 <QuickGrid Class="table" Items="context.Candidate">
     <PropertyColumn Property="candidate => candidate.Email" />
     <PropertyColumn Property="candidate => candidate.Password" />
-    <PropertyColumn Property="candidate => candidate.IsLoggedIn" />
 
     <TemplateColumn Context="candidate">
         <a href="@($"candidates/edit?id={candidate.Id}")">Edit</a> |

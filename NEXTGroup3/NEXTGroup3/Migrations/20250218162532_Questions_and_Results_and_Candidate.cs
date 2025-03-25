@@ -30,7 +30,6 @@ namespace NEXTGroup3.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsLoggedIn = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

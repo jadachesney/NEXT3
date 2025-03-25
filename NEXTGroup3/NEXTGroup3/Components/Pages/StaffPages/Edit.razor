@@ -37,11 +37,7 @@ else
                     <InputText id="password" @bind-Value="Staff.Password" class="form-control" />
                     <ValidationMessage For="() => Staff.Password" class="text-danger" />
                 </div>
-                <div class="mb-3">
-                    <label for="isloggedin" class="form-label">IsLoggedIn:</label>
-                    <InputCheckbox id="isloggedin" @bind-Value="Staff.IsLoggedIn" class="form-check-input" />
-                    <ValidationMessage For="() => Staff.IsLoggedIn" class="text-danger" />
-                </div>
+
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
         </div>

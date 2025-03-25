@@ -25,10 +25,6 @@
             <dt class="col-sm-2">Password</dt>
             <dd class="col-sm-10">@candidate.Password</dd>
         </dl>
-        <dl class="row">
-            <dt class="col-sm-2">IsLoggedIn</dt>
-            <dd class="col-sm-10">@candidate.IsLoggedIn</dd>
-        </dl>
         <EditForm method="post" Model="candidate" OnValidSubmit="DeleteCandidate" FormName="delete" Enhance>
             <button type="submit" class="btn btn-danger" disabled="@(candidate is null)">Delete</button> |
             <a href="/candidates">Back to List</a>

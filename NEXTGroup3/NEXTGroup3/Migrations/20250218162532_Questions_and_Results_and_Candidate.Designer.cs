@@ -37,8 +37,6 @@ namespace NEXTGroup3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsLoggedIn")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -169,8 +167,6 @@ namespace NEXTGroup3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsLoggedIn")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Password")
                         .IsRequired()

@@ -1,11 +1,14 @@
 ﻿@page "/register"
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_left" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_right" />
+@using Microsoft.AspNetCore.Identity
 @using NEXTGroup3.Models
+@using NEXTGroup3.Services
 @using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 @using System.Security.Cryptography;
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject LoginManagerService loginManagerService
 
 <body>
   <div class="register-container">
@@ -86,11 +89,7 @@
         <InputText id="password" @bind-Value="Candidate.Password" class="form-control" />
         <ValidationMessage For="() => Candidate.Password" class="text-danger" />
     </div>
-    <div class="mb-3">
-        <label for="isloggedin" class="form-label">IsLoggedIn:</label>
-        <InputCheckbox id="isloggedin" @bind-Value="Candidate.IsLoggedIn" class="form-check-input" />
-        <ValidationMessage For="() => Candidate.IsLoggedIn" class="text-danger" />
-    </div>
+
     <button type="submit" class="btn btn-primary">Create</button>
 </EditForm>
 
@@ -98,38 +97,27 @@
     [SupplyParameterFromForm]
     private Candidate Candidate { get; set; } = new();
 
+
     private async Task AddCandidate()
     {
-        Candidate.Password = HashPassword(Candidate.Password);
 
         using var context = DbFactory.CreateDbContext();
-        context.Candidate.Add(Candidate);
-        await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/CandidateLogin");
-    }
-
-    public string HashPassword(string password)
-    {
-        if (password == null) throw new ArgumentNullException("password");
-
-        int saltSize = 16;
-        int iterations = 4000;
-
-        byte[] salt;
-        byte[] bytes;
-
-        using (Rfc2898DeriveBytes rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, saltSize, iterations))
+        // Check if the email already exists
+        if (!context.Candidate.Any(x => x.Email == Candidate.Email))
         {
-            salt = rfc2898DeriveBytes.Salt;
-            bytes = rfc2898DeriveBytes.GetBytes(32);
+            Candidate.Password = loginManagerService.HashPassword(Candidate.Password);
+
+            context.Candidate.Add(Candidate);
+            await context.SaveChangesAsync();
+
+            NavigationManager.NavigateTo("/CandidateLogin");
+        }
+        else
+        {
+            Console.WriteLine("ERROR: Candidate with this email already exists.");
         }
 
-        byte[] inArray = new byte[saltSize + 32];
-        Buffer.BlockCopy((Array)salt, 0, (Array)inArray, 0, saltSize);
-        Buffer.BlockCopy((Array)bytes, 0, (Array)inArray, saltSize, 32);
-        return Convert.ToBase64String(inArray);
     }
-
 
 
 }

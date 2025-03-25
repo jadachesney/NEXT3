@@ -2,11 +2,12 @@
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
+@using NEXTGroup3.Services
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @inject NavigationManager navigationManager
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_left" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_right" />
-
+@inject LoginManagerService loginManagerService
 <body>
   <div class="login-container">
     <header>
@@ -93,7 +94,7 @@
         //Checks details exist in database
         var candidate = dbContext.Candidate.FirstOrDefault(x => x.Email == Model.Email) ;
 
-        if (candidate == null || candidate.Password != Model.Password)
+        if (candidate == null || !LoginManagerService.VerifyHashedPassword(candidate.Password, Model.Password))
         {
             errorMessage = "Invalid email or password.";
             return;

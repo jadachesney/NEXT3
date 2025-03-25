@@ -19,7 +19,6 @@ namespace NEXTGroup3.Migrations
                     StaffId = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsLoggedIn = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

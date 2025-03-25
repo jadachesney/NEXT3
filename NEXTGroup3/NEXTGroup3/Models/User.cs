@@ -30,25 +30,5 @@ namespace NEXTGroup3.Models
             set { password = value; }
         }
 
-        // USER LOGGED IN
-        private bool isLoggedIn;
-
-        public bool IsLoggedIn
-        {
-            get { return isLoggedIn; }
-            set { isLoggedIn = value; }
-        }
-
-        // LOGIN METHOD
-        public void Login(bool isLoggedIn)
-        {
-
-        }
-
-        // LOGOUT METHOD
-        public void Logout(bool isLoggedIn)
-        {
-
-        }
     }
 }
