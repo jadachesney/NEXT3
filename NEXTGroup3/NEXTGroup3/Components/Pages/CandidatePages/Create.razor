@@ -47,6 +47,7 @@
     private async Task AddCandidate()
     {
         using var context = DbFactory.CreateDbContext();
+        
         context.Candidate.Add(Candidate);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/candidates");
