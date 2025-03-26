@@ -1,0 +1,53 @@
+﻿
+<div class="result-container">
+    <h3>Thank you for completing the quiz! See your results below.</h3>
+    <br />
+    <div class="results">
+        @* primary role *@
+        <div class="mt-2 card result-card card-right-border" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">@(topRoles[0].Name)</h5>
+                <a href="@(topDepartment.Link)" class="card-link">Apply Now</a>
+            </div>
+        </div>
+
+        @* secondary roles *@
+        <div class="secondary-roles">
+            <h3>Matched Roles</h3>
+            <div class="secondary-roles-cards">
+                @for (int i = 1; i < topRoles.Count; i++)
+                {
+                    <div class="card result-card secondary-result-card @(i + 1 < topRoles.Count ? "card-right-border" : "no-border")" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">@(topRoles[i].Name)</h5>
+                            <a href="@(topDepartment.Link)" class="card-link">Apply Now</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <h3 class="mt-2">Department Information</h3>
+
+    <div class=" department-info-container">
+        <h5 class="card-title">@(topDepartment.Name)</h5>
+        <p class="card-text">@(topDepartment.Description)</p>
+        <a href="@(topDepartment.Link)" class="card-link">Apply Now</a>
+    </div>
+
+    <br />
+    <h4 class="mt-2">Want to save your results?</h4>
+
+    <div class="result-options mb-5">
+        <button class=" result-option-btn">Save</button>
+        <button class=" result-option-btn">Login</button>
+    </div>
+
+</div>
+
+@code {
+    [Parameter] public List<Role> topRoles { get; set; }
+    [Parameter] public Department topDepartment { get; set; }
+}
