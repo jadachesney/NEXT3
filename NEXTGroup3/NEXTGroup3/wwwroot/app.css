@@ -606,3 +606,31 @@ td {
     width: 75px !important;
     padding: 2px !important;
 }
+
+.layout-container {
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+}
+
+.login-btn-container {
+    vertical-align: middle;
+    line-height: 58px;
+    font-weight: bolder;
+    color: black;
+    z-index: 10
+}
+
+.login-btn:hover
+{
+   text-decoration-color:black;
+   text-decoration:underline;
+}
+
+.divider {
+    vertical-align: middle;
+    display: inline-block;
+    width: 2px;
+    height: 25px;
+    background-color: black;
+}
