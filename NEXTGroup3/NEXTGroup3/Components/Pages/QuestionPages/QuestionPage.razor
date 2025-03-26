@@ -332,10 +332,10 @@
 
     private void CalculateResultValues()
     {
-      var topPoints = resultService.Result.RolePoints.OrderBy(p => p.Points).Take(3);
+      var topPoints = resultService.RolePoints.OrderBy(p => p.Points).Take(3);
         topRoles = textAnswerService.roles.Where(r => topPoints.Any(p => r.Id == p.Id)).ToList();
         
-        var sortedDepartments = resultService.Result.DepartmentPoints.OrderByDescending(p => p.Points);
+        var sortedDepartments = resultService.DepartmentPoints.OrderByDescending(p => p.Points);
         topDepartment = departments.Where(d => d.Id == sortedDepartments.ElementAt(0).Id).First();
     }
       
@@ -343,9 +343,6 @@
 
         // saving result to database
         resultService.SaveResult();
-
-        // redirect to result page
-        NavManager.NavigateTo("/results");
     }
 
     class InitiallySelectedDepartments
