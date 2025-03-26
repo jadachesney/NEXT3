@@ -1,0 +1,66 @@
+﻿@page "/staffprofile"
+@using NEXTGroup3.Models
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Services
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject LoginManagerService loginManagerService
+
+<CascadingAuthenticationState>
+    <h3>User Profile</h3>
+    <div class="form-group">
+        <label for="id">ID</label>
+        <input type="text" name="staff.Id" value="@staff.Id" />
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="staff.Email" disabled />
+    </div>
+
+
+
+</CascadingAuthenticationState>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    private Staff staff { get; set; } = new Staff();
+
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserProfile();
+    }
+
+    private async Task LoadUserProfile()
+    {
+        var authenticationState = await authenticationStateTask;
+        var username = authenticationState.User.Identity.Name;
+
+        if (string.IsNullOrEmpty(username))
+        {
+            return;
+        }
+
+        using var context = DbFactory.CreateDbContext();
+        var Staff = await context.Staff
+            .FirstOrDefaultAsync(u => u.Email == username);
+
+
+        if (Staff != null)
+        {
+            staff = Staff; 
+        }
+
+        StateHasChanged();
+    }
+
+
+}
+
+
