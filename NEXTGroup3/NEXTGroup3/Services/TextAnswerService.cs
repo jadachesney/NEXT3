@@ -19,6 +19,8 @@ namespace NEXTGroup3.Services
 
         public int QuestionMax { get; set; } = default;
 
+        public List<TextAnswer> availableAnswers { get; set; }
+
         public Dictionary<int, int> countAnswerDisplay { get; set; } = new Dictionary<int, int>();
 
         public TextAnswerService(IDbContextFactory<AzureContext> c)

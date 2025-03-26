@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Intrinsics.Arm;
 using System.Security.Permissions;
 
 namespace NEXTGroup3.Models
@@ -11,51 +12,62 @@ namespace NEXTGroup3.Models
         private int id;
         public int Id { get { return id; } set { id = value; } }
 
+        //---CANDIDATE ID---//
+        public int? CandidateId { get; set; } = null;
+
         //---DEPARTMENT POINTS---//
-        [NotMapped] private Point[] departmentPoints = 
-            { new Point(1), 
-            new Point(2), 
-            new Point(3), 
-            new Point(4), 
-            new Point(5), 
-            new Point(6), };
-        [NotMapped] public Point[] DepartmentPoints { get { return departmentPoints; } set { departmentPoints = value; } }
+        public string DepartmentPoints { get; set; } = "";
 
-        ////---ROLES POINTS---//
-        [NotMapped] private List<Point> rolePoints = new List<Point>();
-        [NotMapped] public List<Point> RolePoints { get { return rolePoints; } set { rolePoints = value; } }
+        //---ROLES POINTS---//
+        public string RolePoints { get; set; } = "";
 
-        public string SerializingDepartmentPoints()
+        public DateTime Timestamp { get; set; }
+        
+        public Result()
         {
-            string depPoints = "";
-            DepartmentPoints.Select(p => depPoints += $"{p.Points}+{p.Id},");
-            return depPoints;
+            Timestamp = DateTime.Now;
         }
-        public string SerializingRolePoints()
+
+        public void SerializeBothPoints(Point[] departmentPoints, List<Point> rolePoints)
         {
-            string rolePoints = "";
-            RolePoints.Select(p => rolePoints += $"{p.Points}+{p.Id},");
-            return rolePoints;
+            SerializeDepartmentPoints(departmentPoints); 
+            SerializeRolePoints(rolePoints);
         }
-        public void DeserializingDepartmentPoints(string serializedText)
+        public void SerializeDepartmentPoints(Point[] inputPoints)
         {
-            string[] pointObjects = serializedText.Split(',');
-            foreach (string pointObject in pointObjects)
+            DepartmentPoints =  String.Join("", inputPoints.Select(p => $"{p.Points}+{p.Id},"));
+        }
+        public void SerializeRolePoints(List<Point> inputPoints)
+        {
+            RolePoints =  String.Join("", inputPoints.Select(p => $"{p.Points}+{p.Id},")); 
+        }
+        public Point[] DeserializingDepartmentPoints()
+        {
+            string[] pointObjects = DepartmentPoints.Split(',');
+            Point[] departmentPointArray = new Point[pointObjects.Length];
+
+
+            for (int i = 0; i < pointObjects.Length; i++)
             {
-                string[] pointItems = pointObject.Split('+');
+                string[] pointItems = pointObjects[i].Split('+');
                 Point p = new Point(Convert.ToInt32(pointItems[0]), Convert.ToInt32(pointItems[1]));
-                DepartmentPoints[p.Id].Points = p.Points;
+                departmentPointArray[i] = p;
             }
+            return departmentPointArray;
         }
-        public void DeserializingRolePoints(string serializedText)
+        public Point[] DeserializingRolePoints()
         {
-            string[] pointObjects = serializedText.Split(',');
-            foreach (string pointObject in pointObjects)
+            string[] pointObjects = RolePoints.Split(',');
+            Point[] rolePointArray = new Point[pointObjects.Length];
+            
+            for (int i = 0; i < pointObjects.Length; i++)
             {
-                string[] pointItems = pointObject.Split('+');
+                string[] pointItems = pointObjects[i].Split('+');
                 Point p = new Point(Convert.ToInt32(pointItems[0]), Convert.ToInt32(pointItems[1]));
-                RolePoints.Add(p);
+                rolePointArray[i] = p;
             }
+            return rolePointArray;
+            
         }
     }
     [NotMapped]

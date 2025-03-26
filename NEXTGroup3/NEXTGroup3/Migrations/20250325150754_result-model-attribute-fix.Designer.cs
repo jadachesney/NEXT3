@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NEXTGroup3.Data;
 
@@ -11,9 +12,11 @@ using NEXTGroup3.Data;
 namespace NEXTGroup3.Migrations
 {
     [DbContext(typeof(AzureContext))]
-    partial class AzureContextModelSnapshot : ModelSnapshot
+    [Migration("20250325150754_result-model-attribute-fix")]
+    partial class resultmodelattributefix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
