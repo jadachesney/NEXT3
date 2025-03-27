@@ -1,55 +1,88 @@
-﻿@page "/staff/create"
-@using Microsoft.EntityFrameworkCore
-@using NEXTGroup3.Models
-@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
-@inject NavigationManager NavigationManager
+﻿ @page "/staff/create" 
+@using Microsoft.AspNetCore.Identity
+ @using Microsoft.EntityFrameworkCore 
+ @using NEXTGroup3.Models 
+ @using NEXTGroup3.Services 
+ @using NEXTGroup3.Components.Layout
+ @using Microsoft.AspNetCore.Authorization
+ @using System.Security.Claims
+ @inject AuthenticationStateProvider authenticationStateProvider
+ @inject UserManager<NextUser> userManager
+ @inject NavigationManager NavigationManager 
+ @inject LoginManagerService loginManagerService 
 
-<PageTitle>Create</PageTitle>
+<CascadingAuthenticationState>
+  <AuthorizeView>
+    <Authorized>
+      <PageTitle>Create</PageTitle> 
 
-<h1>Create</h1>
+      <h1>Create</h1> 
 
-<h2>Staff</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <EditForm method="post" Model="Staff" OnValidSubmit="AddStaff" FormName="create" Enhance>
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="mb-3">
-                <label for="staffid" class="form-label">StaffId:</label> 
-                <InputNumber id="staffid" @bind-Value="Staff.StaffId" class="form-control" /> 
-                <ValidationMessage For="() => Staff.StaffId" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="email" class="form-label">Email:</label> 
-                <InputText id="email" @bind-Value="Staff.Email" class="form-control" /> 
-                <ValidationMessage For="() => Staff.Email" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="password" class="form-label">Password:</label> 
-                <InputText id="password" @bind-Value="Staff.Password" class="form-control" /> 
-                <ValidationMessage For="() => Staff.Password" class="text-danger" /> 
-            </div>        
-  
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
-    </div>
-</div>
+      <h2>Staff</h2> 
+      <hr /> 
+      <div class="row"> 
+        <div class="col-md-4"> 
+          <EditForm method="post" Model="@RegisterModel" OnValidSubmit="AddStaff" FormName="@addStaff"> 
+            <DataAnnotationsValidator /> 
+            <ValidationSummary class="text-danger" role="alert"/> 
+            @* <div class="mb-3">  *@
+            @*   <label for="staffid" class="form-label">StaffId:</label>   *@
+            @*   <InputNumber id="staffid" @bind-Value="RegisterModel.StaffId" class="form-control" /> *@
+            @*  <ValidationMessage For="() => RegisterModel.StaffId" class="text-danger" /> *@
+            @* </div>          *@
+            <div class="mb-3"> 
+              <label for="email" class="form-label">First Name:</label>
+            <InputText id="email" @bind-Value="RegisterModel.FirstName" class="form-control" />
+            <ValidationMessage For="() => RegisterModel.FirstName" class="text-danger" />
+            </div>   
+            <div class="mb-3"> 
+              <label for="email" class="form-label">Last Name:</label>
+            <InputText id="email" @bind-Value="RegisterModel.LastName" class="form-control" />
+            <ValidationMessage For="() => RegisterModel.LastName" class="text-danger" />
+            </div>   
+            <div class="mb-3"> 
+              <label for="email" class="form-label">Email:</label>
+            <InputText id="email" @bind-Value="RegisterModel.Email" class="form-control" />
+            <ValidationMessage For="() => RegisterModel.Email" class="text-danger" />
+            </div>         
+            <div class="mb-3"> 
+              <label for="password" class="form-label">Password:</label>
+            <InputText id="password" @bind-Value="RegisterModel.Password" class="form-control" />
+            <ValidationMessage For="() => RegisterModel.Password" class="text-danger" />
+            </div>         
 
-<div>
-    <a href="/staff">Back to List</a>
-</div>
+            <button type="submit" class="btn btn-primary">Create</button> 
+          </EditForm> 
+        </div> 
+      </div> 
 
-@code {
-    [SupplyParameterFromForm]
-    private Staff Staff { get; set; } = new();
+      <div> 
+        <a href="/staff">Back to List</a> 
+      </div>
+    </Authorized>
+    <NotAuthorized></NotAuthorized>
+  </AuthorizeView>
+</CascadingAuthenticationState>
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+ @code { 
+    private const string addStaff = "AddStaff";
+    [SupplyParameterFromForm(FormName = addStaff)] private RegisterModel RegisterModel { get; set; } = new();
+
+    private string? errorMessage;
+
     private async Task AddStaff()
     {
-        using var context = DbFactory.CreateDbContext();
-        context.Staff.Add(Staff);
-        await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/staff");
+      var user = new NextUser { UserName = RegisterModel.Email, FirstName = RegisterModel.FirstName, LastName = RegisterModel.LastName, Email = RegisterModel.Email };
+      var result = await userManager.CreateAsync(user, RegisterModel.Password);
+      // Check if the email already exists
+      if (result != null)
+      {
+        return;
+      }
+      else
+      {
+        errorMessage = "Email already exists to a linked account.";
+        return;
+      }
     }
-}
+ } 

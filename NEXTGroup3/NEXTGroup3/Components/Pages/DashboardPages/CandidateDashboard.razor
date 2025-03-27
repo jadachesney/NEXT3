@@ -1,27 +1,55 @@
 ﻿@page "/candidatedashboard"
 @layout CandidateDashboardLayout
 @rendermode InteractiveAuto
-@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject AuthenticationStateProvider authenticationStateProvider
 @using Microsoft.AspNetCore.Authorization
 @using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Services
+@using System.Security.Claims
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+@attribute [Authorize (Roles = "Admin, Candidate")]
 
-<div class="dashboard-container">
-    <div class = "dashboard-header">
-        <h1>Dashboard</h1>
+<CascadingAuthenticationState>
+  <AuthorizeView>
+    <Authorized>
+      <div class="dashboard-container">
+          <div class = "dashboard-header">
+              <h1>Dashboard: Welcome @name</h1>
 
-        <h3>Current role:</h3>
+              <h3>Current role:</h3>
 
-        <h3>Current department:</h3>
-    </div>
-</div>
+              <h3>Current department:</h3>
+          </div>
+      </div>
+    </Authorized>
+    <NotAuthorized></NotAuthorized>
+  </AuthorizeView>
+</CascadingAuthenticationState>
 
 
 <NavLink href="questionpage" class="mt-2 retake-btn">
     Retake Questionnaire
 </NavLink>
 
+@code {
+  [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+  private string name;
+
+  protected override async Task OnInitializedAsync()
+  {
+    var authstate = await AuthenticationState;
+    var user = authstate.User;
+
+    if (user.Identity != null && user.Identity.IsAuthenticated)
+    {
+      name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
+    }
+    else
+    {
+      name = "Guest";
+    }
+  }
+}
 
 <canvas id="bar-chart" width="400" height="300" class="bar-styling mt-2"></canvas>
 

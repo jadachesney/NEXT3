@@ -6,9 +6,8 @@
 @using NEXTGroup3.Services
 @using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 @using System.Security.Cryptography;
-@using Microsoft.AspNetCore.Identity;
 @using System.Runtime.CompilerServices
-@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject UserManager<NextUser> userManager
 @inject NavigationManager NavigationManager
 @inject LoginManagerService loginManagerService
 
@@ -19,7 +18,7 @@
         Register a Candidate Account
       </h1>
     </header>
-    <EditForm method="post" Model="Candidate" OnValidSubmit="AddCandidate" FormName="create" Enhance>
+    <EditForm method="post" Model="@RegisterModel" OnValidSubmit="AddCandidate" FormName="@registerForm">
       <DataAnnotationsValidator />
       <ValidationSummary class="text-danger" role="alert" />
       <div class="register-form">
@@ -31,6 +30,7 @@
           </div>
           <div class="information-input">
             <div class="input-spacer">
+              <!-- CANDIDATE EMAIL -->
               <div class="email-text">
                 <label class="email-input">
                   <span class="email-input-label">
@@ -41,10 +41,41 @@
                   </span>
                 </label>
               </div>
-              <InputText id="email" @bind-Value="Candidate.Email" class="input-row" />
-              <ValidationMessage For="() => Candidate.Email" class="text-danger" />
+              <InputText id="email" @bind-Value="RegisterModel.Email" class="input-row" />
+              <ValidationMessage For="() => RegisterModel.Email" class="text-danger" />
             </div>
             <div class="input-spacer">
+              <!-- CANDIDATE FIRST NAME -->
+              <div class="email-text">
+                <label class="email-input">
+                  <span class="email-input-label">
+                    First Name
+                  </span>
+                  <span class="verification-star">
+                    *
+                  </span>
+                </label>
+              </div>
+              <InputText id="first-name" @bind-Value="RegisterModel.FirstName" class="input-row" />
+              <ValidationMessage For="() => RegisterModel.FirstName" class="text-danger" />
+            </div>
+            <!-- CANDIDATE LAST NAME -->
+            <div class="input-spacer">
+              <div class="email-text">
+                <label class="email-input">
+                  <span class="email-input-label">
+                    Last Name
+                  </span>
+                  <span class="verification-star">
+                    *
+                  </span>
+                </label>
+              </div>
+              <InputText id="last-name" @bind-Value="RegisterModel.LastName" class="input-row" />
+              <ValidationMessage For="() => RegisterModel.LastName" class="text-danger" />
+            </div>
+            <div class="input-spacer">
+              <!-- CANDIDATE PASSWORD -->
               <div class="password-text">
                 <label class="password-input">
                   <span class="password-input-label">
@@ -55,8 +86,8 @@
                   </span>
                 </label>
               </div>
-              <InputText id="password" @bind-Value="Candidate.Password" class="input-row" />
-              <ValidationMessage For="() => Candidate.Password" class="text-danger" />
+              <InputText id="password" @bind-Value="RegisterModel.Password" class="input-row" />
+              <ValidationMessage For="() => RegisterModel.Password" class="text-danger" />
             </div>
           </div>
         </section>
@@ -83,50 +114,27 @@
   </div>
 </body>
 
-<EditForm method="post" Model="Candidate" OnValidSubmit="AddCandidate" FormName="create" Enhance>
-    <DataAnnotationsValidator />
-    <ValidationSummary class="text-danger" role="alert" />
-    <div class="mb-3">
-        <label for="email" class="form-label">Email:</label>
-        <InputText id="email" @bind-Value="Candidate.Email" class="form-control" />
-        <ValidationMessage For="() => Candidate.Email" class="text-danger" />
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Password:</label>
-        <InputText id="password" @bind-Value="Candidate.Password" class="form-control" />
-        <ValidationMessage For="() => Candidate.Password" class="text-danger" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create</button>
-</EditForm>
 
 @code {
-  [SupplyParameterFromForm] private Candidate Candidate { get; set; } = new();
+  private const string registerForm = "RegisterForm";
+  [SupplyParameterFromForm(FormName = registerForm)] private RegisterModel RegisterModel { get; set; } = new();
 
   private string? errorMessage;
 
-
-    private async Task AddCandidate()
+  private async Task AddCandidate()
+  {
+    var user = new NextUser { UserName = RegisterModel.Email, FirstName = RegisterModel.FirstName, LastName = RegisterModel.LastName, Email = RegisterModel.Email };
+    var result = await userManager.CreateAsync(user, RegisterModel.Password);
+    // Check if the email already exists
+    if (result != null)
     {
-
-        using var context = DbFactory.CreateDbContext();
-        // Check if the email already exists
-        if (!context.Candidate.Any(x => x.Email == Candidate.Email))
-        {
-            Candidate.Password = loginManagerService.HashPassword(Candidate.Password);
-
-            context.Candidate.Add(Candidate);
-            await context.SaveChangesAsync();
-
-            NavigationManager.NavigateTo("/CandidateLogin");
-        }
-        else
-        {
-            Console.WriteLine("ERROR: Candidate with this email already exists.");
-        }
-
+      NavigationManager.NavigateTo("/CandidateLogin");
     }
-
-
+    else
+    {
+      errorMessage = "Email already exists to a linked account.";
+      return;
+    }
+  }
 }
 

@@ -14,16 +14,16 @@
     <a href="candidates/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Candidate">
-    <PropertyColumn Property="candidate => candidate.Email" />
-    <PropertyColumn Property="candidate => candidate.Password" />
+@* <QuickGrid Class="table" Items="context.Candidate"> *@
+@*     <PropertyColumn Property="candidate => candidate.Email" /> *@
+@*     <PropertyColumn Property="candidate => candidate.Password" /> *@
 
-    <TemplateColumn Context="candidate">
-        <a href="@($"candidates/edit?id={candidate.Id}")">Edit</a> |
-        <a href="@($"candidates/details?id={candidate.Id}")">Details</a> |
-        <a href="@($"candidates/delete?id={candidate.Id}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
+@*     <TemplateColumn Context="candidate"> *@
+@*         <a href="@($"candidates/edit?id={candidate.Id}")">Edit</a> | *@
+@*         <a href="@($"candidates/details?id={candidate.Id}")">Details</a> | *@
+@*         <a href="@($"candidates/delete?id={candidate.Id}")">Delete</a> *@
+@*     </TemplateColumn> *@
+@* </QuickGrid> *@
 
 @code {
     private AzureContext context = default!;

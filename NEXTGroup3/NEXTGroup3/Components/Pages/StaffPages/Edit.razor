@@ -1,100 +1,100 @@
-﻿@page "/staff/edit"
-@using Microsoft.EntityFrameworkCore
-@using NEXTGroup3.Models
-@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
-@inject NavigationManager NavigationManager
+﻿@* @page "/staff/edit" *@
+@* @using Microsoft.EntityFrameworkCore *@
+@* @using NEXTGroup3.Models *@
+@* @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory *@
+@* @inject NavigationManager NavigationManager *@
 
-<PageTitle>Edit</PageTitle>
+@* <PageTitle>Edit</PageTitle> *@
 
-<h1>Edit</h1>
+@* <h1>Edit</h1> *@
 
-<h2>Staff</h2>
-<hr />
-@if (Staff is null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <div class="row">
-        <div class="col-md-4">
-            <EditForm method="post" Model="Staff" OnValidSubmit="UpdateStaff" FormName="edit" Enhance>
-                <DataAnnotationsValidator />
-                <ValidationSummary role="alert"/>
-                <input type="hidden" name="Staff.Id" value="@Staff.Id" />
-                <div class="mb-3">
-                    <label for="staffid" class="form-label">StaffId:</label>
-                    <InputNumber id="staffid" @bind-Value="Staff.StaffId" class="form-control" />
-                    <ValidationMessage For="() => Staff.StaffId" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email:</label>
-                    <InputText id="email" @bind-Value="Staff.Email" class="form-control" />
-                    <ValidationMessage For="() => Staff.Email" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password:</label>
-                    <InputText id="password" @bind-Value="Staff.Password" class="form-control" />
-                    <ValidationMessage For="() => Staff.Password" class="text-danger" />
-                </div>
+@* <h2>Staff</h2> *@
+@* <hr /> *@
+@* @if (Staff is null) *@
+@* { *@
+@*     <p><em>Loading...</em></p> *@
+@* } *@
+@* else *@
+@* { *@
+@*     <div class="row"> *@
+@*         <div class="col-md-4"> *@
+@*             <EditForm method="post" Model="Staff" OnValidSubmit="UpdateStaff" FormName="edit" Enhance> *@
+@*                 <DataAnnotationsValidator /> *@
+@*                 <ValidationSummary role="alert"/> *@
+@*                 <input type="hidden" name="Staff.Id" value="@Staff.Id" /> *@
+@*                 <div class="mb-3"> *@
+@*                     <label for="staffid" class="form-label">StaffId:</label> *@
+@*                     <InputNumber id="staffid" @bind-Value="Staff.StaffId" class="form-control" /> *@
+@*                     <ValidationMessage For="() => Staff.StaffId" class="text-danger" /> *@
+@*                 </div> *@
+@*                 <div class="mb-3"> *@
+@*                     <label for="email" class="form-label">Email:</label> *@
+@*                     <InputText id="email" @bind-Value="Staff.Email" class="form-control" /> *@
+@*                     <ValidationMessage For="() => Staff.Email" class="text-danger" /> *@
+@*                 </div> *@
+@*                 <div class="mb-3"> *@
+@*                     <label for="password" class="form-label">Password:</label> *@
+@*                     <InputText id="password" @bind-Value="Staff.Password" class="form-control" /> *@
+@*                     <ValidationMessage For="() => Staff.Password" class="text-danger" /> *@
+@*                 </div> *@
 
-                <button type="submit" class="btn btn-primary">Save</button>
-            </EditForm>
-        </div>
-    </div>
-}
+@*                 <button type="submit" class="btn btn-primary">Save</button> *@
+@*             </EditForm> *@
+@*         </div> *@
+@*     </div> *@
+@* } *@
 
-<div>
-    <a href="/staff">Back to List</a>
-</div>
+@* <div> *@
+@*     <a href="/staff">Back to List</a> *@
+@* </div> *@
 
-@code {
-    [SupplyParameterFromQuery]
-    private int Id { get; set; }
+@* @code { *@
+@*     [SupplyParameterFromQuery] *@
+@*     private int Id { get; set; } *@
 
-    [SupplyParameterFromForm]
-    private Staff? Staff { get; set; }
+@*     [SupplyParameterFromForm] *@
+@*     private Staff? Staff { get; set; } *@
 
-    protected override async Task OnInitializedAsync()
-    {
-        using var context = DbFactory.CreateDbContext();
-        Staff ??= await context.Staff.FirstOrDefaultAsync(m => m.Id == Id);
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         using var context = DbFactory.CreateDbContext(); *@
+@*         Staff ??= await context.Staff.FirstOrDefaultAsync(m => m.Id == Id); *@
 
-        if (Staff is null)
-        {
-            NavigationManager.NavigateTo("notfound");
-        }
-    }
+@*         if (Staff is null) *@
+@*         { *@
+@*             NavigationManager.NavigateTo("notfound"); *@
+@*         } *@
+@*     } *@
 
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task UpdateStaff()
-    {
-        using var context = DbFactory.CreateDbContext();
-        context.Attach(Staff!).State = EntityState.Modified;
+@*     // To protect from overposting attacks, enable the specific properties you want to bind to. *@
+@*     // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks. *@
+@*     private async Task UpdateStaff() *@
+@*     { *@
+@*         using var context = DbFactory.CreateDbContext(); *@
+@*         context.Attach(Staff!).State = EntityState.Modified; *@
 
-        try
-        {
-            await context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!StaffExists(Staff!.Id))
-            {
-                NavigationManager.NavigateTo("notfound");
-            }
-            else
-            {
-                throw;
-            }
-        }
+@*         try *@
+@*         { *@
+@*             await context.SaveChangesAsync(); *@
+@*         } *@
+@*         catch (DbUpdateConcurrencyException) *@
+@*         { *@
+@*             if (!StaffExists(Staff!.Id)) *@
+@*             { *@
+@*                 NavigationManager.NavigateTo("notfound"); *@
+@*             } *@
+@*             else *@
+@*             { *@
+@*                 throw; *@
+@*             } *@
+@*         } *@
 
-        NavigationManager.NavigateTo("/staff");
-    }
+@*         NavigationManager.NavigateTo("/staff"); *@
+@*     } *@
 
-    private bool StaffExists(int id)
-    {
-        using var context = DbFactory.CreateDbContext();
-        return context.Staff.Any(e => e.Id == id);
-    }
-}
+@*     private bool StaffExists(int id) *@
+@*     { *@
+@*         using var context = DbFactory.CreateDbContext(); *@
+@*         return context.Staff.Any(e => e.Id == id); *@
+@*     } *@
+@* } *@

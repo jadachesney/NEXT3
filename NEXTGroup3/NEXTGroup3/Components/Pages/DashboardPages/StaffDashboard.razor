@@ -1,26 +1,52 @@
 ﻿@page "/staffdashboard"
 @layout StaffDashboardLayout
 @rendermode InteractiveAuto
-@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject AuthenticationStateProvider authenticationStateProvider
 @using NEXTGroup3.Components.Layout
+@using Microsoft.AspNetCore.Authorization
 @using NEXTGroup3.Services
+@using System.Security.Claims
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+@attribute [Authorize(Roles = "Admin, Staff")]
 
+<CascadingAuthenticationState>
+  <AuthorizeView>
+    <Authorized>
+      <div class="dashboard-container">
+          <div class="dashboard-header">
+              <h1>Dashboard</h1>
 
-<div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1>Dashboard</h1>
+              <h3>Staff ID:</h3>
 
-        <h3>Staff ID:</h3>
+              <h3>Staff role:</h3>
+          </div>
+      </div>
+    </Authorized>
+    <NotAuthorized></NotAuthorized>
+  </AuthorizeView>
+</CascadingAuthenticationState>
 
-        <h3>Staff role:</h3>
-    </div>
+@code {
+  [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+  private string name;
 
+  protected override async Task OnInitializedAsync()
+  {
+    var authstate = await AuthenticationState;
+    var user = authstate.User;
 
-</div>
+    if (user.Identity != null && user.Identity.IsAuthenticated)
+    {
+      name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
+    }
+    else
+    {
+      name = "Guest";
+    }
+  }
+}
 
 <canvas id="bar-chart" width="400" height="300" class="bar-styling mt-2"></canvas>
-
 
 <script>
 
@@ -71,6 +97,5 @@
 
 
 @code {
-
 
 }

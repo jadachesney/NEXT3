@@ -51,6 +51,7 @@ namespace NEXTGroup3.Models
                 RolePoints.Add(p);
             }
         }
+       
     }
     [NotMapped]
     public class Point
@@ -75,4 +76,5 @@ namespace NEXTGroup3.Models
             set { id = value; }
         }
     }
+
 }
