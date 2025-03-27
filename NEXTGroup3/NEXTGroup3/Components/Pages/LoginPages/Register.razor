@@ -114,6 +114,22 @@
   </div>
 </body>
 
+<EditForm method="post" Model="Candidate" OnValidSubmit="AddCandidate" FormName="create" Enhance>
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" role="alert" />
+    <div class="mb-3">
+        <label for="email" class="form-label">Email:</label>
+        <InputText id="email" @bind-Value="Candidate.Email" class="form-control" />
+        <ValidationMessage For="() => Candidate.Email" class="text-danger" />
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password:</label>
+        <InputText id="password" @bind-Value="Candidate.Password" class="form-control" />
+        <ValidationMessage For="() => Candidate.Password" class="text-danger" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</EditForm>
 
 @code {
   private const string registerForm = "RegisterForm";
