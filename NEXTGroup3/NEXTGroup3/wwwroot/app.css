@@ -9,6 +9,7 @@ html, body {
     font-weight: 400;
     font-style: normal;
     background-color: #fbf9f8;
+    overflow-x: clip;
 }
 
 a, .btn-link {
@@ -102,13 +103,46 @@ h1:focus {
     text-decoration: none;
     z-index: 2;
 }
-.back-home-button:hover {
-    color: white;
-}
+
+    .back-home-button:hover {
+        color: white;
+    }
 
 /* QUESTIONS */
 .question-container {
-    margin: 80px;
+    margin: 0 80px;
+    height: 60vh;
+}
+
+.question-component{
+    margin: 80px 0;
+}
+
+/* ENCOURAGING MESSAGES */
+.encouraging-message {
+    background-color: lightgray;
+    padding: 10px;
+    border-radius: 5px;
+    width: 500px;
+    animation: fadeIn 5s;
+}
+
+.fade-in {
+    opacity: 1;
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 250ms;
+}
+
+@keyframes fadeInOpacity {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 /* INITIAL DEPARTMENT QUESTION */
@@ -132,6 +166,7 @@ h1:focus {
 
 /* RANGE BASED QUESTIONS */
 .range-question {
+    height: 100%;
 }
 
 .range-header {
@@ -144,6 +179,11 @@ h1:focus {
 }
 
 .range-answer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    align-items: center;
 }
 
 .range-progress-container {
@@ -196,6 +236,8 @@ form.range {
     border: none;
     padding: 10px 20px;
     width: 200px;
+    transition-duration: 300ms;
+    transition-property: opacity;
 }
 
 .range-question .range-answer-btn {
@@ -215,6 +257,7 @@ form.range {
 
 .range-content {
     text-align: center;
+    height: 100%;
 }
 
 /* TEXT BASED QUESTIONS */
@@ -232,6 +275,27 @@ form.range {
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     padding: 30px 0;
+}
+
+.result-banner {
+    position: relative;
+    display: inline-block;
+}
+
+.result-banner img {
+    display: block;
+    width: 100vw;
+    height: auto;
+}
+
+.result-banner h3 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    text-align: center;
+    font-size: 40px;
 }
 
 .card-right-border {
@@ -310,9 +374,9 @@ result-options {
     transition-property: background-color;
 }
 
-.result-option-btn:hover {
-    background-color: #f7550d;
-}
+    .result-option-btn:hover {
+        background-color: #f7550d;
+    }
 
 .text-answer-container {
     display: flex;
