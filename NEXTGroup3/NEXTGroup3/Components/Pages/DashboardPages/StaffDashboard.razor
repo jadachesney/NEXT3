@@ -2,8 +2,10 @@
 @layout StaffDashboardLayout
 @rendermode InteractiveAuto
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject IJSRuntime jsRunTime
 @using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Services
+@inject StaffDashboardService dashboardService
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
 
@@ -21,56 +23,63 @@
 
 <canvas id="bar-chart" width="400" height="300" class="bar-styling mt-2"></canvas>
 
-
 <script>
 
-    new Chart(document.getElementById("bar-chart"), {
+    function CreateChart(depPoints){
+        new Chart(document.getElementById("bar-chart"), {
         type: 'bar',
         data: {
-            labels: ["IT", "Finance", "Marketing", "Design", "Trading", "Merchandising"],
-            datasets: [
-                {
-                    label: "Popularity",
-                    backgroundColor: ["#000000", "#f7550d", "#000000", "#000000", "#000000", "#f7550d"],
-                    data: [542, 600, 534, 484, 433, 200, 100],
-                    borderWidth: 1
-                    
-                    
-                }
-            ]
+        labels: ["IT", "Finance", "Marketing", "Design", "Trading", "Merchandising"],
+        datasets: [
+        {
+        label: "Popularity",
+        backgroundColor: ["#000000", "#f7550d", "#000000", "#000000", "#000000", "#f7550d"],
+        data: [12,42,54,73,32,43]
         },
+        borderWidth: 1
         options: {
-            legend: { display: false },
-            responsive: false,
-            title: {
-                display: true,
-                text: ''
-            },
+        legend: { display: false },
+        responsive: false,
+        title: {
+        display: true,
+        text: ''
+        },
 
-            scales:
-            {
-                yAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Popularity',
-                        color: '#000000'
-                    }
-                }],
-
-                xAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Department',
-                        color: '#000000'
-                    }
-                }]
-            }
+        scales:
+        {
+        yAxes: [{
+        scaleLabel: {
+        display: true,
+        labelString: 'Popularity',
+        color: '#000000'
         }
-    });
+        }],
+
+        xAxes: [{
+        scaleLabel: {
+        display: true,
+        labelString: 'Department',
+        color: '#000000'
+        }
+        }]
+        }
+        }
+        });
+    }
 </script>
 
 
 @code {
 
+    private async Task CreateChart()
+    {
+        await jsRunTime.InvokeVoidAsync("CreateChart", dashboardService);
+    }
 
+    protected override async Task OnInitializedAsync()
+    {
+        List<Point> depPoints = dashboardService.DepartmentPoints;
+        await CreateChart();
+    }
+    }
 }
