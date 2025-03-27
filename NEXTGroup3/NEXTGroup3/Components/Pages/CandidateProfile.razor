@@ -1,0 +1,84 @@
+﻿@page "/candidateprofile"
+@using Microsoft.AspNetCore.Components.Authorization
+@using NEXTGroup3.Components.Layout
+@using NEXTGroup3.Models
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Services
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject LoginManagerService loginManagerService
+@layout CandidateDashboardLayout
+
+<CascadingAuthenticationState>
+        <input type="hidden" name="candidate.Id" value="@candidate.Id" />
+
+    <div class="profile-container">
+
+        <div class="form-group profile-text-box align-label">
+            <label for="email">Email
+            <input class="profile-box" type="text" id="email" value="@candidate.Email" disabled />
+            </label>
+        </div>
+
+        <div class="profile-btn">
+
+            <div>
+                <a type="button" class="btn-primary profile-btn-text" href="/candidates/edit?Id=@candidate.Id">Update</a>
+            </div>
+
+            <div>
+                <a type="button" class="btn-danger profile-btn-text" href="/candidates/delete?Id=@candidate.Id">Delete</a>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+</CascadingAuthenticationState>
+
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    private Candidate candidate { get; set; } = new Candidate();
+
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserProfile();
+    }
+
+    private async Task LoadUserProfile()
+    {
+        var authenticationState = await authenticationStateTask;
+        var username = authenticationState.User.Identity.Name;
+
+        if (string.IsNullOrEmpty(username))
+        {
+            return;
+        }
+
+        using var context = DbFactory.CreateDbContext();
+        var Candidate = await context.Candidate
+            .FirstOrDefaultAsync(u => u.Email == username);
+
+
+        if (Candidate != null)
+        {
+            candidate = Candidate;
+        }
+
+        StateHasChanged();
+    }
+
+}
+
+
