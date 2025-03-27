@@ -12,8 +12,8 @@ using NEXTGroup3.Data;
 namespace NEXTGroup3.Migrations
 {
     [DbContext(typeof(AzureContext))]
-    [Migration("20250324163532_Result-Refactor")]
-    partial class ResultRefactor
+    [Migration("20250327095707_encouragingMessages")]
+    partial class encouragingMessages
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,6 +98,23 @@ namespace NEXTGroup3.Migrations
                     b.ToTable("DepartmentRangeQuestion");
                 });
 
+            modelBuilder.Entity("NEXTGroup3.Models.EncouragingMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EncouragingMessage");
+                });
+
             modelBuilder.Entity("NEXTGroup3.Models.RangeQuestion", b =>
                 {
                     b.Property<int>("Id")
@@ -125,6 +142,17 @@ namespace NEXTGroup3.Migrations
 
                     b.Property<int?>("CandidateId")
                         .HasColumnType("int");
+
+                    b.Property<string>("DepartmentPoints")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RolePoints")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
