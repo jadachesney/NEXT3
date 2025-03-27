@@ -1,31 +1,60 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@using NEXTGroup3.Services
+@inject CookieService cookieService
 
 <PageTitle>Home</PageTitle>
+<head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=cookie" />
+</head>
 
-
-<div class="video-content">
-  <div class="video-background-wrapper">
-    <video autoplay muted loop>
-      <source src="images\Careers_Homepage.mp4" type="video/mp4"/>
-    </video>
-  </div>
-  <div class="video-overlay">
-    <div class="spacing">
+<body>
+  <div class="video-content">
+    <div class="video-background-wrapper @(cookieService.CookieConsented ? "full-opacity" : "half-opacity")">
+      <video autoplay muted loop>
+        <source src="images\Careers_Homepage.mp4" type="video/mp4"/>
+      </video>
     </div>
-    <div class="video-heading">
+    <div class="video-overlay">
+      <div id="cookiePopup" class="@(cookieService.CookieConsented ? "hide" : "show")">
+        <span class="material-symbols-outlined">
+          cookie
+        </span>
+        <h1>
+          Cookie Consent
+        </h1>
+        <p>
+          We use some essential cookies to make this service work.
+          Before continuing with our website, you must allow consent for
+          all analytical data to be stored. You can find out more on this at
+          <a href="#">https://careers.next.co.uk/en/sites/CX_3001/pages/98035</a>
+        </p>
+        <button id="acceptCookie" @onclick="ConsentCookie">Accept</button>
+      </div>
+      <div class="spacing">
+      </div>
+      <div class="video-heading">
         <div class="next-logo-1">
           <img alt="test" src="images/next_logo_main.png"/>
         </div>
-    </div>
-    <div class="headline-content">
-      <h1 class="headline-text">
-        <span>Ready to Discover Your Future Career?</span>
-      </h1>
-    </div>
-    <div class="btn-spacing">
-    </div>
-    <div class="start-quiz-column">
-        <a href="questionnaire" class="start-btn">Start Quiz</a>
+      </div>
+      <div class="headline-content">
+        <h1 class="headline-text">
+          <span>Ready to Discover Your Future Career?</span>
+        </h1>
+      </div>
+      <div class="btn-spacing">
+      </div>
+      <div class="start-quiz-column">
+        <a href="questionnaire" style="@(cookieService.CookieConsented ? "" : "pointer-events: none")" class="start-btn">Start Quiz</a>
+      </div>
     </div>
   </div>
-</div>
+</body>
+
+@code {
+  private void ConsentCookie(){
+    cookieService.ConsentCookie();
+    StateHasChanged();
+  }
+}
