@@ -1,4 +1,6 @@
 ﻿@page "/candidateprofile"
+@using Microsoft.AspNetCore.Components.Authorization
+@using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Models
 @using Microsoft.EntityFrameworkCore
 @using NEXTGroup3.Services
@@ -6,30 +8,35 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject LoginManagerService loginManagerService
+@layout CandidateDashboardLayout
 
 <CascadingAuthenticationState>
-    <h3>User Profile</h3>
         <input type="hidden" name="candidate.Id" value="@candidate.Id" />
 
-        <div class="form-group">
-            <label for="email">Email</label>
-            <InputText id="email" class="form-control" @bind-Value="candidate.Email" />
+    <div class="profile-container">
+
+        <div class="form-group profile-text-box align-label">
+            <label for="email">Email
+            <input class="profile-box" type="text" id="email" value="@candidate.Email" disabled />
+            </label>
         </div>
 
-        <div class="form-group">
-            <label for="password">Password</label>
-            <InputText id="password" class="form-control" @bind-Value="candidate.Password" />
+        <div class="profile-btn">
+
+            <div>
+                <a type="button" class="btn-primary profile-btn-text" href="/candidates/edit?Id=@candidate.Id">Update</a>
+            </div>
+
+            <div>
+                <a type="button" class="btn-danger profile-btn-text" href="/candidates/delete?Id=@candidate.Id">Delete</a>
+            </div>
+
         </div>
 
 
-
-    <div>
-        <a href="/candidates/edit?Id=@candidate.Id">Edit Profile</a>
     </div>
 
-    <div>
-        <a href="/candidates/delete?Id=@candidate.Id">Delete Profile</a>
-    </div>
+
 
 </CascadingAuthenticationState>
 
@@ -38,10 +45,8 @@
     [SupplyParameterFromQuery]
     private int Id { get; set; }
 
-    [SupplyParameterFromForm]
-    private Candidate? Candidate { get; set; }
+    private Candidate candidate { get; set; } = new Candidate();
 
-    Candidate candidate = new Candidate();
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
@@ -55,7 +60,6 @@
     {
         var authenticationState = await authenticationStateTask;
         var username = authenticationState.User.Identity.Name;
-        candidate.Password = "";
 
         if (string.IsNullOrEmpty(username))
         {
@@ -69,71 +73,12 @@
 
         if (Candidate != null)
         {
-            candidate.Email = Candidate.Email;
-            candidate.Id = Candidate.Id;
-            candidate.Password = loginManagerService.HashPassword(candidate.Password);
+            candidate = Candidate;
         }
 
         StateHasChanged();
     }
 
-    private async Task DeleteProfile()
-    {
-        var authenticationState = await authenticationStateTask;
-        var username = authenticationState.User.Identity.Name;
-
-        if (string.IsNullOrEmpty(username))
-        {
-            return;
-        }
-
-        using var context = DbFactory.CreateDbContext();
-        var candidateToDelete = await context.Candidate
-            .FirstOrDefaultAsync(c => c.Email == username);
-
-        if (candidateToDelete != null)
-        {
-            context.Candidate.Remove(candidateToDelete);
-            await context.SaveChangesAsync();
-
-            NavigationManager.NavigateTo("/");
-
-        }
-
-    }
-
-    private async Task EditProfile()
-    {
-
-
-        Console.Write("SAVED PROFILE CHANGES??");
-        using var context = DbFactory.CreateDbContext();
-        context.Attach(Candidate!).State = EntityState.Modified;
-
-        try
-        {
-            await context.SaveChangesAsync();
-            NavigationManager.NavigateTo("/profile");
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!CandidateExists(Candidate!.Id))
-            {
-                NavigationManager.NavigateTo("notfound");
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-    }
-
-    private bool CandidateExists(int id)
-    {
-        using var context = DbFactory.CreateDbContext();
-        return context.Candidate.Any(e => e.Id == id);
-    }
 }
 
 
