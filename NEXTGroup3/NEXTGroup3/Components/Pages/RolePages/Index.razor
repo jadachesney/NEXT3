@@ -18,7 +18,6 @@
 
 <QuickGrid Class="table" Items="context.Role">
     <PropertyColumn Property="role => role.Name" />
-    <PropertyColumn Property="role => role.Link" />
 
     <TemplateColumn Context="role" class="icon-tb">
         <a href="@($"roles/edit?id={role.Id}")"><i class="fa-solid fa-pen"></i></a> |
