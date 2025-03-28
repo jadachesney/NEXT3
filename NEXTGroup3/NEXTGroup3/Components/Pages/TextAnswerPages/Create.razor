@@ -2,9 +2,12 @@
 @using Microsoft.EntityFrameworkCore
 @using NEXTGroup3.Models
 @using NEXTGroup3.Components.Layout
+@using NEXTGroup3.Services
 @layout StaffDashboardLayout
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject RoleService roleService
+@inject DepartmentService departmentService
 
 <PageTitle>Create</PageTitle>
 
@@ -23,9 +26,13 @@
                 <ValidationMessage For="() => TextAnswer.Answers" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="roleid" class="form-label">RoleId:</label> 
-                <InputNumber id="roleid" @bind-Value="TextAnswer.RoleId" class="form-control" /> 
-                <ValidationMessage For="() => TextAnswer.RoleId" class="text-danger" /> 
+                <label for="roleid" class="form-label">Role Id:</label> 
+                <select>
+                    @foreach (Role role in roles)
+                    {
+                        <option value=@role.Id>@role.Name</option>
+                    }
+                </select>
             </div>        
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
@@ -39,6 +46,15 @@
 @code {
     [SupplyParameterFromForm]
     private TextAnswer TextAnswer { get; set; } = new();
+    private List<Department> departments = new List<Department>();
+    private List<Role> roles = new List<Role>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        departments = departmentService.GetAllDepartments();
+        foreach(Department department in departments)
+            roles.AddRange(roleService.GetAllRolesInDepartment(department));
+    }
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddTextAnswer()
