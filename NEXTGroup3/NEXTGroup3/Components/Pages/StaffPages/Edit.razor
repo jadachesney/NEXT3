@@ -4,12 +4,14 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
 @using Microsoft.AspNetCore.Identity
+@using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Services
 @using NEXTGroup3.Models
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @inject NavigationManager NavigationManager
 @inject UserManager<NextUser> userManager
 @inject LoginManagerService loginManagerService
+@layout StaffDashboardLayout
 @attribute [Authorize(Roles = "Staff")]
 
 <PageTitle>Edit</PageTitle>
