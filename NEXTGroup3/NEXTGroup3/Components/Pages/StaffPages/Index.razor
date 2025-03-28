@@ -28,20 +28,10 @@
             <td>@staff.FirstName</td>
             <td>@staff.LastName</td>
             <td>@staff.Email</td>
+            <td><a href="@($"staff/edit?id={staff.Id}")">Edit</a></td>
         </tr>
     }
 </table>
-
-@* <QuickGrid Class="table" Items="staff"> *@
-@*     <PropertyColumn Property="StaffId" /> *@
-@*     <PropertyColumn Property="Email" /> *@
-
-@*     <TemplateColumn Context="staff"> *@
-@*         <a href="@($"staff/edit?id={staff.Id}")">Edit</a> | *@
-@*         <a href="@($"staff/details?id={staff.Id}")">Details</a> | *@
-@*         <a href="@($"staff/delete?id={staff.Id}")">Delete</a> *@
-@*     </TemplateColumn> *@
-@* </QuickGrid> *@
 
 @code {
     [CascadingParameter] public HttpContext HttpContext { get; set; } = default!;
@@ -51,16 +41,6 @@
     protected override async Task OnInitializedAsync()
     {
         var staffList = await userManager.GetUsersInRoleAsync("Staff");
+        staffs = staffList.ToList();
     }
-
-
-
-    // private AzureContext context = default!;
-
-    // protected override void OnInitialized()
-    // {
-    //     context = DbFactory.CreateDbContext();
-    // }
-
-    // public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }

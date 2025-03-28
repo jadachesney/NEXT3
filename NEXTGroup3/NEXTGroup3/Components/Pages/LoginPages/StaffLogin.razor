@@ -105,7 +105,7 @@
 
     private async Task Authenticate()
     {
-        var staffs = await userManager.GetUsersInRoleAsync("Candidate");
+        var staffs = await userManager.GetUsersInRoleAsync("Staff");
         var staff = await userManager.FindByEmailAsync(LoginModel.Email);
         if (!staffs.Contains(staff))
             staff = null;
