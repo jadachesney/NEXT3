@@ -12,88 +12,92 @@
 @inject LoginManagerService loginManagerService
 
 <body>
-  <div class="login-container">
-    <header>
-      <h1 class="login-header">
-        Manage Your Candidate Profile
-      </h1>
-    </header>
-    <div class="login-form">
-      <section class="login-content">
-        <div class="text-row">
-          <p1 class="login-text">
-            Enter your credentials linked to your candidate profile. Once your identity is confirmed, you will be able to manage your profile.
-          </p1>
+    <div class="login-container">
+        <header>
+            <h1 class="login-header">
+                Manage Your Candidate Profile
+            </h1>
+        </header>
+        <div class="login-form">
+            <section class="login-content">
+                <div class="text-row">
+                    <p1 class="login-text">
+                        Enter your credentials linked to your candidate profile. Once your identity is confirmed, you will be able to manage your profile.
+                    </p1>
+                </div>
+                <EditForm Model="@LoginModel" OnValidSubmit="Authenticate" FormName="@loginForm">
+                    <DataAnnotationsValidator />
+                    <div class="login-input">
+                        <!-- CANDIDATE EMAIL -->
+                        <div class="input-spacer">
+                            <div class="email-text">
+                                <label class="email-input">
+                                    <span>
+                                        Email Address
+                                    </span>
+                                    <span class="verification-star">
+                                        *
+                                    </span>
+                                </label>
+                            </div>
+                            <InputText @bind-Value="LoginModel.Email" placeholder="Email" class="input-row" />
+                            <ValidationMessage For="() => LoginModel.Email" />
+                        </div>
+                        <!-- CANDIDATE PASSWORD -->
+                        <div class="input-spacer">
+                            <div class="password-text">
+                                <label class="password-input">
+                                    <span>
+                                        Password
+                                    </span>
+                                    <span class="verification-star">
+                                        *
+                                    </span>
+                                </label>
+                            </div>
+                            <InputText @bind-Value="LoginModel.Password" type="password" placeholder="Password" class="input-row" />
+                            <ValidationMessage For="() => LoginModel.Password" />
+                        </div>
+                    </div>
+                    <span class="text-danger">@errorMessage</span>
+                    <footer class="buttons-bar">
+                        <div class="buttons-bar-inner">
+                            <NavLink href="/" class="login-btn">
+                                <span class="button-label">Back</span>
+                                <span class="material-symbols-outlined-left button-arrow button-arrow-left">
+                                    arrow_left
+                                </span>
+                            </NavLink>
+                            <div class="buttons-spacer"></div>
+                            <button type="submit" class="login-btn">
+                                <span class="button-label">Login</span>
+                                <span class="material-symbols-outlined button-arrow button-arrow-right">
+                                    arrow_right
+                                </span>
+                            </button>
+                        </div>
+                    </footer>
+                </EditForm>
+            </section>
         </div>
-        <EditForm Model="@LoginModel" OnValidSubmit="Authenticate" FormName="@loginForm">
-          <DataAnnotationsValidator />
-          <div class="login-input">
-            <!-- CANDIDATE EMAIL -->
-            <div class="input-spacer">
-              <div class="email-text">
-                <label class="email-input">
-                  <span>
-                    Email Address
-                  </span>
-                  <span class="verification-star">
-                    *
-                  </span>
-                </label>
-              </div>
-              <InputText @bind-Value="LoginModel.Email" placeholder="Email" class="input-row" />
-              <ValidationMessage For="() => LoginModel.Email" />
-            </div>
-            <!-- CANDIDATE PASSWORD -->
-            <div class="input-spacer">
-              <div class="password-text">
-                <label class="password-input">
-                  <span>
-                    Password
-                  </span>
-                  <span class="verification-star">
-                    *
-                  </span>
-                </label>
-              </div>
-              <InputText @bind-Value="LoginModel.Password" type="password" placeholder="Password" class="input-row" />
-              <ValidationMessage For="() => LoginModel.Password" />
-            </div>
-          </div>
-          <span class="text-danger">@errorMessage</span>
-          <footer class="buttons-bar">
-            <div class="buttons-bar-inner">
-              <NavLink href="/" class="login-btn">
-                <span class="button-label">Back</span>
-                <span class="material-symbols-outlined-left button-arrow button-arrow-left">
-                  arrow_left
-                </span>
-              </NavLink>
-              <div class="buttons-spacer"></div>
-              <button type="submit" class="login-btn">
-                <span class="button-label">Login</span>
-                <span class="material-symbols-outlined button-arrow button-arrow-right">
-                  arrow_right
-                </span>
-              </button>
-            </div>
-          </footer>
-        </EditForm>
-      </section>
     </div>
-  </div>
 </body>
 
 
 
 @code {
-  [CascadingParameter] public HttpContext HttpContext { get; set; } = default!;
-  private const string loginForm = "LoginForm";
-  [SupplyParameterFromForm(FormName = loginForm)] public LoginModel LoginModel { get; set; } = new();
-  private string? errorMessage;
+    [CascadingParameter] public HttpContext HttpContext { get; set; } = default!;
+    private const string loginForm = "LoginForm";
+    [SupplyParameterFromForm(FormName = loginForm)] public LoginModel LoginModel { get; set; } = new();
+    private string? errorMessage;
 
-  private async Task Authenticate()
-  {
-    var candidate = await userManager.FindByEmailAsync(LoginModel.Email);
+    private async Task Authenticate()
+    {
+        var candidates = await userManager.GetUsersInRoleAsync("Candidate");
+        var candidate = await userManager.FindByEmailAsync(LoginModel.Email);
+        if (!candidates.Contains(candidate))
+            candidate = null;
+
     var isValid = await userManager.CheckPasswordAsync(candidate, LoginModel.Password);
     if (candidate == null || !isValid)
     {
@@ -101,7 +105,6 @@
       return;
     }
 
-    var roles = await userManager.GetRolesAsync(candidate);
     string userRole = "Candidate";
 
     var claims = new List<Claim>
