@@ -30,11 +30,15 @@
           <dl class="row"> 
               <dt class="col-sm-2">Email</dt> 
               <dd class="col-sm-10">@email</dd> 
-          </dl> 
-          <EditForm Model="@LoginModel" OnValidSubmit="DeleteCandidate" FormName="DeleteForm">
-            <button type="submit" class="btn btn-danger">Delete</button>
-            <a href="/candidatedashboard">Back to List</a>
-          </EditForm>
+          </dl>
+        <EditForm method="post" Model="@LoginModel" OnValidSubmit="DeleteCandidate" FormName="DeleteForm">
+          <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <InputText id="password" @bind-Value="LoginModel.Password" class="form-control" />
+          </div>
+          <button type="submit" class="btn btn-danger">Delete</button>
+          <a href="/candidatedashboard">Back to List</a>
+        </EditForm>
       </div> 
     </Authorized>
     <NotAuthorized></NotAuthorized>
@@ -44,13 +48,12 @@
 @code {
 
   [CascadingParameter] public HttpContext HttpContext { get; set; } = default!;
-  [SupplyParameterFromForm(FormName = "DeleteForm")] public LoginModel LoginModel { get; set; } = new(); 
+  public LoginModel LoginModel { get; set; } = new(); 
 
   [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
   private string email;
   private string firstName;
-  private string lastName;
 
   protected override async Task OnInitializedAsync() 
   { 
@@ -61,7 +64,7 @@
     {
       email = user.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown User";
       firstName = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
-
+      LoginModel.Email = email;
     }
   } 
 
@@ -75,6 +78,12 @@
     {
       await userManager.RemoveClaimAsync(candidate, claim);
     }
-    await userManager.DeleteAsync(candidate);
+
+    var deleteResult = await userManager.DeleteAsync(candidate);
+    if (deleteResult.Succeeded)
+    {
+
+      NavigationManager.NavigateTo("/");
+    }
   } 
  } 
