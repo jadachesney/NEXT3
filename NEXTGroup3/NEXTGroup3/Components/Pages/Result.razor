@@ -1,13 +1,16 @@
 ﻿
 <div class="result-container">
-    <h3>Thank you for completing the quiz! See your results below.</h3>
+    <div class="result-banner">
+        <img src="/images/ResultBanner.png" />
+        <h3>Thank you for completing the quiz! See your results below.</h3>
+    </div>
     <br />
     <div class="results">
         @* primary role *@
         <div class="mt-2 card result-card card-right-border" style="width: 18rem;">
             <div class="card-body">
                 <h5 class="card-title">@(topRoles[0].Name)</h5>
-                <a href="@(topDepartment.Link)" class="card-link">Apply Now</a>
+                <a href=@GetApplyLink(topRoles[0].Name) target="_blank" class="card-link">Apply Now</a>
             </div>
         </div>
 
@@ -20,7 +23,7 @@
                     <div class="card result-card secondary-result-card @(i + 1 < topRoles.Count ? "card-right-border" : "no-border")" style="width: 18rem;">
                         <div class="card-body">
                             <h5 class="card-title">@(topRoles[i].Name)</h5>
-                            <a href="@(topDepartment.Link)" class="card-link">Apply Now</a>
+                            <a href=@GetApplyLink(topRoles[i].Name) target="_blank" class="card-link">Apply Now</a>
                         </div>
                     </div>
                 }
@@ -34,14 +37,14 @@
     <div class=" department-info-container">
         <h5 class="card-title">@(topDepartment.Name)</h5>
         <p class="card-text">@(topDepartment.Description)</p>
-        <a href="@(topDepartment.Link)" class="card-link">Apply Now</a>
+        <a href="@(topDepartment.Link)" target="_blank" class="card-link">Apply Now</a>
     </div>
 
     <br />
     <h4 class="mt-2">Want to save your results?</h4>
 
     <div class="result-options mb-5">
-        <button class=" result-option-btn">Save</button>
+        <button class=" result-option-btn">Create an account</button>
         <button class=" result-option-btn">Login</button>
     </div>
 
@@ -50,4 +53,9 @@
 @code {
     [Parameter] public List<Role> topRoles { get; set; }
     [Parameter] public Department topDepartment { get; set; }
+
+    private string GetApplyLink(string name)
+    {
+        return "https://careers.next.co.uk/en/sites/CX_3001/jobs?keyword=" + name;
+    }
 }

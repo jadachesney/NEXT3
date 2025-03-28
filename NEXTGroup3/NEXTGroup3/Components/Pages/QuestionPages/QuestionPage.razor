@@ -5,8 +5,8 @@
 @inject RangeQuestionService rangeQuestionService
 @inject TextAnswerService textAnswerService
 @inject RoleService roleService
-@* @inject ResultService resultService *@
 @inject DepartmentService departmentService
+@inject EncouragingMessageService encouragingMessageService
 
 <PageTitle>Question Page</PageTitle>
 
@@ -14,81 +14,100 @@
     <div class="range-content">
         <div class="range-question">
             <div class="range-answer-container">
-                @if(!rangeQuestionService.OnTextQuestions)
+                @* RANGE QUESTIONS *@
+                @if (!rangeQuestionService.OnTextQuestions)
                 {
                     @for (int i = 0; i <= rangeQuestions.Count(); i++)
                     {
                         if (i == 0 && rangeQuestionService.OnRangeQuestions == false)
                         {
-                            <h5>Please start by selecting any of the below departments you are particularly interested in:</h5>
-                            <p>You may continue without selecting any</p>
-                            <div class="initial-department-questions">
-                                @foreach (InitiallySelectedDepartments department in initiallySelectedDepartments)
-                                {
-                                    <div class="initial-department-question">
-                                        <InputCheckbox id=@department.Department.Id @bind-value="@department.IsSelected"/>
-                                        <label for=@department.Department.Id>@department.Department.Name</label>
-                                        <br />
-                                    </div>
-                                }
+                            <div class="question-component">
+                                <h5>Please start by selecting any of the below departments you are particularly interested in:</h5>
+                                <p>You may continue without selecting any</p>
+                                <div class="initial-department-questions">
+                                    @foreach (InitiallySelectedDepartments department in initiallySelectedDepartments)
+                                    {
+                                        <div class="initial-department-question">
+                                            <InputCheckbox id=@department.Department.Id @bind-value="@department.IsSelected" />
+                                            <label for=@department.Department.Id>@department.Department.Name</label>
+                                            <br />
+                                        </div>
+                                    }
+                                </div>
+                                <button class="range-submit-btn" @onclick="HandleInitialDepartmentSelected">Next</button>
                             </div>
-                            <button class="range-submit-btn" @onclick="HandleInitialDepartmentSelected">Next</button>
                         }
                         else if (rangeQuestionService.OnRangeQuestions == true && rangeQuestionService.CurrentQuestionIndex < rangeQuestions.Count() && rangeQuestionService.CurrentQuestionIndex == i - 1)
                         {
-                            <h5>Section 1 / 2</h5>
-                            <h3>Question @(i) / @rangeQuestions.Count()</h3>
-                            <p>@rangeQuestions[i - 1].QuestionText</p>
-                            <div class="button-group">
-                                <InputRadioGroup id="radio-button" @bind-Value="answer"> 
-                                    @for(int v = 0; v < 5; v++)
-                                    {
-                                        <div class="form-group">
-                                            <label class="range-answer-label" for=@v> @(rangeAnswerChoices[v]) </label>
-                                            <InputRadio Value=@v id=@v class="range-answer-btn"/>
-                                        </div>
-                                    }
-                                </InputRadioGroup>
+                            <div class="question-component">
+                                <h5>Section 1 / 2</h5>
+                                <h3>Question @(i) / @rangeQuestions.Count()</h3>
+                                <p>@rangeQuestions[i - 1].QuestionText</p>
+                                <div class="button-group">
+                                    <InputRadioGroup id="radio-button" @bind-Value="answer">
+                                        @for (int v = 0; v < 5; v++)
+                                        {
+                                            <div class="form-group">
+                                                <label class="range-answer-label" for=@v> @(rangeAnswerChoices[v]) </label>
+                                                <InputRadio Value=@v id=@v class="range-answer-btn" />
+                                            </div>
+                                        }
+                                    </InputRadioGroup>
+                                </div>
+                                <button class="range-submit-btn" @onclick="HandleAnswerSelected">Next</button>
                             </div>
-                            <button class="range-submit-btn" @onclick="HandleAnswerSelected">Next</button>
                         }
                     }
                 }
-                @if(rangeQuestionService.OnTextQuestions)
+
+                @* TEXT QUESTIONS *@
+                @if (rangeQuestionService.OnTextQuestions)
                 {
                     int questionCount = textAnswerService.QuestionMax;
-                    for(int i = 0; i < questionCount; i++)
+                    for (int i = 0; i < questionCount; i++)
                     {
                         if (textAnswerService.CurrentQuestionIndex < questionCount && textAnswerService.CurrentQuestionIndex == i)
                         {
-                            <h5>Section 2 / 2</h5>
-                            <h3>Question @(i + 1) / @questionCount</h3>
-                            <h5>Select which of the following statements you agree with the most:</h5>
-                            <div class="text-answer-container">
-                                <InputRadioGroup id="radio-button" @bind-Value="@answer">
-                                    @for (int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++) //iterates over all selected answers
-                                    {
-                                        var answerText = selectedAnswers[answerIndex].Answers;
-                                        var answerId = selectedAnswers[answerIndex].Id;
-                                        var answerIdString = "text-answer-" + selectedAnswers[answerIndex].Id.ToString();
+                            <div class="question-component">
+                                <h5>Section 2 / 2</h5>
+                                <h3>Question @(i + 1) / @questionCount</h3>
+                                <h5>Select which of the following statements you agree with the most:</h5>
+                                <div class="text-answer-container">
+                                    <InputRadioGroup id="radio-button" @bind-Value="@answer">
+                                        @for (int answerIndex = 0; answerIndex < selectedAnswers.Count; answerIndex++) //iterates over all selected answers
+                                        {
+                                            var answerText = selectedAnswers[answerIndex].Answers;
+                                            var answerId = selectedAnswers[answerIndex].Id;
+                                            var answerIdString = "text-answer-" + selectedAnswers[answerIndex].Id.ToString();
 
+                                            <div id="" class="text-answer-form-group form-group">
+                                                <InputRadio Value=@answerId id="@answerIdString" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="@answerIdString">@answerText</label>
+                                            </div>
+                                        }
                                         <div id="" class="text-answer-form-group form-group">
-                                            <InputRadio Value=@answerId id="@answerIdString" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="@answerIdString">@answerText</label>
+                                            <InputRadio Value=0 id="text-answer-0" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="text-answer-0">None</label>
                                         </div>
-                                    }
-                                    <div id="" class="text-answer-form-group form-group">
-                                        <InputRadio Value=0 id="text-answer-0" class="text-answer-radio" hidden /><label class="btn btn-outline-dark text-answer-btn" for="text-answer-0">None</label>
-                                    </div>
-                                </InputRadioGroup>
+                                    </InputRadioGroup>
+                                </div>
+                                <button class="text-submit-button" @onclick="HandleAnswerSelected">Next</button>
                             </div>
-                            <button class="text-submit-button" @onclick="HandleAnswerSelected">Next</button>
                         }
                     }
                 }
+
+                @* RESULTS *@
                 @if (textAnswerService.CompletedQuestionnaire)
                 {
                     CalculateResultValues();
                     <Result topRoles="topRoles" topDepartment="topDepartment" />
+                }
+
+                @* ENCOURAGING MESSAGES *@
+                @if ((rangeQuestionService.CurrentQuestionIndex == encouragingMessageService.IndexForMessage && !rangeQuestionService.OnTextQuestions) 
+                    || (textAnswerService.CurrentQuestionIndex == encouragingMessageService.IndexForMessage && rangeQuestionService.OnTextQuestions))
+                {
+                    <p class="encouraging-message fade-in">@(messages[encouragingMessageService.MessageCount].Message)</p>
+                    encouragingMessageService.IncreaseIndexForMessage();
                 }
             </div>
         </div>
@@ -96,19 +115,15 @@
 </div>
 
 @code {
-
-    private void DeselectDepartments()
-    {
-        initiallySelectedDepartments.Select(d => d.IsSelected = false);
-    }
-
     [Inject]
     public ResultService resultService { get; set; } = default!;
-
     public int answer = 2;
 
+    // ENCOURAGING MESSAGES VARIABLES
+    private List<EncouragingMessage> messages = new List<EncouragingMessage>();
+
     // INITIAL DEPARTMENT SELECTION
-    private List<InitiallySelectedDepartments> initiallySelectedDepartments = new List<InitiallySelectedDepartments>(); 
+    private List<InitiallySelectedDepartments> initiallySelectedDepartments = new List<InitiallySelectedDepartments>();
 
     // RANGE BASED VARIABLES
     private List<RangeQuestion> rangeQuestions = new List<RangeQuestion>(); // list of all range questions
@@ -117,7 +132,7 @@
     private List<DepartmentRangeQuestion> departmentRangeQuestions = new List<DepartmentRangeQuestion>();   // list of the all relationships between departments and questions
 
     // TEXT BASED VARIABLES
-    private List<TextAnswer> textAnswers = new List<TextAnswer>();  
+    private List<TextAnswer> textAnswers = new List<TextAnswer>();
     private Department departmentForTextQuestions = new Department(); //stores the department result from rangeQuestions
     private bool rolesSelected = false; // a flag for whether or not roles has been populated
     private List<TextAnswer> selectedAnswers = new List<TextAnswer>();//stores answers selected by the following function
@@ -130,24 +145,25 @@
     //Database
     protected override async Task OnInitializedAsync()
     {
-        //---RANGE BASED FUNCTIONS---//
         departments = await departmentService.GetAllDepartments();
         departmentRangeQuestions = await resultService.GetAllDepartmentRangeQuestions();
         rangeQuestions = await rangeQuestionService.GetAllRangeQuestions();
         initiallySelectedDepartments = departments.Select(d => new InitiallySelectedDepartments(d)).ToList();
+        messages = await encouragingMessageService.GetAllMessages();
+        SetEncouragingMessageValues(true);
     }
 
     private void HandleInitialDepartmentSelected()
     {
         foreach (InitiallySelectedDepartments department in initiallySelectedDepartments)
-            if(department.IsSelected)
+            if (department.IsSelected)
                 resultService.DepartmentPoints[department.Department.Id - 1].Points += 3;
         rangeQuestionService.OnRangeQuestions = true;
     }
 
     private async Task HandleAnswerSelected()
     {
-        if(answer >= 0)
+        if (answer >= 0)
         {
 
             if (rangeQuestionService.OnTextQuestions == false)
@@ -156,7 +172,10 @@
                 rangeQuestionService.CurrentQuestionIndex++;
                 answer = 2;
                 if (rangeQuestionService.CurrentQuestionIndex == rangeQuestions.Count())
+                {
                     await GetHighestDepartmentTextAnswers();
+                    SetEncouragingMessageValues(false);
+                }
             }
             else
             {
@@ -164,10 +183,10 @@
                 int questionMax = textAnswerService.QuestionMax;
 
                 //handles point values for the answer provided
-                if(currentQuestionIndex >= 0 && currentQuestionIndex < questionMax - 1) 
+                if (currentQuestionIndex >= 0 && currentQuestionIndex < questionMax - 1)
                     AddRolePoints(answer);
 
-                else if (textAnswerService.CurrentQuestionIndex == textAnswerService.QuestionMax - 1 && textAnswerService.CurrentQuestionIndex != 0) 
+                else if (textAnswerService.CurrentQuestionIndex == textAnswerService.QuestionMax - 1 && textAnswerService.CurrentQuestionIndex != 0)
                     EndQuestionnaire();
 
 
@@ -176,13 +195,13 @@
 
                 //moves onto the next text based question
                 textAnswerService.CurrentQuestionIndex++;
-      
-              // flags the questionnaire as completed
-              if (textAnswerService.CurrentQuestionIndex == textAnswerService.QuestionMax)
-              {
-                  textAnswerService.CompletedQuestionnaire = true;
-                  EndQuestionnaire();
-              }
+
+                // flags the questionnaire as completed
+                if (textAnswerService.CurrentQuestionIndex == textAnswerService.QuestionMax)
+                {
+                    textAnswerService.CompletedQuestionnaire = true;
+                    EndQuestionnaire();
+                }
             }
             StateHasChanged();
         }
@@ -227,17 +246,30 @@
 
                 }
 
-                else if (textAnswerService.availableAnswers.Count() != 0) { 
+                else if (textAnswerService.availableAnswers.Count() != 0)
+                {
 
-                    textAnswerService.countAnswerDisplay[current.Id] = 2; 
-                    textAnswerService.availableAnswers.Remove(current); 
+                    textAnswerService.countAnswerDisplay[current.Id] = 2;
+                    textAnswerService.availableAnswers.Remove(current);
                 }
 
-                if(textAnswerService.availableAnswers.Count == 0) i = 3; // closes loop if no more answers are available
-                
+                if (textAnswerService.availableAnswers.Count == 0) i = 3; // closes loop if no more answers are available
+
             }
             answer = -1;
         }
+    }
+
+    private void SetEncouragingMessageValues(bool onRange)
+    {
+        encouragingMessageService.MessageCount = 0;
+        // set encouraging message index
+        double totalQuestions = onRange ? rangeQuestions.Count : textAnswers.Count;
+        // gets 25% of total number of questions to section them
+        double numberOfSections = totalQuestions * 0.25;
+        // gets frequency of encouraging messages
+        encouragingMessageService.Frequency = Convert.ToInt32(Math.Round(totalQuestions / numberOfSections));
+        encouragingMessageService.IndexForMessage = encouragingMessageService.Frequency;
     }
 
     //adds points to the correct role in RolePoints
@@ -304,18 +336,20 @@
         }
         else departmentForTextQuestions = departments.Where(d => d.Id == departmentsWithMaxPoint[0].Id).First();
 
-        // departmentForTextQuestions.Id = 1; 
+        // departmentForTextQuestions.Id = 1;
 
         await InitializeTextAnswers();
     }
 
     //retrieves text answers
-    private async Task InitializeTextAnswers(){
+    private async Task InitializeTextAnswers()
+    {
 
         textAnswers = await textAnswerService.GetTextAnswersFromDepartment(departmentForTextQuestions);
         textAnswerService.availableAnswers = textAnswers;
 
-        for (int i = 0; i < textAnswers.Count(); i++) {
+        for (int i = 0; i < textAnswers.Count(); i++)
+        {
             textAnswerService.countAnswerDisplay.Add(textAnswers[i].Id, 0);
         }
         await textAnswerService.CalculateQuestionMax(textAnswers.Count());
@@ -326,21 +360,22 @@
         resultService.InitializeRolePoints(departmentForTextQuestions);
 
         //flags true when roles related to the department have been populated
-        rolesSelected = true; 
+        rolesSelected = true;
         rangeQuestionService.OnTextQuestions = true;
 
     }
 
     private void CalculateResultValues()
     {
-      var topPoints = resultService.RolePoints.OrderBy(p => p.Points).Take(3);
+        var topPoints = resultService.RolePoints.OrderBy(p => p.Points).Take(3);
         topRoles = textAnswerService.roles.Where(r => topPoints.Any(p => r.Id == p.Id)).ToList();
-        
+
         var sortedDepartments = resultService.DepartmentPoints.OrderByDescending(p => p.Points);
         topDepartment = departments.Where(d => d.Id == sortedDepartments.ElementAt(0).Id).First();
     }
-      
-    public void EndQuestionnaire(){
+
+    public void EndQuestionnaire()
+    {
 
         // saving result to database
         resultService.SaveResult();
