@@ -1,84 +1,59 @@
 ﻿@page "/candidateprofile"
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
 @using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Models
 @using Microsoft.EntityFrameworkCore
 @using NEXTGroup3.Services
-@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@using System.Security.Claims
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject LoginManagerService loginManagerService
+@inject UserManager<NextUser> userManager
 @layout CandidateDashboardLayout
+@attribute [Authorize(Roles = "Admin, Candidate")]
 
 <CascadingAuthenticationState>
-        <input type="hidden" name="candidate.Id" value="@candidate.Id" />
-
-    <div class="profile-container">
-
+  <AuthorizeView Context="authContext">
+    <Authorized>
+      <div class="profile-container">
         <div class="form-group profile-text-box align-label">
             <label for="email">Email
-            <input class="profile-box" type="text" id="email" value="@candidate.Email" disabled />
+            <input class="profile-box" type="text" id="email" value="@email" disabled />
             </label>
         </div>
-
-        <div class="profile-btn">
-
-            <div>
-                <a type="button" class="btn-primary profile-btn-text" href="/candidates/edit?Id=@candidate.Id">Update</a>
-            </div>
-
-            <div>
-                <a type="button" class="btn-danger profile-btn-text" href="/candidates/delete?Id=@candidate.Id">Delete</a>
-            </div>
-
-        </div>
-
-
-    </div>
-
-
-
+         <div class="profile-btn"> 
+             <div> 
+                 <a type="button" class="btn-primary profile-btn-text" href="/candidates/edit">Update</a> 
+             </div> 
+             <div> 
+                 <a type="button" class="btn-danger profile-btn-text" href="/candidates/delete">Delete</a> 
+             </div> 
+         </div> 
+      </div>
+    </Authorized>
+    <NotAuthorized></NotAuthorized>
+  </AuthorizeView>
 </CascadingAuthenticationState>
 
 
 @code {
-    [SupplyParameterFromQuery]
-    private int Id { get; set; }
 
-    private Candidate candidate { get; set; } = new Candidate();
+  [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+  private string email;
+  protected override async Task OnInitializedAsync()
+  {
+    var authstate = await AuthenticationState;
+    var user = authstate.User;
 
-
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
-
-    protected override async Task OnInitializedAsync()
+    if (user.Identity != null && user.Identity.IsAuthenticated)
     {
-        await LoadUserProfile();
+      email = user.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown User";
     }
-
-    private async Task LoadUserProfile()
+    else
     {
-        var authenticationState = await authenticationStateTask;
-        var username = authenticationState.User.Identity.Name;
-
-        if (string.IsNullOrEmpty(username))
-        {
-            return;
-        }
-
-        using var context = DbFactory.CreateDbContext();
-        var Candidate = await context.Candidate
-            .FirstOrDefaultAsync(u => u.Email == username);
-
-
-        if (Candidate != null)
-        {
-            candidate = Candidate;
-        }
-
-        StateHasChanged();
+      email = "Guest";
     }
-
+  }
 }
-
-

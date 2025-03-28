@@ -3,6 +3,7 @@
 @rendermode InteractiveAuto
 @inject AuthenticationStateProvider authenticationStateProvider
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Services
 @using System.Security.Claims
@@ -10,7 +11,7 @@
 @attribute [Authorize (Roles = "Admin, Candidate")]
 
 <CascadingAuthenticationState>
-  <AuthorizeView>
+  <AuthorizeView Context="authContext">
     <Authorized>
       <div class="dashboard-container">
           <div class = "dashboard-header">

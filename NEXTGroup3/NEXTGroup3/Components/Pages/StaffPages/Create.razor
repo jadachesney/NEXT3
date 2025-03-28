@@ -1,4 +1,5 @@
 ﻿ @page "/staff/create" 
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
  @using Microsoft.EntityFrameworkCore 
  @using NEXTGroup3.Models 
@@ -12,7 +13,7 @@
  @inject LoginManagerService loginManagerService 
 
 <CascadingAuthenticationState>
-  <AuthorizeView>
+  <AuthorizeView Context="authContext">
     <Authorized>
       <PageTitle>Create</PageTitle> 
 
@@ -22,14 +23,14 @@
       <hr /> 
       <div class="row"> 
         <div class="col-md-4"> 
-          <EditForm method="post" Model="@RegisterModel" OnValidSubmit="AddStaff" FormName="@addStaff"> 
+          <EditForm method="post" Model="@RegisterModel" OnValidSubmit="AddStaff" FormName="@addStaff">
             <DataAnnotationsValidator /> 
             <ValidationSummary class="text-danger" role="alert"/> 
-            @* <div class="mb-3">  *@
-            @*   <label for="staffid" class="form-label">StaffId:</label>   *@
-            @*   <InputNumber id="staffid" @bind-Value="RegisterModel.StaffId" class="form-control" /> *@
-            @*  <ValidationMessage For="() => RegisterModel.StaffId" class="text-danger" /> *@
-            @* </div>          *@
+             <div class="mb-3">  
+               <label for="staffid" class="form-label">StaffId:</label>   
+               <InputNumber id="staffid" @bind-Value="RegisterModel.StaffId" class="form-control" /> 
+              <ValidationMessage For="() => RegisterModel.StaffId" class="text-danger" /> 
+             </div>          
             <div class="mb-3"> 
               <label for="email" class="form-label">First Name:</label>
             <InputText id="email" @bind-Value="RegisterModel.FirstName" class="form-control" />
