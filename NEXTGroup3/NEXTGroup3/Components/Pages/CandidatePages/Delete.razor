@@ -1,12 +1,17 @@
 ﻿ @page "/candidates/delete" 
 @using Microsoft.AspNetCore.Identity
- @using Microsoft.EntityFrameworkCore 
- @using NEXTGroup3.Models 
- @using System.Security.Claims
- @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory 
- @inject AuthenticationStateProvider AuthenticationStateProvider
- @inject NavigationManager NavigationManager 
- @inject UserManager<NextUser> userManager
+@using Microsoft.EntityFrameworkCore 
+@using NEXTGroup3.Models 
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using System.Security.Claims
+@using NEXTGroup3.Services
+@using NEXTGroup3
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory 
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager 
+@inject UserManager<NextUser> userManager
+@rendermode InteractiveAuto
 @attribute [Authorize(Roles = "Admin, Candidate")]
 
 <PageTitle>Delete</PageTitle> 
@@ -18,18 +23,18 @@
       <div> 
           <h2>Candidate</h2> 
           <hr />
-        <dl class="row"> 
+          <dl class="row">
+            <dt class="col-sm-2">First Name</dt>
+            <dd class="col-sm-10">@firstName</dd>
+          </dl>
+          <dl class="row"> 
               <dt class="col-sm-2">Email</dt> 
               <dd class="col-sm-10">@email</dd> 
           </dl> 
-          <dl class="row"> 
-              <dt class="col-sm-2">Password</dt> 
-              <dd class="col-sm-10">@password</dd>
-          </dl> 
-          <EditForm method="post" Model="@LoginModel" OnValidSubmit="DeleteCandidate" FormName="@deleteForm"> 
-              <button type="submit" class="btn btn-danger">Delete</button> 
-              <a href="/candidates">Back to List</a> 
-          </EditForm> 
+          <EditForm Model="@LoginModel" OnValidSubmit="DeleteCandidate" FormName="DeleteForm">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="/candidatedashboard">Back to List</a>
+          </EditForm>
       </div> 
     </Authorized>
     <NotAuthorized></NotAuthorized>
@@ -39,14 +44,13 @@
 @code {
 
   [CascadingParameter] public HttpContext HttpContext { get; set; } = default!;
-  private const string deleteForm = "DeleteForm";
-  [SupplyParameterFromForm(FormName = deleteForm)] public LoginModel LoginModel { get; set; } = new(); 
+  [SupplyParameterFromForm(FormName = "DeleteForm")] public LoginModel LoginModel { get; set; } = new(); 
 
   [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
   private string email;
-  private string password;
-
+  private string firstName;
+  private string lastName;
 
   protected override async Task OnInitializedAsync() 
   { 
@@ -56,18 +60,21 @@
     if (user.Identity != null && user.Identity.IsAuthenticated)
     {
       email = user.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown User";
-      password = user.FindFirst(ClaimTypes.Hash)?.Value ?? "Unkknown";
-    }
-    else
-    {
-      email = "Guest";
+      firstName = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
+
     }
   } 
 
-     private async Task DeleteCandidate() 
-     { 
-       // context.DeleteAsync(user);
-       // await context.SaveChangesAsync(); 
-       // NavigationManager.NavigateTo("/candidates"); 
-     } 
+  private async Task DeleteCandidate() 
+  {
+    var candidate = await userManager.FindByEmailAsync(LoginModel.Email);
+    var isValid = await userManager.CheckPasswordAsync(candidate, LoginModel.Password);
+
+    var claims = await userManager.GetClaimsAsync(candidate);
+    foreach (var claim in claims)
+    {
+      await userManager.RemoveClaimAsync(candidate, claim);
+    }
+    await userManager.DeleteAsync(candidate);
+  } 
  } 

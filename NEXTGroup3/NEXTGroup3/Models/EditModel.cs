@@ -2,7 +2,7 @@
 
 namespace NEXTGroup3.Models
 {
-  public class LoginModel
+  public class EditModel
   {
     [Required]
     [EmailAddress]
@@ -11,8 +11,6 @@ namespace NEXTGroup3.Models
     [Required]
     [DataType(DataType.Password)]
     public string Password { get; set; } = "";
-
-    public string StaffId { get; set; } = "";
 
     public string FirstName { get; set; } = "";
     public string LastName { get; set; } = "";
