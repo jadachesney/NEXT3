@@ -62,10 +62,11 @@ namespace NEXTGroup3.Services
                 }
             }
         }
-        public async Task GetDepartments()
+        public Task GetDepartments()
         {
             var context = contextFactory.CreateDbContext();
-            Departments = await context.Department.ToListAsync();
+            Departments = context.Department.ToList();
+            return Task.CompletedTask;
         }
         public async Task<List<string>> GetDepartmentStringList()
         {
