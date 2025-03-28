@@ -23,6 +23,7 @@ builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<RangeQuestionService>();
 builder.Services.AddScoped<ResultService>();
 builder.Services.AddScoped<DepartmentService>();
+builder.Services.AddScoped<StaffDashboardService>();
 builder.Services.AddScoped<EncouragingMessageService>();
 
 
