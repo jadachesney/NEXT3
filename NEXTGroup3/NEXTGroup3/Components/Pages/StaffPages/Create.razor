@@ -11,6 +11,7 @@
  @inject UserManager<NextUser> userManager
  @inject NavigationManager NavigationManager 
  @inject LoginManagerService loginManagerService 
+ @attribute [Authorize(Roles = "Admin")]
 
 <CascadingAuthenticationState>
   <AuthorizeView Context="authContext">

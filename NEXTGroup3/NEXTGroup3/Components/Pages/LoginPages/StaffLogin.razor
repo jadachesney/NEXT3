@@ -35,18 +35,18 @@
         <EditForm Model="@LoginModel" OnValidSubmit="Authenticate" FormName="@loginForm">
           <DataAnnotationsValidator />
           <div class="login-input"> 
-             <div class="input-spacer">  
-               <label class="staff-id-input">  
-                 <span class="id-input-label">  
-                   Staff ID  
-                 </span>  
-                 <span class="verification-star">  
-                   *  
-                 </span>  
-               </label>  
-               <InputNumber @bind-Value="LoginModel.StaffId" placeholder="Staff ID" class="input-row" />  
-               <ValidationMessage For="() => LoginModel.StaffId" />  
-             </div>  
+             @* <div class="input-spacer">   *@
+             @*   <label class="staff-id-input">   *@
+             @*     <span class="id-input-label">   *@
+             @*       Staff ID   *@
+             @*     </span>   *@
+             @*     <span class="verification-star">   *@
+             @*       *   *@
+             @*     </span>   *@
+             @*   </label>   *@
+               @* <InputNumber @bind-Value="LoginModel.StaffId" placeholder="Staff ID" class="input-row" />   *@
+               @* <ValidationMessage For="() => LoginModel.StaffId" />   *@
+             @* </div>   *@
             <div class="input-spacer"> 
               <label class="email-input"> 
                 <span class="email-input-label"> 

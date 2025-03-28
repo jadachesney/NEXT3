@@ -1,100 +1,112 @@
-﻿@* @page "/staff/edit" *@
-@* @using Microsoft.EntityFrameworkCore *@
-@* @using NEXTGroup3.Models *@
-@* @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory *@
-@* @inject NavigationManager NavigationManager *@
+﻿@page "/staff/edit"  
+@using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Identity
+@using NEXTGroup3.Services
+@using NEXTGroup3.Models
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+@inject UserManager<NextUser> userManager
+@inject LoginManagerService loginManagerService
+@attribute [Authorize(Roles = "Staff")]
 
-@* <PageTitle>Edit</PageTitle> *@
+<PageTitle>Edit</PageTitle>
 
-@* <h1>Edit</h1> *@
+<CascadingAuthenticationState>
+  <AuthorizeView Context="authContext">
+    <Authorized>
+      <h1>Edit</h1>
+      <h2>Candidate</h2>
+      <hr />
+      <div class="row">
+        <div class="col-md-4">
+          <EditForm method="post" Model="EditModel" OnValidSubmit="UpdateStaff" FormName="edit">
+            <DataAnnotationsValidator />
+            <ValidationSummary role="alert" />
+            <div class="mb-3">
+              <label for="email" class="form-label">First Name:</label>
+              <InputText id="email" @bind-Value="EditModel.FirstName" class="form-control" />
+              <ValidationMessage For="() => EditModel.FirstName" class="text-danger" />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Last Name:</label>
+              <InputText id="email" @bind-Value="EditModel.LastName" class="form-control" />
+              <ValidationMessage For="() => EditModel.LastName" class="text-danger" />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email:</label>
+              <InputText id="email" @bind-Value="EditModel.Email" class="form-control" />
+              <ValidationMessage For="() => EditModel.Email" class="text-danger" />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Current Password:</label>
+              <InputText id="current-password" @bind-Value="EditModel.CurrentPassword" class="form-control" />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">New Password:</label>
+              <InputText id="password" @bind-Value="EditModel.Password" class="form-control" />
+              <ValidationMessage For="() => EditModel.Password" class="text-danger" />
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </EditForm>
+        </div>
+        <div>
+          <a href="/staffdashboard">Back to List</a>
+        </div>
+      </div>
+    </Authorized>
+    <NotAuthorized></NotAuthorized>
+  </AuthorizeView>
+</CascadingAuthenticationState>
 
-@* <h2>Staff</h2> *@
-@* <hr /> *@
-@* @if (Staff is null) *@
-@* { *@
-@*     <p><em>Loading...</em></p> *@
-@* } *@
-@* else *@
-@* { *@
-@*     <div class="row"> *@
-@*         <div class="col-md-4"> *@
-@*             <EditForm method="post" Model="Staff" OnValidSubmit="UpdateStaff" FormName="edit" Enhance> *@
-@*                 <DataAnnotationsValidator /> *@
-@*                 <ValidationSummary role="alert"/> *@
-@*                 <input type="hidden" name="Staff.Id" value="@Staff.Id" /> *@
-@*                 <div class="mb-3"> *@
-@*                     <label for="staffid" class="form-label">StaffId:</label> *@
-@*                     <InputNumber id="staffid" @bind-Value="Staff.StaffId" class="form-control" /> *@
-@*                     <ValidationMessage For="() => Staff.StaffId" class="text-danger" /> *@
-@*                 </div> *@
-@*                 <div class="mb-3"> *@
-@*                     <label for="email" class="form-label">Email:</label> *@
-@*                     <InputText id="email" @bind-Value="Staff.Email" class="form-control" /> *@
-@*                     <ValidationMessage For="() => Staff.Email" class="text-danger" /> *@
-@*                 </div> *@
-@*                 <div class="mb-3"> *@
-@*                     <label for="password" class="form-label">Password:</label> *@
-@*                     <InputText id="password" @bind-Value="Staff.Password" class="form-control" /> *@
-@*                     <ValidationMessage For="() => Staff.Password" class="text-danger" /> *@
-@*                 </div> *@
+@code {  
+  [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
-@*                 <button type="submit" class="btn btn-primary">Save</button> *@
-@*             </EditForm> *@
-@*         </div> *@
-@*     </div> *@
-@* } *@
+  [SupplyParameterFromForm(FormName = "edit")] public EditModel EditModel { get; set; } = new();
 
-@* <div> *@
-@*     <a href="/staff">Back to List</a> *@
-@* </div> *@
+  private string? email;
+  private string? userId;
 
-@* @code { *@
-@*     [SupplyParameterFromQuery] *@
-@*     private int Id { get; set; } *@
+  protected override async Task OnInitializedAsync()
+  {
+    var authstate = await AuthenticationState;
+    var user = authstate.User;
 
-@*     [SupplyParameterFromForm] *@
-@*     private Staff? Staff { get; set; } *@
+    if (user.Identity != null && user.Identity.IsAuthenticated)
+    {
+      email = user.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown User";
+      userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    }
+    else
+    {
+      email = "Guest";
+    }
+  }
 
-@*     protected override async Task OnInitializedAsync() *@
-@*     { *@
-@*         using var context = DbFactory.CreateDbContext(); *@
-@*         Staff ??= await context.Staff.FirstOrDefaultAsync(m => m.Id == Id); *@
+  private async Task UpdateStaff()
+  {
+    var user = userManager.FindByIdAsync(userId).Result;
 
-@*         if (Staff is null) *@
-@*         { *@
-@*             NavigationManager.NavigateTo("notfound"); *@
-@*         } *@
-@*     } *@
+    user.FirstName = EditModel.FirstName;
+    user.LastName = EditModel.LastName;
+    user.Email = EditModel.Email;
 
-@*     // To protect from overposting attacks, enable the specific properties you want to bind to. *@
-@*     // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks. *@
-@*     private async Task UpdateStaff() *@
-@*     { *@
-@*         using var context = DbFactory.CreateDbContext(); *@
-@*         context.Attach(Staff!).State = EntityState.Modified; *@
+    if (!string.IsNullOrEmpty(EditModel.Password))
+    {
+      var result = await userManager.ChangePasswordAsync(user, EditModel.CurrentPassword, EditModel.Password);
 
-@*         try *@
-@*         { *@
-@*             await context.SaveChangesAsync(); *@
-@*         } *@
-@*         catch (DbUpdateConcurrencyException) *@
-@*         { *@
-@*             if (!StaffExists(Staff!.Id)) *@
-@*             { *@
-@*                 NavigationManager.NavigateTo("notfound"); *@
-@*             } *@
-@*             else *@
-@*             { *@
-@*                 throw; *@
-@*             } *@
-@*         } *@
+      if (!result.Succeeded)
+      {
+        foreach (var error in result.Errors)
+        {
+          Console.WriteLine($"Error: {error.Description}");
+        }
+        return;
+      }
+    }
 
-@*         NavigationManager.NavigateTo("/staff"); *@
-@*     } *@
-
-@*     private bool StaffExists(int id) *@
-@*     { *@
-@*         using var context = DbFactory.CreateDbContext(); *@
-@*         return context.Staff.Any(e => e.Id == id); *@
-@*     } *@
-@* } *@
+    var result2 = await userManager.UpdateAsync(user);
+  }
+}  
