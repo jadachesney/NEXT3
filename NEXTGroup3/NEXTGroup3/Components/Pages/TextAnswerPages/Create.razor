@@ -18,12 +18,12 @@
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
-                <label for="answers" class="form-label">Answers:</label> 
+                <label for="answers" class="form-label">Text:</label> 
                 <InputText id="answers" @bind-Value="TextAnswer.Answers" class="form-control" /> 
                 <ValidationMessage For="() => TextAnswer.Answers" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="roleid" class="form-label">RoleId:</label> 
+                <label for="roleid" class="form-label">Role Id:</label> 
                 <InputNumber id="roleid" @bind-Value="TextAnswer.RoleId" class="form-control" /> 
                 <ValidationMessage For="() => TextAnswer.RoleId" class="text-danger" /> 
             </div>        

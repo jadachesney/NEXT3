@@ -1,6 +1,7 @@
 ﻿ @page "/candidates/delete" 
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore 
+@using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Models 
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
@@ -11,6 +12,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager 
 @inject UserManager<NextUser> userManager
+@layout CandidateDashboardLayout
 @rendermode InteractiveAuto
 @attribute [Authorize(Roles = "Candidate")]
 
