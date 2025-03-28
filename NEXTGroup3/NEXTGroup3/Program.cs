@@ -17,7 +17,6 @@ builder.Services.AddDbContext<AzureContext>(options =>
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
-builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddScoped<TextAnswerService>();
 builder.Services.AddScoped<RoleService>();
