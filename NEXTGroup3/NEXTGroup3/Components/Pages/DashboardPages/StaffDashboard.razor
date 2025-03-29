@@ -1,220 +1,219 @@
-﻿@page "/staffdashboard"
-@namespace NEXTGroup3.Components.Pages.DashboardPages
+﻿﻿@page "/staffdashboard"
 @layout StaffDashboardLayout
-@rendermode InteractiveServer
-@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@rendermode InteractiveAuto
+@inject AuthenticationStateProvider authenticationStateProvider
+@using Microsoft.AspNetCore.Components.Authorization
 @using NEXTGroup3.Components.Layout
+@using Microsoft.AspNetCore.Authorization
 @using NEXTGroup3.Services
-@inject StaffDashboardService dashboardService
-@inject IJSRuntime jsRunTime;
+@using System.Security.Claims
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+@inject IJSRuntime jsRunTime;
+@attribute [Authorize(Roles = "Admin, Staff")]
 
+<CascadingAuthenticationState>
+  <AuthorizeView Context="authContext">
+    <Authorized>
+      <div class="dashboard-container">
+        <div class="dashboard-header">
+          <h1>Dashboard</h1>
 
-<div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1>Dashboard</h1>
+          <h3>Staff ID:</h3>
 
-        <h3>Staff ID:</h3>
-
-        <h3>Staff role:</h3>
-    </div>
-</div>
-
-@* <div class="border-3">  *@
-@*      @if (departmentBarChart != null)  *@
-@*      {  *@
-@*          <BarChart @ref="departmentBarChart" Class="m-4 border-3 border-dark" Height="300" Width="400" />  *@
-@*      }  *@
-@*      else  *@
-@*      {  *@
-@*          <p>BarChart component is not rendered.</p>  *@
-@*      }  *@
-@*  </div>  *@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-8 chart-container">
-            <canvas id="bar-chart" width="400" height="300" class=""></canvas>
+          <h3>Staff role:</h3>
         </div>
-        @* <div class="col-md-4 chart-container"> *@
-        @*     POSSIBLE PIE OR DOUGHNUT CHART *@
-        @* </div> *@
-    </div>
-    
+      </div>
+                @* <div class="border-3">  *@
+          @*      @if (departmentBarChart != null)  *@
+          @*      {  *@
+          @*          <BarChart @ref="departmentBarChart" Class="m-4 border-3 border-dark" Height="300" Width="400" />  *@
+          @*      }  *@
+          @*      else  *@
+          @*      {  *@
+          @*          <p>BarChart component is not rendered.</p>  *@
+          @*      }  *@
+          @*  </div>  *@
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-8 chart-container">
+            <canvas id="bar-chart" width="400" height="300" class=""></canvas>
+          </div>
+                  @* <div class="col-md-4 chart-container"> *@
+                  @*     POSSIBLE PIE OR DOUGHNUT CHART *@
+                  @* </div> *@
+        </div>
 
-</div>
 
+      </div>
+    </Authorized>
+    <NotAuthorized></NotAuthorized>
+  </AuthorizeView>
+</CascadingAuthenticationState>
 
 <script src="_framework/blazor.server.js"></script>
 
 <script>
-    function CreateChart(departments, data, colors){ 
+  function CreateChart(departments, data, colors){
 
-    new Chart(document.getElementById("bar-chart"),  
-    { 
-    type: 'bar', 
-    data:  
-    { 
-    labels: departments, 
-    datasets:  
-    [ 
-    { 
-    label: "Popularity", 
-    backgroundColor: colors, 
-    data: data, 
-    borderWidth: 1 
-    } 
-    ] 
-    }, 
-    options:  
-    { 
-    legend: { display: false }, 
-    devicePixelRatio: 4,
-    responsive: false, 
-    title:  
-    { 
-    display: true,
-    text: '' 
-    }, 
+  new Chart(document.getElementById("bar-chart"),
+  {
+  type: 'bar',
+  data:
+  {
+  labels: departments,
+  datasets:
+  [
+  {
+  label: "Popularity",
+  backgroundColor: colors,
+  data: data,
+  borderWidth: 1
+  }
+  ]
+  },
+  options:
+  {
+  legend: { display: false },
+  devicePixelRatio: 4,
+  responsive: false,
+  title:
+  {
+  display: true,
+  text: ''
+  },
 
-    scales: 
-    { 
-    yAxes:  
-    [{ 
-    scaleLabel:  
-    { 
-    display: true, 
-    labelString: 'Popularity', 
-    color: '#000000' 
-    },
-    ticks:{
-    beginAtZero: true
+  scales:
+  {
+  yAxes:
+  [{
+  scaleLabel:
+  {
+  display: true,
+  labelString: 'Popularity',
+  color: '#000000'
+  },
+  ticks:{
+  beginAtZero: true
+  }
+  }],
+
+  xAxes:
+  [{
+  scaleLabel:
+  {
+  display: true,
+  labelString: 'Department',
+  color: '#000000'
+  }
+  }]
+  }
+  }
+  });
+  }
+</script>
+
+@code {
+  [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+  private string name;
+
+  protected override async Task OnInitializedAsync()
+  {
+    var authstate = await AuthenticationState;
+    var user = authstate.User;
+
+    if (user.Identity != null && user.Identity.IsAuthenticated)
+    {
+      name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
     }
-    }], 
-
-    xAxes:  
-    [{ 
-    scaleLabel:  
-    { 
-    display: true, 
-    labelString: 'Department', 
-    color: '#000000' 
-    } 
-    }] 
-    } 
-    } 
-    }); 
+    else
+    {
+      name = "Guest";
     }
-</script> 
+  }
+}
+
+<canvas id="bar-chart" width="400" height="300" class="bar-styling mt-2"></canvas>
+
+<script>
+
+  new Chart(document.getElementById("bar-chart"), {
+      type: 'bar',
+      data: {
+          labels: ["IT", "Finance", "Marketing", "Design", "Trading", "Merchandising"],
+          datasets: [
+              {
+                  label: "Popularity",
+                  backgroundColor: ["#000000", "#f7550d", "#000000", "#000000", "#000000", "#f7550d"],
+                  data: [542, 600, 534, 484, 433, 200, 100],
+                  borderWidth: 1
+
+
+              }
+          ]
+      },
+      options: {
+          legend: { display: false },
+          responsive: false,
+          title: {
+              display: true,
+              text: ''
+          },
+
+          scales:
+          {
+              yAxes: [{
+                  scaleLabel: {
+                      display: true,
+                      labelString: 'Popularity',
+                      color: '#000000'
+                  }
+              }],
+
+              xAxes: [{
+                  scaleLabel: {
+                      display: true,
+                      labelString: 'Department',
+                      color: '#000000'
+                  }
+              }]
+          }
+      }
+  });
+</script>
 
 
 @code {
+  private List<string> DepartmentChartColors = new List<string>();
 
-    private List<string> DepartmentChartColors = new List<string>();
+  protected override async Task OnInitializedAsync()
+  {
+    await dashboardService.GetDepartments();
+    await dashboardService.GetOverallPoints();
+    StateHasChanged();
 
-    protected override async Task OnInitializedAsync()
+    await base.OnInitializedAsync();
+  }
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    string[] potentialColors = ["#2274A5", "#FFBE0B", "#D62828", "#00A878"];
+    int currentColor = 0;
+    foreach (var dep in dashboardService.Departments)
     {
-        await dashboardService.GetDepartments();
-        await dashboardService.GetOverallPoints();
-        StateHasChanged();
 
-        await base.OnInitializedAsync();
+      DepartmentChartColors.Add(potentialColors[currentColor]);
+
+      if (currentColor < potentialColors.Length - 1)
+      {
+        currentColor++;
+      }
+      else { currentColor = 0; }
     }
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        string[] potentialColors = ["#2274A5", "#FFBE0B", "#D62828", "#00A878"];
-        int currentColor = 0;
-        foreach(var dep in dashboardService.Departments)
-        {
+    await CreateChartAsync();
+    await base.OnAfterRenderAsync(firstRender);
+  }
+  public async Task CreateChartAsync()
+  {
+    await jsRunTime.InvokeVoidAsync("CreateChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentPointsToDoubleList(), DepartmentChartColors);
+  }
 
-            DepartmentChartColors.Add(potentialColors[currentColor]);
-
-            if (currentColor < potentialColors.Length - 1)
-            {
-                currentColor++;
-            }
-            else { currentColor = 0; }
-        }
-        await CreateChartAsync();
-        await base.OnAfterRenderAsync(firstRender);
-    }
-    public async Task CreateChartAsync(){
-        await jsRunTime.InvokeVoidAsync("CreateChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentPointsToDoubleList(), DepartmentChartColors);
-    }
-    
-
-
-    // private BarChart departmentBarChart = new BarChart();
-    // private BarChartOptions departmentChartOptions = default!;
-    // private ChartData departmentChartData = default!;
-    // private List<string> departmentLabels = default!;
-
-
-
-    // protected override async Task OnInitializedAsync()
-
-    // {
-    //     Console.WriteLine("OnInitialized called.");
-
-    //     departmentLabels = await dashboardService.GetDepartmentStringList();
-
-    //     await dashboardService.GetOverallPoints();
-
-    //     var departmentData = dashboardService.DepartmentPointsToDoubleList();
-
-    //     Console.WriteLine($"Department Labels: {string.Join(", ", departmentLabels)}");
-    //     Console.WriteLine($"Department Data: {string.Join(", ", departmentData)}");
-
-    //     var datasets = new List<IChartDataset>();
-
-    //     var dataset1 = new BarChartDataset()
-    //         {
-    //             Data = departmentData,
-    //             BackgroundColor = new List<string> { ColorUtility.CategoricalTwelveColors[0] },
-    //             BorderColor = new List<string> { ColorUtility.CategoricalTwelveColors[0] },
-    //             BorderWidth = new List<double> { 0 },
-    //         };
-    //     datasets.Add(dataset1);
-
-    //     Console.WriteLine("datasets rendered");
-
-    //     departmentChartOptions = new BarChartOptions();
-    //     departmentChartOptions.Responsive = true;
-    //     departmentChartOptions.Interaction = new Interaction { Mode = InteractionMode.Y };
-    //     departmentChartOptions.IndexAxis = "y";
-
-    //     departmentChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "Matches", Display = true };        
-    //     departmentChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "Departments", Display = true };
-
-
-    //     Console.WriteLine("chart settings set");
-
-    //     departmentChartData = new ChartData { Labels = departmentLabels, Datasets = datasets };
-
-    //     Console.WriteLine("on initialized finished");
-
-    //     await base.OnInitializedAsync();
-    // }
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     Console.WriteLine("OnAfterRenderAsync called." + firstRender);
-    //     if (firstRender && departmentBarChart != null)
-    //     {
-    //         Console.WriteLine("First render, initializing chart...");
-    //         await departmentBarChart.InitializeAsync(departmentChartData, departmentChartOptions);
-    //     }
-
-    //     await base.OnAfterRenderAsync(firstRender);
-    // }
-
-    // private async Task CreateChart()
-    // {
-    //     await jsRunTime.InvokeVoidAsync("CreateChart", dashboardService);
-    // }
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     List<Point> depPoints = dashboardService.DepartmentPoints;
-    //     await CreateChart();
-    // }
-    // }
 }

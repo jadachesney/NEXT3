@@ -4,14 +4,47 @@ using Microsoft.Extensions.DependencyInjection;
 using NEXTGroup3.Data;
 using NEXTGroup3.Controllers;
 using NEXTGroup3.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
+using NEXTGroup3;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using NEXTGroup3.Models;
+using System.Reflection.Metadata;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextFactory<AzureContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AzureContext") ?? throw new InvalidOperationException("Connection string 'AzureContext' not found.")));
 
-builder.Services.AddDbContext<AzureContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("AzureContext")));
+builder.Services.AddIdentity<NextUser, IdentityRole>()
+    .AddEntityFrameworkStores<AzureContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddResponseCaching();
+
+builder.Services.AddAuthentication(options =>
+{
+  options.DefaultScheme = Constant.Authscheme;
+  options.DefaultAuthenticateScheme = Constant.Authscheme;
+  options.DefaultSignInScheme = Constant.Authscheme;
+  options.DefaultChallengeScheme = Constant.Authscheme;
+})
+    .AddCookie(Constant.Authscheme, options =>
+    {
+      options.Cookie.Name = "candidate_auth_token";
+      options.LoginPath = "/CandidateLogin";
+      options.AccessDeniedPath = "/access-denied";
+      options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+      options.SlidingExpiration = true;
+      options.Cookie.HttpOnly = true;
+      options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    });
+
+
+builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -25,6 +58,7 @@ builder.Services.AddScoped<ResultService>();
 builder.Services.AddScoped<DepartmentService>();
 builder.Services.AddScoped<StaffDashboardService>();
 builder.Services.AddScoped<EncouragingMessageService>();
+builder.Services.AddScoped<LoginManagerService>();
 
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
@@ -52,9 +86,9 @@ builder.Services.AddDbContextFactory<AzureContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
+builder.Services.AddAuthorization();
 
-//builder.Services.AddDbContext<DbContextNext>(options =>
-//    options.UseSqlServer(connection));
 
 var app = builder.Build();
 
@@ -82,6 +116,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+app.UseAuthentication()
+   .UseAuthorization();
+
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
