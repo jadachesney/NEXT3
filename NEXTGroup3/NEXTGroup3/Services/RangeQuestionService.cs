@@ -9,6 +9,7 @@ namespace NEXTGroup3.Services
     {
         private readonly AzureContext context;
         public int CurrentQuestionIndex { get; set; } = 0;
+        public bool OnRangeQuestions { get; set; } = false;
         public bool OnTextQuestions { get; set; } = false;
 
         public RangeQuestionService(AzureContext c)

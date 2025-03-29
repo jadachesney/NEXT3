@@ -30,6 +30,7 @@ namespace NEXTGroup3.Controllers
         {
             try
             {
+
                 return RedirectToAction(nameof(Index));
             }
             catch

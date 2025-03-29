@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Components.Server;
 using NEXTGroup3;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using NEXTGroup3.Models;
-
+using System.Reflection.Metadata;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +28,9 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddResponseCaching();
 
 
+
 //Cookie-based authentication
+
 builder.Services.AddAuthentication(options =>
 {
   options.DefaultScheme = Constant.Authscheme;
@@ -59,6 +61,10 @@ builder.Services.AddScoped<TextAnswerService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<RangeQuestionService>();
 builder.Services.AddScoped<LoginManagerService>();
+builder.Services.AddScoped<ResultService>();
+builder.Services.AddScoped<DepartmentService>();
+builder.Services.AddScoped<StaffDashboardService>();
+builder.Services.AddScoped<EncouragingMessageService>();
 
 
 
@@ -89,6 +95,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 
@@ -116,6 +123,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
 
 //authentication middleware checks user credentials
 app.UseAuthentication()
