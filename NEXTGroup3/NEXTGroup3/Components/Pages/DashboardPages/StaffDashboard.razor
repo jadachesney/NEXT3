@@ -7,9 +7,8 @@
 @using Microsoft.AspNetCore.Authorization
 @using NEXTGroup3.Services
 @using System.Security.Claims
+@inject StaffDashboardService dashboardService
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-@attribute [Authorize(Roles = "Admin, Staff")]
-
 @inject IJSRuntime jsRunTime;
 @attribute [Authorize(Roles = "Admin, Staff")]
 
@@ -44,8 +43,6 @@
                   @*     POSSIBLE PIE OR DOUGHNUT CHART *@
                   @* </div> *@
         </div>
-
-
       </div>
     </Authorized>
     <NotAuthorized></NotAuthorized>
@@ -184,19 +181,17 @@
     {
       name = "Guest";
     }
-  }
 
-    // CHART FUNCTIONALITY
-  private List<string> DepartmentChartColors = new List<string>();
-
-  protected override async Task OnInitializedAsync()
-  {
     await dashboardService.GetDepartments();
     await dashboardService.GetOverallPoints();
     StateHasChanged();
 
     await base.OnInitializedAsync();
   }
+
+    // CHART FUNCTIONALITY
+  private List<string> DepartmentChartColors = new List<string>();
+
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
     string[] potentialColors = ["#2274A5", "#FFBE0B", "#D62828", "#00A878"];
