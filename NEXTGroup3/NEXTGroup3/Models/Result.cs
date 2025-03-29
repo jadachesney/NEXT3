@@ -44,31 +44,30 @@ namespace NEXTGroup3.Models
         public Point[] DeserializingDepartmentPoints()
         {
             string[] pointObjects = DepartmentPoints.Split(',');
-            Point[] departmentPointArray = new Point[pointObjects.Length];
+            Point[] departmentPointArray = new Point[pointObjects.Length - 1];
 
 
-            for (int i = 0; i < pointObjects.Length; i++)
+            for (int i = 0; i < departmentPointArray.Length; i++)
             {
                 string[] pointItems = pointObjects[i].Split('+');
-                Point p = new Point(Convert.ToInt32(pointItems[0]), Convert.ToInt32(pointItems[1]));
-                departmentPointArray[i] = p;
+                departmentPointArray[i] = new Point(Convert.ToInt32(pointItems[1]), Convert.ToInt32(pointItems[0]));
             }
             return departmentPointArray;
         }
         public Point[] DeserializingRolePoints()
         {
             string[] pointObjects = RolePoints.Split(',');
-            Point[] rolePointArray = new Point[pointObjects.Length];
+            Point[] rolePointArray = new Point[pointObjects.Length - 1];
             
-            for (int i = 0; i < pointObjects.Length; i++)
+            for (int i = 0; i < rolePointArray.Length; i++)
             {
                 string[] pointItems = pointObjects[i].Split('+');
-                Point p = new Point(Convert.ToInt32(pointItems[0]), Convert.ToInt32(pointItems[1]));
-                rolePointArray[i] = p;
+                rolePointArray[i] = new Point(Convert.ToInt32(pointItems[1]), Convert.ToInt32(pointItems[0]));
             }
             return rolePointArray;
             
         }
+       
     }
     [NotMapped]
     public class Point
@@ -93,4 +92,5 @@ namespace NEXTGroup3.Models
             set { id = value; }
         }
     }
+
 }

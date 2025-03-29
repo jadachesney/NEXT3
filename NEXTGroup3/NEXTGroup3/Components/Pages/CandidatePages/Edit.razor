@@ -1,99 +1,116 @@
 ﻿@page "/candidates/edit"
 @using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Identity
+@using NEXTGroup3.Components.Layout
+@using NEXTGroup3.Services
 @using NEXTGroup3.Models
 @inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject UserManager<NextUser> userManager
+@inject LoginManagerService loginManagerService
+@layout CandidateDashboardLayout
+@attribute [Authorize(Roles = "Candidate")]
 
 <PageTitle>Edit</PageTitle>
 
-<h1>Edit</h1>
+<CascadingAuthenticationState>
+  <AuthorizeView Context="authContext">
+    <Authorized>
+      <h1>Edit</h1>
+      <h2>Candidate</h2>
+      <hr />
 
-<h2>Candidate</h2>
-<hr />
-@if (Candidate is null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <div class="row">
-        <div class="col-md-4">
-            <EditForm method="post" Model="Candidate" OnValidSubmit="UpdateCandidate" FormName="edit" Enhance>
-                <DataAnnotationsValidator />
-                <ValidationSummary role="alert"/>
-                <input type="hidden" name="Candidate.Id" value="@Candidate.Id" />
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email:</label>
-                    <InputText id="email" @bind-Value="Candidate.Email" class="form-control" />
-                    <ValidationMessage For="() => Candidate.Email" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password:</label>
-                    <InputText id="password" @bind-Value="Candidate.Password" class="form-control" />
-                    <ValidationMessage For="() => Candidate.Password" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="isloggedin" class="form-label">IsLoggedIn:</label>
-                    <InputCheckbox id="isloggedin" @bind-Value="Candidate.IsLoggedIn" class="form-check-input" />
-                    <ValidationMessage For="() => Candidate.IsLoggedIn" class="text-danger" />
-                </div>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </EditForm>
-        </div>
-    </div>
-}
-
-<div>
-    <a href="/candidates">Back to List</a>
-</div>
+      <div class="row">
+          <div class="col-md-4">
+              <EditForm method="post" Model="EditModel" OnValidSubmit="UpdateCandidate" FormName="edit">
+                  <DataAnnotationsValidator />
+                  <ValidationSummary role="alert" />
+                  <div class="mb-3">
+                      <label for="email" class="form-label">First Name:</label>
+                      <InputText id="email" @bind-Value="EditModel.FirstName" class="form-control" />
+                      <ValidationMessage For="() => EditModel.FirstName" class="text-danger" />
+                  </div>
+                  <div class="mb-3">
+                      <label for="email" class="form-label">Last Name:</label>
+                      <InputText id="email" @bind-Value="EditModel.LastName" class="form-control" />
+                      <ValidationMessage For="() => EditModel.LastName" class="text-danger" />
+                  </div>
+                  <div class="mb-3">
+                      <label for="email" class="form-label">Email:</label>
+                      <InputText id="email" @bind-Value="EditModel.Email" class="form-control" />
+                      <ValidationMessage For="() => EditModel.Email" class="text-danger" />
+                  </div>
+                  <div class="mb-3">
+                      <label for="password" class="form-label">Current Password:</label>
+                      <InputText id="current-password" @bind-Value="EditModel.CurrentPassword" class="form-control" />
+                  </div>
+                  <div class="mb-3">
+                      <label for="password" class="form-label">New Password:</label>
+                      <InputText id="password" @bind-Value="EditModel.Password" class="form-control" />
+                      <ValidationMessage For="() => EditModel.Password" class="text-danger" />
+                  </div>
+                  <button type="submit" class="btn btn-primary">Save</button>
+              </EditForm>
+          </div>
+          <div>
+              <a href="/candidatedashboard">Back to List</a>
+          </div>
+      </div>
+    </Authorized>
+    <NotAuthorized></NotAuthorized>
+  </AuthorizeView>
+</CascadingAuthenticationState>
 
 @code {
-    [SupplyParameterFromQuery]
-    private int Id { get; set; }
 
-    [SupplyParameterFromForm]
-    private Candidate? Candidate { get; set; }
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
+    [SupplyParameterFromForm(FormName = "edit")] public EditModel EditModel { get; set; } = new();
+
+    private string? email;
+    private string? userId;
 
     protected override async Task OnInitializedAsync()
     {
-        using var context = DbFactory.CreateDbContext();
-        Candidate ??= await context.Candidate.FirstOrDefaultAsync(m => m.Id == Id);
+        var authstate = await AuthenticationState;
+        var user = authstate.User;
 
-        if (Candidate is null)
+        if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            NavigationManager.NavigateTo("notfound");
+            email = user.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown User";
+            userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+        else
+        {
+            email = "Guest";
         }
     }
 
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task UpdateCandidate()
     {
-        using var context = DbFactory.CreateDbContext();
-        context.Attach(Candidate!).State = EntityState.Modified;
+        var user = userManager.FindByIdAsync(userId).Result;
 
-        try
+        user.FirstName = EditModel.FirstName;
+        user.LastName = EditModel.LastName;
+        user.Email = EditModel.Email;
+
+        if (!string.IsNullOrEmpty(EditModel.Password))
         {
-            await context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!CandidateExists(Candidate!.Id))
+            var result = await userManager.ChangePasswordAsync(user, EditModel.CurrentPassword, EditModel.Password);
+
+            if (!result.Succeeded)
             {
-                NavigationManager.NavigateTo("notfound");
-            }
-            else
-            {
-                throw;
+                foreach (var error in result.Errors)
+                {
+                    Console.WriteLine($"Error: {error.Description}");
+                }
+                return;
             }
         }
 
-        NavigationManager.NavigateTo("/candidates");
-    }
-
-    private bool CandidateExists(int id)
-    {
-        using var context = DbFactory.CreateDbContext();
-        return context.Candidate.Any(e => e.Id == id);
+        var result2 = await userManager.UpdateAsync(user);
     }
 }

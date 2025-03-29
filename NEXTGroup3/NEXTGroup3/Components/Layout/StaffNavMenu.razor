@@ -3,7 +3,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+<div class="nav-scrollable">
     <nav class="flex-column">
         <div class="nav-item">
             <NavLink href="StaffDashboard" ActiveClass="active-link" class="nav-link">
@@ -11,16 +11,10 @@
             </NavLink>
         </div>
         <div class="nav-item mt-2">
-            <NavLink href="/staff/edit" ActiveClass="active-link" class="nav-link">
+            <NavLink href="/staff/details" ActiveClass="active-link" class="nav-link">
                 <i class="fa-solid fa-user me-1 mt-1"></i> PROFILE
             </NavLink>
         </div>
-        <div class="nav-item mt-2">
-            <NavLink href="results" ActiveClass="active-link" class="nav-link">
-                <i class="fa-solid fa-square-poll-vertical me-1 mt-1"></i> RESULTS
-            </NavLink>
-        </div>
-
         <div class="nav-item mt-2">
             <NavLink href="departments" ActiveClass="active-link" class="nav-link">
                  <i class="fa-solid fa-sitemap me-1 mt-1"></i> DEPARTMENTS
@@ -61,6 +55,12 @@
         <div class="nav-item mt-2">
             <NavLink href="staff" ActiveClass="active-link" class="nav-link">
                 <i class="fa-solid fa-users me-1 mt-1"></i> STAFF
+            </NavLink>
+        </div>
+
+        <div class="nav-item mt-2">
+            <NavLink href="logout" ActiveClass="active-link" class="nav-link">
+                <i class="fa-solid fa-right-from-bracket me-1 mt-1"></i>LOGOUT
             </NavLink>
         </div>
 

@@ -1,0 +1,85 @@
+﻿@page "/staffprofile"
+@layout StaffDashboardLayout
+@using Microsoft.AspNetCore.Components.Authorization
+@using NEXTGroup3.Components.Layout
+@using NEXTGroup3.Models
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Services
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject LoginManagerService loginManagerService
+
+@* <CascadingAuthenticationState> *@
+
+@*     <div class="profile-container"> *@
+@*         <div class="profile-info"> *@
+@*             <div class="form-group profile-text-box align-label"> *@
+@*                 <label  for="id">ID *@
+@*                     <input class="profile-box" type="text" name="staff.Id" value="@staff.Id" disabled /> *@
+@*                 </label> *@
+@*             </div> *@
+@*             <div class="form-group profile-text-box align-label"> *@
+@*                 <label for="email">Email *@
+@*                    <input class="profile-box" type="text" id="email" value="@staff.Email" disabled /> *@
+@*                 </label> *@
+@*             </div> *@
+
+@*         </div> *@
+
+
+@*         <div class="profile-btn"> *@
+@*             <div> *@
+@*                 <a type="button" class="btn-primary profile-btn-text" href="/staff/edit?Id=@staff.Id">Update</a> *@
+@*             </div> *@
+
+@*         </div> *@
+@*     </div> *@
+
+
+
+
+@* </CascadingAuthenticationState> *@
+
+@* @code { *@
+@*     [SupplyParameterFromQuery] *@
+@*     private int Id { get; set; } *@
+
+@*     private Staff staff { get; set; } = new Staff(); *@
+
+
+@*     [CascadingParameter] *@
+@*     private Task<AuthenticationState> authenticationStateTask { get; set; } *@
+
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         await LoadUserProfile(); *@
+@*     } *@
+
+@*     private async Task LoadUserProfile() *@
+@*     { *@
+@*         var authenticationState = await authenticationStateTask; *@
+@*         var username = authenticationState.User.Identity.Name; *@
+
+@*         if (string.IsNullOrEmpty(username)) *@
+@*         { *@
+@*             return; *@
+@*         } *@
+
+@*         using var context = DbFactory.CreateDbContext(); *@
+@*         var Staff = await context.Staff *@
+@*             .FirstOrDefaultAsync(u => u.Email == username); *@
+
+
+@*         if (Staff != null) *@
+@*         { *@
+@*             staff = Staff;  *@
+@*         } *@
+
+@*         StateHasChanged(); *@
+@*     } *@
+
+
+@* } *@
+
+

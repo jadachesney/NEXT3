@@ -52,22 +52,22 @@ namespace NEXTGroup3.Services
 
         //---waiting for the result table to be updated---//
 
-        // fetches all results for one user
-        //public async Task<List<Result>> GetResultsFromUserId(int userId)
-        //{
-        //    var context = contextFactory.CreateDbContext();
+         //fetches all results for one user
+        public async Task<List<Result>> GetResultsFromUserId(int CandidateId)
+        {
+            var context = contextFactory.CreateDbContext();
 
-        //    //return await context.Result.Where(x => x.UserId == userId);
-        //}
+            return await context.Result.Where(x => x.CandidateId == CandidateId).ToListAsync();
+        }
 
         // Fetches all results 
-        //public async Task<List<Result>> GetAllResults()
-        //{
-        //    var context = contextFactory.CreateDbContext();
+        public async Task<List<Result>> GetAllResults()
+        {
+            var context = contextFactory.CreateDbContext();
 
-        //    return await context.Result.ToListAsync();
-        //}
-
+            return await context.Result.ToListAsync();
+        }
+        
         // saves a result to the database
         public void SaveResult()
         {
