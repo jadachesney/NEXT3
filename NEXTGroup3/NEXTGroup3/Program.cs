@@ -28,7 +28,6 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddResponseCaching();
 
 
-
 //Cookie-based authentication
 
 builder.Services.AddAuthentication(options =>

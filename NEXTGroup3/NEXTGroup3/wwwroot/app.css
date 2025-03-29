@@ -69,9 +69,9 @@ h1:focus {
     outline: none;
 }
 
-.valid.modified:not([type=checkbox]) {
+/*.valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
-}
+}*/
 
 .invalid {
     outline: 1px solid #e50000;
@@ -473,11 +473,10 @@ result-options {
 }
 
 video {
-
+  width: 100%;
   position: fixed;
   bottom: 0;
-  top: 85px
-/*     top: 110px; */
+  top: 95px; 
 }
 
 .video-overlay {
@@ -757,7 +756,7 @@ td {
   flex-wrap: wrap;
 }
 
-.login-btn {
+.login-page-btn {
   border-radius: 0.25rem;
   border: 1px solid;
   font-weight: 700;
@@ -860,7 +859,7 @@ td {
     border: solid 2px black
 }
 
- // added css for html
+
 .layout-container {
     flex-direction: row;
     display: flex;
@@ -898,9 +897,6 @@ td {
   box-sizing: border-box;
 }
 
-body {
-  background-color: #f5f8ff;
-}
 
 #cookiePopup {
   background-color: #ffffff;

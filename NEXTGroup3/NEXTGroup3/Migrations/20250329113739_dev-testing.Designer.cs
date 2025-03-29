@@ -12,8 +12,8 @@ using NEXTGroup3.Data;
 namespace NEXTGroup3.Migrations
 {
     [DbContext(typeof(AzureContext))]
-    [Migration("20250326112341_indentityChanges")]
-    partial class indentityChanges
+    [Migration("20250329113739_dev-testing")]
+    partial class devtesting
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,6 +193,37 @@ namespace NEXTGroup3.Migrations
                     b.ToTable("Department");
                 });
 
+            modelBuilder.Entity("NEXTGroup3.Models.DepartmentRangeQuestion", b =>
+                {
+                    b.Property<bool>("Alignment")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RangeQuestionId")
+                        .HasColumnType("int");
+
+                    b.ToTable("DepartmentRangeQuestion");
+                });
+
+            modelBuilder.Entity("NEXTGroup3.Models.EncouragingMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EncouragingMessage");
+                });
+
             modelBuilder.Entity("NEXTGroup3.Models.NextUser", b =>
                 {
                     b.Property<string>("Id")
@@ -290,6 +321,20 @@ namespace NEXTGroup3.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CandidateId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DepartmentPoints")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RolePoints")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
