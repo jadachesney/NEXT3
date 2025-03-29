@@ -67,6 +67,7 @@ namespace NEXTGroup3.Models
             return rolePointArray;
             
         }
+       
     }
     [NotMapped]
     public class Point
@@ -91,4 +92,5 @@ namespace NEXTGroup3.Models
             set { id = value; }
         }
     }
+
 }

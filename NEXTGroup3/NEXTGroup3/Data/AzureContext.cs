@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NEXTGroup3.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Reflection;
 
 
 namespace NEXTGroup3.Data

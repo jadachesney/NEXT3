@@ -13,10 +13,6 @@
 
 <h1>Index</h1>
 
-<p>
-    <a href="departments/create">Create New</a>
-</p>
-
 <QuickGrid Class="table" Items="context.Department">
     <PropertyColumn Property="department => department.Id" />
     <PropertyColumn Property="department => department.Name" />
@@ -26,7 +22,6 @@
     <TemplateColumn Context="department" class="icon-tb">
         <a href="@($"departments/edit?id={department.Id}")"><i class="fa-solid fa-pen"></i></a> | 
         <a href="@($"departments/details?id={department.Id}")"><i class="fa-solid fa-info"></i></a> |
-        <a href="@($"departments/delete?id={department.Id}")"><i class="fa-solid fa-trash"></i></a>
     </TemplateColumn>
 </QuickGrid>
 

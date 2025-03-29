@@ -1,0 +1,148 @@
+﻿@page "/CandidateLogin"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Identity
+@using NEXTGroup3.Services
+@using NEXTGroup3
+@inject UserManager<NextUser> userManager
+@inject NavigationManager navigationManager
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_left" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_right" />
+@inject LoginManagerService loginManagerService
+
+<body>
+    <div class="login-container">
+        <header>
+            <h1 class="login-header">
+                Manage Your Candidate Profile
+            </h1>
+        </header>
+        <div class="login-form">
+            <section class="login-content">
+                <div class="text-row">
+                    <p1 class="login-text">
+                        Enter your credentials linked to your candidate profile. Once your identity is confirmed, you will be able to manage your profile.
+                    </p1>
+                </div>
+                <EditForm Model="@LoginModel" OnValidSubmit="Authenticate" FormName="@loginForm">
+                    <DataAnnotationsValidator />
+                    <div class="login-input">
+                        <!-- CANDIDATE EMAIL -->
+                        <div class="input-spacer">
+                            <div class="email-text">
+                                <label class="email-input">
+                                    <span>
+                                        Email Address
+                                    </span>
+                                    <span class="verification-star">
+                                        *
+                                    </span>
+                                </label>
+                            </div>
+                            <InputText @bind-Value="LoginModel.Email" placeholder="Email" class="input-row" />
+                            <ValidationMessage For="() => LoginModel.Email" />
+                        </div>
+                        <!-- CANDIDATE PASSWORD -->
+                        <div class="input-spacer">
+                            <div class="password-text">
+                                <label class="password-input">
+                                    <span>
+                                        Password
+                                    </span>
+                                    <span class="verification-star">
+                                        *
+                                    </span>
+                                </label>
+                            </div>
+                            <InputText @bind-Value="LoginModel.Password" type="password" placeholder="Password" class="input-row" />
+                            <ValidationMessage For="() => LoginModel.Password" />
+                        </div>
+                    </div>
+                    <span class="text-danger">@errorMessage</span>
+                    <footer class="buttons-bar">
+                        <div class="buttons-bar-inner">
+                            <NavLink href="/" class="login-btn">
+                                <span class="button-label">Back</span>
+                                <span class="material-symbols-outlined-left button-arrow button-arrow-left">
+                                    arrow_left
+                                </span>
+                            </NavLink>
+                            <div class="buttons-spacer"></div>
+                            <button type="submit" class="login-btn">
+                                <span class="button-label">Login</span>
+                                <span class="material-symbols-outlined button-arrow button-arrow-right">
+                                    arrow_right
+                                </span>
+                            </button>
+                        </div>
+                    </footer>
+                </EditForm>
+            </section>
+        </div>
+    </div>
+</body>
+
+
+
+@code {
+    [CascadingParameter] public HttpContext HttpContext { get; set; } = default!;
+    private const string loginForm = "LoginForm";
+    [SupplyParameterFromForm(FormName = loginForm)] public LoginModel LoginModel { get; set; } = new();
+    private string? errorMessage;
+
+    private async Task Authenticate()
+    {
+        var candidates = await userManager.GetUsersInRoleAsync("Candidate");
+        var candidate = await userManager.FindByEmailAsync(LoginModel.Email);
+        if (!candidates.Contains(candidate))
+            candidate = null;
+
+    var isValid = await userManager.CheckPasswordAsync(candidate, LoginModel.Password);
+    if (candidate == null || !isValid)
+    {
+      errorMessage = "Invalid email or password.";
+      return;
+    }
+
+    string userRole = "Candidate";
+
+    var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, candidate.Id.ToString()),
+            new Claim(ClaimTypes.Name, candidate.FirstName),
+            new Claim(ClaimTypes.Email, LoginModel.Email),
+            new Claim(ClaimTypes.Role, userRole)
+        };
+
+    var authProperties = new AuthenticationProperties {
+        IsPersistent = true, ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+      };
+    //Identity created based on claims
+    var identity = new ClaimsIdentity(claims, Constant.Authscheme);
+
+    var principal = new ClaimsPrincipal(identity);
+
+    //Signs candidate in and stores claims in an authentication cookie
+    try
+    {
+      await HttpContext.SignInAsync(Constant.Authscheme, principal);
+      navigationManager.NavigateTo("/", forceLoad: true);
+      Console.WriteLine("Sign-in successful.");
+    }
+    catch (Exception ex)
+    {
+      // Log or break here to investigate the issue
+      Console.WriteLine("Sign-in failed: " + ex.Message);
+      Console.WriteLine("Stack Trace: " + ex.StackTrace);
+      // You can also log the inner exception if available
+      if (ex.InnerException != null)
+      {
+        Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
+      }
+    }
+
+    //Redirected to candidate dashboard
+    navigationManager.NavigateTo("/CandidateDashboard", forceLoad: true);
+  }
+}

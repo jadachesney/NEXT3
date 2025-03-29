@@ -40,9 +40,29 @@
                         else if (rangeQuestionService.OnRangeQuestions == true && rangeQuestionService.CurrentQuestionIndex < rangeQuestions.Count() && rangeQuestionService.CurrentQuestionIndex == i - 1)
                         {
                             <div class="question-component">
-                                <h5>Section 1 / 2</h5>
-                                <h3>Question @(i) / @rangeQuestions.Count()</h3>
-                                <p>@rangeQuestions[i - 1].QuestionText</p>
+                                <h5 class="range-header">Section 1 / 2</h5>
+                                <div class="range-progess-container">
+                                    <div class="progress">
+                                      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@(i + 1)" aria-valuemin="0" aria-valuemax="@rangeQuestions.Count()">
+                                        @(i + 1) / @rangeQuestions.Count()
+                                        <script>
+                                            $(document).ready(function() {
+                                            var progressBar = $(".progress-bar");
+                                            var incrementBtn = $(".range-submit-btn");
+
+                                            var currentWidth = 0;
+                                            var incrementAmount = (1/16)*450;
+
+                                            incrementBtn.click(function() {
+                                              currentWidth += incrementAmount;
+                                              progressBar.css("width", currentWidth + "px");
+                                              });
+                                            });
+                                          </script>
+                                        </div>
+                                      </div>
+                                    </div>
+                                <p class="range-question-text">@rangeQuestions[i - 1].QuestionText</p>
                                 <div class="button-group">
                                     <InputRadioGroup id="radio-button" @bind-Value="answer">
                                         @for (int v = 0; v < 5; v++)
@@ -161,7 +181,7 @@
         rangeQuestionService.OnRangeQuestions = true;
     }
 
-    private async Task HandleAnswerSelected()
+      private async Task HandleAnswerSelected()
     {
         if (answer >= 0)
         {

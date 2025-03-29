@@ -1,12 +1,14 @@
 ﻿@page "/staff"
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Models
 @using NEXTGroup3.Data
-@implements IAsyncDisposable
-@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@using System.Security.Claims
 @layout StaffDashboardLayout
+@inject UserManager<NextUser> userManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Index</PageTitle>
 
@@ -15,27 +17,30 @@
 <p>
     <a href="staff/create">Create New</a>
 </p>
-
-<QuickGrid Class="table" Items="context.Staff">
-    <PropertyColumn Property="staff => staff.StaffId" />
-    <PropertyColumn Property="staff => staff.Email" />
-    <PropertyColumn Property="staff => staff.Password" />
-    <PropertyColumn Property="staff => staff.IsLoggedIn" />
-
-    <TemplateColumn Context="staff">
-        <a href="@($"staff/edit?id={staff.Id}")">Edit</a> |
-        <a href="@($"staff/details?id={staff.Id}")">Details</a> |
-        <a href="@($"staff/delete?id={staff.Id}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
+<table>
+    <tr>
+        <th>StaffId</th>
+        <th>Email</th>
+    </tr>
+    @foreach (NextUser staff in staffs)
+    {
+        <tr>
+            <td>@staff.FirstName</td>
+            <td>@staff.LastName</td>
+            <td>@staff.Email</td>
+            <td><a href="@($"staff/edit?id={staff.Id}")">Edit</a></td>
+        </tr>
+    }
+</table>
 
 @code {
-    private AzureContext context = default!;
+    [CascadingParameter] public HttpContext HttpContext { get; set; } = default!;
 
-    protected override void OnInitialized()
+    private List<NextUser> staffs = new List<NextUser>();
+
+    protected override async Task OnInitializedAsync()
     {
-        context = DbFactory.CreateDbContext();
+        var staffList = await userManager.GetUsersInRoleAsync("Staff");
+        staffs = staffList.ToList();
     }
-
-    public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }
