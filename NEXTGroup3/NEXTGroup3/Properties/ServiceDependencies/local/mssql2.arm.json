@@ -51,7 +51,7 @@
             {
               "kind": "v12.0",
               "location": "[parameters('resourceLocation')]",
-              "name": "nextgroup3server",
+              "name": "nextgroup3server1",
               "type": "Microsoft.Sql/servers",
               "apiVersion": "2017-10-01-preview"
             },
@@ -64,11 +64,11 @@
               },
               "kind": "v12.0,user,vcore,serverless",
               "location": "[parameters('resourceLocation')]",
-              "name": "nextgroup3server/NEXTGroup3",
+              "name": "nextgroup3server1/NEXTGroup3",
               "type": "Microsoft.Sql/servers/databases",
               "apiVersion": "2017-10-01-preview",
               "dependsOn": [
-                "nextgroup3server"
+                "nextgroup3server1"
               ]
             }
           ]

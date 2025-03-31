@@ -5,8 +5,7 @@
     },
     "mssql2": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:DatabaseConnection",
-      "dynamicId": null
+      "connectionId": "SQL_CONNECT"
     }
   }
 }

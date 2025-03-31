@@ -12,8 +12,8 @@ using NEXTGroup3.Data;
 namespace NEXTGroup3.Migrations
 {
     [DbContext(typeof(AzureContext))]
-    [Migration("20250329113739_dev-testing")]
-    partial class devtesting
+    [Migration("20250331094839_new-database")]
+    partial class newdatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

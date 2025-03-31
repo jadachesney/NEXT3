@@ -74,11 +74,11 @@ var connection = String.Empty;
 if (builder.Environment.IsDevelopment())
 {
   builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
-  connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+  connection = builder.Configuration.GetConnectionString("SQL_CONNECT");
 }
 else
 {
-  connection = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+  connection = Environment.GetEnvironmentVariable("SQL_CONNECT");
 }
 
 builder.Services.AddDbContextFactory<AzureContext>(options =>
