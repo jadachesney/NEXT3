@@ -9,9 +9,8 @@
 @using System.Security.Claims
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 @attribute [Authorize(Roles = "Admin, Staff")]
-
 @inject IJSRuntime jsRunTime;
-@attribute [Authorize(Roles = "Admin, Staff")]
+
 
 <CascadingAuthenticationState>
   <AuthorizeView Context="authContext">
@@ -184,40 +183,33 @@
     {
       name = "Guest";
     }
+
+    // await dashboardService.GetDepartments();
+    // await dashboardService.GetOverallPoints();
+    // StateHasChanged();
   }
 
-    // CHART FUNCTIONALITY
-  private List<string> DepartmentChartColors = new List<string>();
+  // protected override async Task OnAfterRenderAsync(bool firstRender)
+  // {
+  //   string[] potentialColors = ["#2274A5", "#FFBE0B", "#D62828", "#00A878"];
+  //   int currentColor = 0;
+  //   foreach (var dep in dashboardService.Departments)
+  //   {
 
-  protected override async Task OnInitializedAsync()
-  {
-    await dashboardService.GetDepartments();
-    await dashboardService.GetOverallPoints();
-    StateHasChanged();
+  //     DepartmentChartColors.Add(potentialColors[currentColor]);
 
-    await base.OnInitializedAsync();
-  }
-  protected override async Task OnAfterRenderAsync(bool firstRender)
-  {
-    string[] potentialColors = ["#2274A5", "#FFBE0B", "#D62828", "#00A878"];
-    int currentColor = 0;
-    foreach (var dep in dashboardService.Departments)
-    {
-
-      DepartmentChartColors.Add(potentialColors[currentColor]);
-
-      if (currentColor < potentialColors.Length - 1)
-      {
-        currentColor++;
-      }
-      else { currentColor = 0; }
-    }
-    await CreateChartAsync();
-    await base.OnAfterRenderAsync(firstRender);
-  }
-  public async Task CreateChartAsync()
-  {
-    await jsRunTime.InvokeVoidAsync("CreateChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentPointsToDoubleList(), DepartmentChartColors);
-  }
+  //     if (currentColor < potentialColors.Length - 1)
+  //     {
+  //       currentColor++;
+  //     }
+  //     else { currentColor = 0; }
+  //   }
+  //   await CreateChartAsync();
+  //   await base.OnAfterRenderAsync(firstRender);
+  // }
+  // public async Task CreateChartAsync()
+  // {
+  //   await jsRunTime.InvokeVoidAsync("CreateChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentPointsToDoubleList(), DepartmentChartColors);
+  // }
 
 }

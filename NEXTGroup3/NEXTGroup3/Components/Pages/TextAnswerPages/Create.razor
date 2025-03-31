@@ -51,9 +51,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        departments = departmentService.GetAllDepartments();
-        foreach(Department department in departments)
-            roles.AddRange(roleService.GetAllRolesInDepartment(department));
+        // departments = departmentService.GetAllDepartments();
+        // foreach(Department department in departments)
+        //     roles.AddRange(roleService.GetAllRolesInDepartment(department));
     }
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
