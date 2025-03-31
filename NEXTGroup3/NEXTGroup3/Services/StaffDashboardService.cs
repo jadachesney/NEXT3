@@ -13,6 +13,9 @@ namespace NEXTGroup3.Services
         public List<Point> DepartmentPoints { get; set; } = new List<Point>();
         public List<Point> RolePoints { get; set; } = new List<Point>();
         public List<Department> Departments { get; set; }
+        public Department HighestDepartment { get; set; }
+        public List<Role> TopRoles { get; set; }
+        public int ResultsCount { get; set; }
 
         public StaffDashboardService(IDbContextFactory<AzureContext> c) 
         {
@@ -26,11 +29,13 @@ namespace NEXTGroup3.Services
 
             return await context.Result.ToListAsync();
         }
-        public async Task GetOverallPoints()
+        public async Task GetOverallPoints(int candidateId = -1)
         {
             AzureContext context = contextFactory.CreateDbContext();
-
-            List<Result> results = context.Result.ToList();
+            List<Result> results;
+            if(candidateId <= 0) { results = context.Result.ToList(); }
+            else { results = context.Result.Where(x => x.CandidateId == candidateId).ToList(); }
+            
 
             int[] departmentIds = await context.Department.Select(d => d.Id).ToArrayAsync();
             int[] roleIds = await context.Role.Select(r => r.Id).ToArrayAsync();
@@ -61,6 +66,8 @@ namespace NEXTGroup3.Services
                     }
                 }
             }
+            ResultsCount = results.Count();
+            await GetHighestDepartment();
         }
         public Task GetDepartments()
         {
@@ -68,18 +75,40 @@ namespace NEXTGroup3.Services
             Departments = context.Department.ToList();
             return Task.CompletedTask;
         }
+
         public async Task<List<string>> GetDepartmentStringList()
         {
-            var context = contextFactory.CreateDbContext();
-
-            return await context.Department.Select(x => x.Name).ToListAsync();
-            
+            return Departments.Select(x => x.Name).ToList();
         }
-        public List<Double?> DepartmentPointsToDoubleList()
+        public async Task<List<Double?>> DepartmentPointsToDoubleList()
         {
             List<Double?> output = new List<Double?>();
             foreach (var department in DepartmentPoints) { output.Add(Convert.ToDouble(department.Points)); }
             return output;
         }
+
+        public async Task GetHighestDepartment()
+        {
+            var context = contextFactory.CreateDbContext();
+
+            Point highestDep = new(0); //placeholder point
+
+            foreach (Point p in DepartmentPoints) {
+                if (p.Points > highestDep.Points) highestDep = p;
+            }
+            if(highestDep != null && Departments != null)
+            {
+                HighestDepartment = Departments.Find(x => x.Id == highestDep.Id);
+            }
+            //var sortedDepartments = DepartmentPoints.OrderByDescending(p => p.Points);
+            //HighestDepartment = Departments.Where(d => d.Id == sortedDepartments.ElementAt(0).Id).First();
+        }
+        //public async Task GetTopRoles()
+        //{
+        //    var context = contextFactory.CreateDbContext();
+
+        //    var topPoints = RolePoints.OrderBy(p => p.Points).Take(5);
+        //    TopRoles = context.Roles.Where(r => topPoints.Any(p => r.Id == p.Id)).ToList();
+        //}
     }
 }

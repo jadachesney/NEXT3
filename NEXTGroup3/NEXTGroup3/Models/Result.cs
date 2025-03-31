@@ -41,6 +41,7 @@ namespace NEXTGroup3.Models
         {
             RolePoints =  String.Join("", inputPoints.Select(p => $"{p.Points}+{p.Id},")); 
         }
+
         public Point[] DeserializingDepartmentPoints()
         {
             string[] pointObjects = DepartmentPoints.Split(',');
