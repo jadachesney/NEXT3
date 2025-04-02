@@ -1,0 +1,61 @@
+﻿@page "/candidateprofile"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using NEXTGroup3.Components.Layout
+@using NEXTGroup3.Models
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Services
+@using System.Security.Claims
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject LoginManagerService loginManagerService
+@inject UserManager<NextUser> userManager
+@layout CandidateDashboardLayout
+@attribute [Authorize(Roles = "Candidate")]
+
+<CascadingAuthenticationState>
+  <AuthorizeView Context="authContext">
+    <Authorized>
+      <div class="profile-container">
+        <div class="form-group profile-text-box align-label">
+            <label for="email">Email
+            <input class="profile-box" type="text" id="email" value="@email" disabled />
+            </label>
+        </div>
+         <div class="profile-btn"> 
+             <div> 
+                 <a type="button" class="btn-primary profile-btn-text" href="/candidates/edit">Update</a> 
+             </div> 
+             <div> 
+                 <a type="button" class="btn-danger profile-btn-text" href="/candidates/delete">Delete</a> 
+             </div> 
+         </div> 
+      </div>
+    </Authorized>
+    <NotAuthorized></NotAuthorized>
+  </AuthorizeView>
+</CascadingAuthenticationState>
+
+
+@code {
+
+  [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+  private string email;
+  protected override async Task OnInitializedAsync()
+  {
+    // Gets the auth state of the candidate logged in
+    var authstate = await AuthenticationState;
+    var user = authstate.User;
+
+    if (user.Identity != null && user.Identity.IsAuthenticated)
+    {
+      // Finds them by their email to fetch their information for the profile page.
+      email = user.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown User";
+    }
+    else
+    {
+      email = "Guest";
+    }
+  }
+}

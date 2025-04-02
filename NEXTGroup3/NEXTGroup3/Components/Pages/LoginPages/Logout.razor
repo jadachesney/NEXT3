@@ -1,0 +1,25 @@
+﻿@page "/Logout"
+@using Azure
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using System.Net;
+@inject NavigationManager navigationManager
+
+<h3>Logout</h3>
+
+@code {
+  [CascadingParameter]
+  public HttpContext HttpContext { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    // If they are authenticated and logged in, sign them out and redirect them to the landing page.
+    if (HttpContext.User.Identity.IsAuthenticated)
+    {
+      await HttpContext.SignOutAsync();
+      navigationManager.NavigateTo("/", true);
+
+    }
+  }
+}

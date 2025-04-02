@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@inherits LayoutComponentBase
+<script src="https://kit.fontawesome.com/043f66280d.js" crossorigin="anonymous"></script>
+@inject NavigationManager navigationManager
+
+<div class="nav-scrollable">
+    <nav class="flex-column">
+        <div class="nav-item">
+            <NavLink href="CandidateDashboard" ActiveClass="active-link" class="nav-link">
+                <i class="fa-solid fa-house me-1 mb-1"></i> DASHBOARD
+            </NavLink>
+        </div>
+        <div class="nav-item mt-2">
+            <NavLink href="candidateprofile" ActiveClass="active-link" class="nav-link">
+                <i class="fa-solid fa-user me-1 mb-1"></i> PROFILE
+            </NavLink>
+        </div>
+        <div class="nav-item mt-2">
+            <NavLink href="results" ActiveClass="active-link" class="nav-link">
+                <i class="fa-solid fa-square-poll-horizontal me-1 mb-1"></i> RESULTS
+            </NavLink>
+        </div>
+
+        <div class="nav-item mt-2">
+            <NavLink href="logout" ActiveClass="active-link" class="nav-link">
+                <i class="fa-solid fa-right-from-bracket me-1 mt-1"></i>LOGOUT
+            </NavLink>
+        </div>
+
+    </nav>
+</div>
+
+
+
+
+
+

@@ -1,0 +1,39 @@
+﻿@page "/roles"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using NEXTGroup3.Components.Layout
+@using NEXTGroup3.Models
+@using NEXTGroup3.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@layout StaffDashboardLayout
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="roles/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Role">
+    <PropertyColumn Property="role => role.Name" />
+
+    <TemplateColumn Context="role" class="icon-tb">
+        <a href="@($"roles/edit?id={role.Id}")"><i class="fa-solid fa-pen"></i></a> |
+        <a href="@($"roles/details?id={role.Id}")"><i class="fa-solid fa-info"></i></a> |
+        <a href="@($"roles/delete?id={role.Id}")"><i class="fa-solid fa-trash"></i></a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private AzureContext context = default!;
+
+    protected override void OnInitialized()
+    {
+       // Fetches db roles to show in the table.
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

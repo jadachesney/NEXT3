@@ -1,0 +1,62 @@
+﻿@page "/roles/delete"
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Models
+@using NEXTGroup3.Components.Layout
+@layout StaffDashboardLayout
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<p>Are you sure you want to delete this?</p>
+<div>
+    <h2>Role</h2>
+    <hr />
+    @if (role is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@role.Name</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Link</dt>
+            <dd class="col-sm-10">@role.Link</dd>
+        </dl>
+        <EditForm method="post" Model="role" OnValidSubmit="DeleteRole" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(role is null)">Delete</button> |
+            <a href="/roles">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private Role? role;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // First fetches role in the database, then removes role from the table on submit.
+        using var context = DbFactory.CreateDbContext();
+        role = await context.Role.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (role is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private async Task DeleteRole()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Role.Remove(role!);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/roles");
+    }
+}

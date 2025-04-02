@@ -1,0 +1,47 @@
+﻿@page "/staff"
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using NEXTGroup3.Components.Layout
+@using NEXTGroup3.Models
+@using NEXTGroup3.Data
+@using System.Security.Claims
+@layout StaffDashboardLayout
+@inject UserManager<NextUser> userManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="staff/create">Create New</a>
+</p>
+<table>
+    <tr>
+        <th>StaffId</th>
+        <th>Email</th>
+    </tr>
+    @foreach (NextUser staff in staffs)
+    {
+        <tr>
+            <td>@staff.FirstName</td>
+            <td>@staff.LastName</td>
+            <td>@staff.Email</td>
+            <td><a href="@($"staff/edit?id={staff.Id}")">Edit</a></td>
+        </tr>
+    }
+</table>
+
+@code {
+    [CascadingParameter] public HttpContext HttpContext { get; set; } = default!;
+
+    private List<NextUser> staffs = new List<NextUser>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetches the staff details from the database and displays in the table
+        var staffList = await userManager.GetUsersInRoleAsync("Staff");
+        staffs = staffList.ToList();
+    }
+}

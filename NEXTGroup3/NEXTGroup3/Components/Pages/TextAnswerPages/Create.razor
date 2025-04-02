@@ -1,0 +1,68 @@
+﻿@page "/textanswers/create"
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Models
+@using NEXTGroup3.Components.Layout
+@using NEXTGroup3.Services
+@layout StaffDashboardLayout
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+@inject RoleService roleService
+@inject DepartmentService departmentService
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>TextAnswer</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="TextAnswer" OnValidSubmit="AddTextAnswer" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="answers" class="form-label">Text:</label> 
+                <InputText id="answers" @bind-Value="TextAnswer.Answers" class="form-control" /> 
+                <ValidationMessage For="() => TextAnswer.Answers" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="roleid" class="form-label">Role Id:</label> 
+                <select>
+                    @foreach (Role role in roles)
+                    {
+                        <option value=@role.Id>@role.Name</option>
+                    }
+                </select>
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/textanswers">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private TextAnswer TextAnswer { get; set; } = new();
+    private List<Department> departments = new List<Department>();
+    private List<Role> roles = new List<Role>();
+
+    protected override async Task OnInitializedAsync()
+    {
+      // Gets all departments in the database
+        departments = await departmentService.GetAllDepartments();
+        foreach(Department department in departments)
+            roles.AddRange(await roleService.GetAllRolesInDepartment(department));
+    }
+
+    private async Task AddTextAnswer()
+    {
+       // Adds the text answer to the database
+        using var context = DbFactory.CreateDbContext();
+        context.TextAnswer.Add(TextAnswer);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/textanswers");
+    }
+}

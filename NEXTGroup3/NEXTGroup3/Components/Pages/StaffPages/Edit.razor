@@ -1,0 +1,117 @@
+﻿@page "/staff/edit"  
+@using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Identity
+@using NEXTGroup3.Components.Layout
+@using NEXTGroup3.Services
+@using NEXTGroup3.Models
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+@inject UserManager<NextUser> userManager
+@inject LoginManagerService loginManagerService
+@layout StaffDashboardLayout
+@attribute [Authorize(Roles = "Staff")]
+
+<PageTitle>Edit</PageTitle>
+
+<CascadingAuthenticationState>
+  <AuthorizeView Context="authContext">
+    <Authorized>
+      <h1>Edit</h1>
+      <h2>Candidate</h2>
+      <hr />
+      <div class="row">
+        <div class="col-md-4">
+          <EditForm method="post" Model="EditModel" OnValidSubmit="UpdateStaff" FormName="edit">
+            <DataAnnotationsValidator />
+            <ValidationSummary role="alert" />
+            <div class="mb-3">
+              <label for="email" class="form-label">First Name:</label>
+              <InputText id="email" @bind-Value="EditModel.FirstName" class="form-control" />
+              <ValidationMessage For="() => EditModel.FirstName" class="text-danger" />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Last Name:</label>
+              <InputText id="email" @bind-Value="EditModel.LastName" class="form-control" />
+              <ValidationMessage For="() => EditModel.LastName" class="text-danger" />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email:</label>
+              <InputText id="email" @bind-Value="EditModel.Email" class="form-control" />
+              <ValidationMessage For="() => EditModel.Email" class="text-danger" />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Current Password:</label>
+              <InputText id="current-password" @bind-Value="EditModel.CurrentPassword" class="form-control" />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">New Password:</label>
+              <InputText id="password" @bind-Value="EditModel.Password" class="form-control" />
+              <ValidationMessage For="() => EditModel.Password" class="text-danger" />
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </EditForm>
+        </div>
+        <div>
+          <a href="/staffdashboard">Back to List</a>
+        </div>
+      </div>
+    </Authorized>
+    <NotAuthorized></NotAuthorized>
+  </AuthorizeView>
+</CascadingAuthenticationState>
+
+@code {  
+  [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
+  [SupplyParameterFromForm(FormName = "edit")] public EditModel EditModel { get; set; } = new();
+
+  private string? email;
+  private string? userId;
+
+  protected override async Task OnInitializedAsync()
+  {
+    var authstate = await AuthenticationState;
+    var user = authstate.User;
+
+    if (user.Identity != null && user.Identity.IsAuthenticated)
+    {
+      email = user.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown User";
+      userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    }
+    else
+    {
+      email = "Guest";
+    }
+  }
+
+  private async Task UpdateStaff()
+  {
+    // Finds staff by their userId
+    var user = userManager.FindByIdAsync(userId).Result;
+
+    // Updates the staff values that were changed using the EditModel to overwrite these changes and set.
+    user.FirstName = EditModel.FirstName;
+    user.LastName = EditModel.LastName;
+    user.Email = EditModel.Email;
+
+    if (!string.IsNullOrEmpty(EditModel.Password))
+    {
+      // Changes the password if the user has entered a new password and hashes it again for the database.
+      var result = await userManager.ChangePasswordAsync(user, EditModel.CurrentPassword, EditModel.Password);
+
+      if (!result.Succeeded)
+      {
+        foreach (var error in result.Errors)
+        {
+          Console.WriteLine($"Error: {error.Description}");
+        }
+        return;
+      }
+    }
+
+    var result2 = await userManager.UpdateAsync(user);
+  }
+}  

@@ -1,0 +1,91 @@
+﻿ @page "/staff/create" 
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+ @using Microsoft.EntityFrameworkCore 
+ @using NEXTGroup3.Models 
+ @using NEXTGroup3.Services 
+ @using NEXTGroup3.Components.Layout
+ @using Microsoft.AspNetCore.Authorization
+ @using System.Security.Claims
+ @inject AuthenticationStateProvider authenticationStateProvider
+ @inject UserManager<NextUser> userManager
+ @inject NavigationManager NavigationManager 
+ @inject LoginManagerService loginManagerService 
+ @attribute [Authorize(Roles = "Admin")]
+
+<CascadingAuthenticationState>
+  <AuthorizeView Context="authContext">
+    <Authorized>
+      <PageTitle>Create</PageTitle> 
+
+      <h1>Create</h1> 
+
+      <h2>Staff</h2> 
+      <hr /> 
+      <div class="row"> 
+        <div class="col-md-4"> 
+          <EditForm method="post" Model="@RegisterModel" OnValidSubmit="AddStaff" FormName="@addStaff">
+            <DataAnnotationsValidator /> 
+            <ValidationSummary class="text-danger" role="alert"/> 
+             <div class="mb-3">  
+               <label for="staffid" class="form-label">StaffId:</label>   
+               <InputNumber id="staffid" @bind-Value="RegisterModel.StaffId" class="form-control" /> 
+              <ValidationMessage For="() => RegisterModel.StaffId" class="text-danger" /> 
+             </div>          
+            <div class="mb-3"> 
+              <label for="email" class="form-label">First Name:</label>
+            <InputText id="email" @bind-Value="RegisterModel.FirstName" class="form-control" />
+            <ValidationMessage For="() => RegisterModel.FirstName" class="text-danger" />
+            </div>   
+            <div class="mb-3"> 
+              <label for="email" class="form-label">Last Name:</label>
+            <InputText id="email" @bind-Value="RegisterModel.LastName" class="form-control" />
+            <ValidationMessage For="() => RegisterModel.LastName" class="text-danger" />
+            </div>   
+            <div class="mb-3"> 
+              <label for="email" class="form-label">Email:</label>
+            <InputText id="email" @bind-Value="RegisterModel.Email" class="form-control" />
+            <ValidationMessage For="() => RegisterModel.Email" class="text-danger" />
+            </div>         
+            <div class="mb-3"> 
+              <label for="password" class="form-label">Password:</label>
+            <InputText id="password" @bind-Value="RegisterModel.Password" class="form-control" />
+            <ValidationMessage For="() => RegisterModel.Password" class="text-danger" />
+            </div>         
+
+            <button type="submit" class="btn btn-primary">Create</button> 
+          </EditForm> 
+        </div> 
+      </div> 
+
+      <div> 
+        <a href="/staff">Back to List</a> 
+      </div>
+    </Authorized>
+    <NotAuthorized></NotAuthorized>
+  </AuthorizeView>
+</CascadingAuthenticationState>
+
+ @code { 
+    private const string addStaff = "AddStaff";
+    [SupplyParameterFromForm(FormName = addStaff)] private RegisterModel RegisterModel { get; set; } = new();
+
+    private string? errorMessage;
+
+    private async Task AddStaff()
+    {
+      // Adds a new User using the RegisterModel information, which inherits from IdentityUser. Their UserName is set to be their Email since we are using email as the username.
+      var user = new NextUser { UserName = RegisterModel.Email, FirstName = RegisterModel.FirstName, LastName = RegisterModel.LastName, Email = RegisterModel.Email };
+      var result = await userManager.CreateAsync(user, RegisterModel.Password);
+      // Check if the email already exists
+      if (result != null)
+      {
+        return;
+      }
+      else
+      {
+        errorMessage = "Email already exists to a linked account.";
+        return;
+      }
+    }
+ } 

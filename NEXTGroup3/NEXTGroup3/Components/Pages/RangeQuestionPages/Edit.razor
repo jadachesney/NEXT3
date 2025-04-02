@@ -1,0 +1,91 @@
+﻿@page "/rangequestions/edit"
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Models
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+@using NEXTGroup3.Components.Layout
+@layout StaffDashboardLayout
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>RangeQuestion</h2>
+<hr />
+@if (RangeQuestion is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="RangeQuestion" OnValidSubmit="UpdateRangeQuestion" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="RangeQuestion.Id" value="@RangeQuestion.Id" />
+                <div class="mb-3">
+                    <label for="questiontext" class="form-label">QuestionText:</label>
+                    <InputText id="questiontext" @bind-Value="RangeQuestion.QuestionText" class="form-control" />
+                    <ValidationMessage For="() => RangeQuestion.QuestionText" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/rangequestions">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private RangeQuestion? RangeQuestion { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        RangeQuestion ??= await context.RangeQuestion.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (RangeQuestion is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private async Task UpdateRangeQuestion()
+    {
+    // Update the RangeQuestion in the database by changing the state in the bindvalue modification.
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(RangeQuestion!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!RangeQuestionExists(RangeQuestion!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/rangequestions");
+    }
+
+    private bool RangeQuestionExists(int id)
+    {
+       // Checks if the RangeQuestion exists in the database
+        using var context = DbFactory.CreateDbContext();
+        return context.RangeQuestion.Any(e => e.Id == id);
+    }
+}

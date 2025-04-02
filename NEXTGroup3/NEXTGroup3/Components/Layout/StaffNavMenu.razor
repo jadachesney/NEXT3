@@ -1,0 +1,80 @@
+﻿@inherits LayoutComponentBase
+<script src="https://kit.fontawesome.com/043f66280d.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+
+<div class="nav-scrollable">
+    <nav class="flex-column">
+        <div class="nav-item">
+            <NavLink href="StaffDashboard" ActiveClass="active-link" class="nav-link">
+                <i class="fa-solid fa-house me-1 mt-1"></i> DASHBOARD
+            </NavLink>
+        </div>
+        <div class="nav-item mt-2">
+            <NavLink href="/staff/details" ActiveClass="active-link" class="nav-link">
+                <i class="fa-solid fa-user me-1 mt-1"></i> PROFILE
+            </NavLink>
+        </div>
+        <div class="nav-item mt-2">
+            <NavLink href="departments" ActiveClass="active-link" class="nav-link">
+                 <i class="fa-solid fa-sitemap me-1 mt-1"></i> DEPARTMENTS
+            </NavLink>
+        </div>
+
+        <div class="nav-item mt-2">
+            <NavLink href="roles" ActiveClass="active-link" class="nav-link">
+                <i class="fa-solid fa-suitcase me-1 mt-1"></i> ROLES
+            </NavLink>
+        </div>
+
+        <div class="dropdown mt-2" id="toggleDropdown">
+            <a @onclick="ToggleDropdown" class="nav-header button-md" type="button">
+                <i class="fa-solid fa-question ms-3 me-1 mt-1"></i> QUESTIONS
+            </a>
+            <ul class="dropdown-list @(isActive ? "is-active" : "d-none")">
+                <li class="dropdown-item">
+                    <NavLink href="rangequestions" ActiveClass="active-link" class="nav-link ms-3 smaller-link dropdown-link">
+                        RANGE
+                    </NavLink>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-item mt-2">
+            <NavLink href="rangequestions" ActiveClass="active-link" class="nav-link ms-3 smaller-link">
+                 RANGE
+            </NavLink>
+        </div>
+
+        <div class="nav-item mt-2">
+            <NavLink href="textanswers" ActiveClass="active-link" class="nav-link ms-3 smaller-link">
+                 TEXT
+            </NavLink>
+        </div>
+
+        <div class="nav-item mt-2">
+            <NavLink href="staff" ActiveClass="active-link" class="nav-link">
+                <i class="fa-solid fa-users me-1 mt-1"></i> STAFF
+            </NavLink>
+        </div>
+
+        <div class="nav-item mt-2">
+            <NavLink href="logout" ActiveClass="active-link" class="nav-link">
+                <i class="fa-solid fa-right-from-bracket me-1 mt-1"></i>LOGOUT
+            </NavLink>
+        </div>
+
+
+    </nav>
+</div>
+
+@code {
+    private bool isActive = false;
+
+    private void ToggleDropdown()
+    {
+        isActive = !isActive;
+    }
+
+}
+

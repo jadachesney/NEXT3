@@ -1,0 +1,51 @@
+﻿@page "/textanswers/details"
+@using Microsoft.EntityFrameworkCore
+@using NEXTGroup3.Models
+@using NEXTGroup3.Components.Layout
+@layout StaffDashboardLayout
+@inject IDbContextFactory<NEXTGroup3.Data.AzureContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>TextAnswer</h2>
+    <hr />
+    @if (textanswer is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Answers</dt>
+            <dd class="col-sm-10">@textanswer.Answers</dd>
+            <dt class="col-sm-2">RoleId</dt>
+            <dd class="col-sm-10">@textanswer.RoleId</dd>
+        </dl>
+        <div>
+            <a href="@($"/textanswers/edit?id={textanswer.Id}")">Edit</a> |
+            <a href="@($"/textanswers")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private TextAnswer? textanswer;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+       // Fetches the textanswer details from the database based on the Id to display the details in the row
+        using var context = DbFactory.CreateDbContext();
+        textanswer = await context.TextAnswer.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (textanswer is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}
