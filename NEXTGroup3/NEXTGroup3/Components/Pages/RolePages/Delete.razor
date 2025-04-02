@@ -42,6 +42,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // First fetches role in the database, then removes role from the table on submit.
         using var context = DbFactory.CreateDbContext();
         role = await context.Role.FirstOrDefaultAsync(m => m.Id == Id);
 

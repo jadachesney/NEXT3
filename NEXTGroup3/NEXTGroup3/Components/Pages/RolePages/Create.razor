@@ -40,9 +40,9 @@
     [SupplyParameterFromForm]
     private Role Role { get; set; } = new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddRole()
     {
+        // Add the role to the database
         using var context = DbFactory.CreateDbContext();
         context.Role.Add(Role);
         await context.SaveChangesAsync();

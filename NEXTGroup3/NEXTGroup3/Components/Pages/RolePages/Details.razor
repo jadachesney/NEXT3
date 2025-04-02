@@ -39,6 +39,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // Fetches the role details from the database based on the Id to display
         using var context = DbFactory.CreateDbContext();
         role = await context.Role.FirstOrDefaultAsync(m => m.Id == Id);
 

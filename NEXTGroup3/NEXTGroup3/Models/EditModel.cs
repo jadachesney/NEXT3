@@ -4,6 +4,7 @@ namespace NEXTGroup3.Models
 {
     public class EditModel
     {
+        // MODEL FOR EDITING USER INFORMATION AND UPDATING THE STORED INFORMATION
         [EmailAddress]
         public string Email { get; set; } = "";
 

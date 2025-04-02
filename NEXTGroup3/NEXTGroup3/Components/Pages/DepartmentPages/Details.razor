@@ -41,6 +41,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // Fetches the department details from the database based on the Id
         using var context = DbFactory.CreateDbContext();
         department = await context.Department.FirstOrDefaultAsync(m => m.Id == Id);
 

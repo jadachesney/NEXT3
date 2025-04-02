@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_left" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_right" />
 @inject LoginManagerService loginManagerService
+@inject IHttpContextAccessor HttpContextAccessor
 
 <body>
     <div class="login-container">
@@ -91,8 +92,10 @@
     [SupplyParameterFromForm(FormName = loginForm)] public LoginModel LoginModel { get; set; } = new();
     private string? errorMessage;
 
+
     private async Task Authenticate()
     {
+        // Authentication for candidate login. If their details don't exist, or are entered wrong, they will be prompted to try again.
         var candidates = await userManager.GetUsersInRoleAsync("Candidate");
         var candidate = await userManager.FindByEmailAsync(LoginModel.Email);
         if (!candidates.Contains(candidate))
@@ -109,6 +112,7 @@
 
     var claims = new List<Claim>
         {
+          // Sets the claims for the candidate.
             new Claim(ClaimTypes.NameIdentifier, candidate.Id.ToString()),
             new Claim(ClaimTypes.Name, candidate.FirstName),
             new Claim(ClaimTypes.Email, LoginModel.Email),
@@ -126,6 +130,7 @@
     //Signs candidate in and stores claims in an authentication cookie
     try
     {
+      HttpContext HttpContext = HttpContextAccessor.HttpContext;
       await HttpContext.SignInAsync(Constant.Authscheme, principal);
       navigationManager.NavigateTo("/", forceLoad: true);
       Console.WriteLine("Sign-in successful.");

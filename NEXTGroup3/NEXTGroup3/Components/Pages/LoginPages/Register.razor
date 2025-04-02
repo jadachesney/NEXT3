@@ -123,6 +123,7 @@
 
   private async Task AddCandidate()
   {
+    // Adds a new User using the RegisterModel information, which inherits from IdentityUser. Their UserName is set to be their Email since we are using email as the username.
     var user = new NextUser { UserName = RegisterModel.Email, FirstName = RegisterModel.FirstName, LastName = RegisterModel.LastName, Email = RegisterModel.Email };
     var result = await userManager.CreateAsync(user, RegisterModel.Password);
     

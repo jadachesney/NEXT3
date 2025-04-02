@@ -4,6 +4,7 @@ namespace NEXTGroup3.Models
 {
   public class LoginModel
   {
+    // MODEL FOR LOGIN AND FETCHING INFORMATION FROM THE USER
     [Required]
     [EmailAddress]
     public string Email { get; set; } = "";

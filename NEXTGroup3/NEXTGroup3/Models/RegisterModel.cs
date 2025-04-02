@@ -4,6 +4,7 @@ namespace NEXTGroup3.Models
 {
   public class RegisterModel
   {
+    // REGISTER MODEL, ALL REQUIRED INFORMATION FOR REGISTERING A NEW USER 
     [Required]
     [EmailAddress]
     public string Email { get; set; } = "";
@@ -18,6 +19,7 @@ namespace NEXTGroup3.Models
     [Required]
     public string LastName { get; set; } = "";
 
+    // OPTIONAL
     public string StaffId { get; set; } = "";
   }
 }

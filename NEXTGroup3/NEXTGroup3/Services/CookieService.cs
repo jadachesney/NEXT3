@@ -8,6 +8,7 @@ namespace NEXTGroup3.Services
     private readonly AzureContext context;
     public bool CookieConsented { get; set; } = false;
 
+    // TRACKS IF COOKIE HAS BEEN CONSENTED TO BY THE USER AND SAVES THE STATE
     public CookieService(AzureContext c)
     {
       context = c;

@@ -57,7 +57,7 @@
                     <hr class="item-header-break"/>
                     <h4 class="item-content">placeholder</h4>
                 </div>
-            </div>
+          </div>
         </div>
     </div>
 
@@ -75,14 +75,18 @@
 @code {
 
     // LOGIN BRANCH
-    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
-    private string name;
+  [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+  private string name;
+
+  protected override async Task OnInitializedAsync()
+  {
+    var authstate = await AuthenticationState;
+    var user = authstate.User;
 
     protected override async Task OnInitializedAsync()
     {
         var authstate = await AuthenticationState;
         var user = authstate.User;
-
 
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
@@ -92,7 +96,6 @@
         {
             name = "Guest";
         }
-
 
         StateHasChanged();
 

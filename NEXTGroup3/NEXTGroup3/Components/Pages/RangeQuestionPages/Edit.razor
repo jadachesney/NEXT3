@@ -57,10 +57,9 @@ else
         }
     }
 
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task UpdateRangeQuestion()
     {
+    // Update the RangeQuestion in the database by changing the state in the bindvalue modification.
         using var context = DbFactory.CreateDbContext();
         context.Attach(RangeQuestion!).State = EntityState.Modified;
 
@@ -85,6 +84,7 @@ else
 
     private bool RangeQuestionExists(int id)
     {
+       // Checks if the RangeQuestion exists in the database
         using var context = DbFactory.CreateDbContext();
         return context.RangeQuestion.Any(e => e.Id == id);
     }

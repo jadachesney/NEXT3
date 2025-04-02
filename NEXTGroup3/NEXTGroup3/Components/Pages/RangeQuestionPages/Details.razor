@@ -37,6 +37,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // Fetches the rangequestion details from the database based on the Id
         using var context = DbFactory.CreateDbContext();
         rangequestion = await context.RangeQuestion.FirstOrDefaultAsync(m => m.Id == Id);
 

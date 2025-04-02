@@ -12,7 +12,7 @@
 @inject LoginManagerService loginManagerService
 @inject UserManager<NextUser> userManager
 @layout CandidateDashboardLayout
-@attribute [Authorize(Roles = "Admin, Candidate")]
+@attribute [Authorize(Roles = "Candidate")]
 
 <CascadingAuthenticationState>
   <AuthorizeView Context="authContext">
@@ -44,11 +44,13 @@
   private string email;
   protected override async Task OnInitializedAsync()
   {
+    // Gets the auth state of the candidate logged in
     var authstate = await AuthenticationState;
     var user = authstate.User;
 
     if (user.Identity != null && user.Identity.IsAuthenticated)
     {
+      // Finds them by their email to fetch their information for the profile page.
       email = user.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown User";
     }
     else
