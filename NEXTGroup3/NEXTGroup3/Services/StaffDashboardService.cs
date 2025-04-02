@@ -100,6 +100,7 @@ namespace NEXTGroup3.Services
             {
                 HighestDepartment = Departments.Find(x => x.Id == highestDep.Id);
             }
+
             //var sortedDepartments = DepartmentPoints.OrderByDescending(p => p.Points);
             //HighestDepartment = Departments.Where(d => d.Id == sortedDepartments.ElementAt(0).Id).First();
         }

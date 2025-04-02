@@ -1,5 +1,4 @@
 ﻿function CreateBarChart(departments, data, colors) {
-
     new Chart(document.getElementById("bar-chart"),
         {
             type: 'bar',
@@ -24,8 +23,7 @@
                 maintainAspectRatio: false,
                 title:
                 {
-                    display: true,
-                    text: ''
+                    display: false
                 },
 
                 scales:
@@ -56,6 +54,7 @@
                 }
             }
         });
+
 }
 function CreateRingChart(departments, data, colors) {
     new Chart(document.getElementById("ring-chart"),
@@ -88,8 +87,7 @@ function CreateRingChart(departments, data, colors) {
                 maintainAspectRatio: false,
                 title:
                 {
-                    display: true,
-                    text: ''
+                    display: false
                 }
             }
         });
