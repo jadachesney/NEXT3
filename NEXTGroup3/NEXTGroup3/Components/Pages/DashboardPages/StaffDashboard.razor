@@ -4,153 +4,77 @@
 @inject AuthenticationStateProvider authenticationStateProvider
 @using Microsoft.AspNetCore.Components.Authorization
 @using NEXTGroup3.Components.Layout
-@using Microsoft.AspNetCore.Authorization
+@* @using Microsoft.AspNetCore.Authorization *@
 @using NEXTGroup3.Services
 @using System.Security.Claims
 @inject StaffDashboardService dashboardService
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 @inject IJSRuntime jsRunTime;
-@attribute [Authorize(Roles = "Admin, Staff")]
+@* @attribute [Authorize(Roles = "Admin, Staff")] *@
 
-<CascadingAuthenticationState>
-  <AuthorizeView Context="authContext">
-    <Authorized>
-      <div class="dashboard-container">
+@* <CascadingAuthenticationState> *@
+@*   <AuthorizeView Context="authContext"> *@
+@*     <Authorized> *@
+<div class="dashboard-container">
+    <div class="dashboard staff-dashboard">
         <div class="dashboard-header">
-          <h1>Dashboard</h1>
-
-          <h3>Staff ID:</h3>
-
-          <h3>Staff role:</h3>
+            <h1>Analytics</h1>
         </div>
-      </div>
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-8 chart-container">
-            <canvas id="bar-chart" width="400" height="300" class=""></canvas>
+        <div class="dashboard-body">
+            <div class="item-row chart-items">
+                <div class="dashboard-item bar-chart">
+                    <div class="chart-container">
+                        <canvas id="bar-chart" class="bar-chart"></canvas>
+                    </div>
+                </div>
+                <div class="dashboard-item ring-chart">
+                    <div class="chart-container">
+                        <canvas id="ring-chart" class="department-ring-chart"></canvas>
+                    </div>
+                </div> 
+            </div>
+            <div class="item-row text-items">
+                <div class="col-md-4 dashboard-item">  
+                    <h3 class="item-header">Highest Matched Department</h3>
+                    <hr class="item-header-break"/>
+                    @* @if(dashboardService.HighestDepartment != null){ *@
+                    @*     <h4 class="item-content">@dashboardService.HighestDepartment.Name</h4> *@
+                    @* } *@
+                    <h4 class="item-content">Design</h4>
+                </div>
+                <div class="col-md-4 dashboard-item">
+                    <h3 class="item-header">Questionnaires Completed</h3>
+                    <hr class="item-header-break"/>
+
+                    @* @if (dashboardService.ResultsCount != 0) *@
+                    @* { *@
+                    @*     <h4 class="item-content">@dashboardService.ResultsCount</h4> *@
+                    @* } *@
+                    <h4 class="item-content">16</h4>
+                </div>
+                <div class="col-md-4 dashboard-item">
+                    <h3 class="item-header">Placeholder</h3>                    
+                    <hr class="item-header-break"/>
+                    <h4 class="item-content">placeholder</h4>
+                </div>
           </div>
         </div>
-      </div>
-    </Authorized>
-    <NotAuthorized></NotAuthorized>
-  </AuthorizeView>
-</CascadingAuthenticationState>
+    </div>
+
+</div>
+
+@*     </Authorized> *@
+@*     <NotAuthorized></NotAuthorized> *@
+@*   </AuthorizeView> *@
+@* </CascadingAuthenticationState> *@
 
 <script src="_framework/blazor.server.js"></script>
-
-<script>
-  function CreateChart(departments, data, colors){
-
-  new Chart(document.getElementById("bar-chart"),
-  {
-  type: 'bar',
-  data:
-  {
-  labels: departments,
-  datasets:
-  [
-  {
-  label: "Popularity",
-  backgroundColor: colors,
-  data: data,
-  borderWidth: 1
-  }
-  ]
-  },
-  options:
-  {
-  legend: { display: false },
-  devicePixelRatio: 4,
-  responsive: false,
-  title:
-  {
-  display: true,
-  text: ''
-  },
-
-  scales:
-  {
-  yAxes:
-  [{
-  scaleLabel:
-  {
-  display: true,
-  labelString: 'Popularity',
-  color: '#000000'
-  },
-  ticks:{
-  beginAtZero: true
-  }
-  }],
-
-  xAxes:
-  [{
-  scaleLabel:
-  {
-  display: true,
-  labelString: 'Department',
-  color: '#000000'
-  }
-  }]
-  }
-  }
-  });
-  }
-</script>
-
-
-<canvas id="bar-chart" width="400" height="300" class="bar-styling mt-2"></canvas>
-
-<script>
-
-  new Chart(document.getElementById("bar-chart"), {
-      type: 'bar',
-      data: {
-          labels: ["IT", "Finance", "Marketing", "Design", "Trading", "Merchandising"],
-          datasets: [
-              {
-                  label: "Popularity",
-                  backgroundColor: ["#000000", "#f7550d", "#000000", "#000000", "#000000", "#f7550d"],
-                  data: [542, 600, 534, 484, 433, 200, 100],
-                  borderWidth: 1
-
-
-              }
-          ]
-      },
-      options: {
-          legend: { display: false },
-          responsive: false,
-          title: {
-              display: true,
-              text: ''
-          },
-
-          scales:
-          {
-              yAxes: [{
-                  scaleLabel: {
-                      display: true,
-                      labelString: 'Popularity',
-                      color: '#000000'
-                  }
-              }],
-
-              xAxes: [{
-                  scaleLabel: {
-                      display: true,
-                      labelString: 'Department',
-                      color: '#000000'
-                  }
-              }]
-          }
-      }
-  });
-</script>
+<script src="js/chart-scripts.js"></script>
 
 
 @code {
 
+    // LOGIN BRANCH
   [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
   private string name;
 
@@ -159,46 +83,56 @@
     var authstate = await AuthenticationState;
     var user = authstate.User;
 
-    if (user.Identity != null && user.Identity.IsAuthenticated)
+    protected override async Task OnInitializedAsync()
     {
-      name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
+        var authstate = await AuthenticationState;
+        var user = authstate.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
+        }
+        else
+        {
+            name = "Guest";
+        }
+
+        StateHasChanged();
+
+        await base.OnInitializedAsync();
+        await Task.CompletedTask;
     }
-    else
+
+    // CHART FUNCTIONALITY
+    private List<string> DepartmentChartColors = new List<string>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-      name = "Guest";
-    }
+        if (firstRender)
+        {
+            await dashboardService.GetDepartments();
+            await dashboardService.GetOverallPoints();
 
-    await dashboardService.GetDepartments();
-    await dashboardService.GetOverallPoints();
-    StateHasChanged();
+            await dashboardService.DepartmentPointsToDoubleList();
+            string[] potentialColors = ["#2274A5", "#FFBE0B", "#D62828", "#00A878"];
+            int currentColor = 0;
+            foreach (var dep in dashboardService.Departments)
+            {
 
-    await base.OnInitializedAsync();
+                DepartmentChartColors.Add(potentialColors[currentColor]);
+
+                if (currentColor < potentialColors.Length - 1)
+                {
+                    currentColor++;
+                }
+                else { currentColor = 0; }
+            }
+            await jsRunTime.InvokeVoidAsync("CreateBarChart", await dashboardService.GetDepartmentStringList(),dashboardService.DepartmentDoubleList, DepartmentChartColors);
+
+            await jsRunTime.InvokeVoidAsync("CreateRingChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentDoubleList, DepartmentChartColors);
+        }
+        await base.OnAfterRenderAsync(firstRender);
   }
-
-  // CHART FUNCTIONALITY
-  private List<string> DepartmentChartColors = new List<string>();
-
-  protected override async Task OnAfterRenderAsync(bool firstRender)
-  {
-    string[] potentialColors = ["#2274A5", "#FFBE0B", "#D62828", "#00A878"];
-    int currentColor = 0;
-    foreach (var dep in dashboardService.Departments)
-    {
-
-      DepartmentChartColors.Add(potentialColors[currentColor]);
-
-      if (currentColor < potentialColors.Length - 1)
-      {
-        currentColor++;
-      }
-      else { currentColor = 0; }
-    }
-    await CreateChartAsync();
-    await base.OnAfterRenderAsync(firstRender);
-  }
-  public async Task CreateChartAsync()
-  {
-    await jsRunTime.InvokeVoidAsync("CreateChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentPointsToDoubleList(), DepartmentChartColors);
-  }
+  
 
 }

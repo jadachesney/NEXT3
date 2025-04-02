@@ -554,8 +554,9 @@ main > .container {
 
 .sidebar {
     width: 30vh !important;
-    min-height: 100vh !important;
+    min-height: 90vh !important;
     background-color: black;
+    overflow-y: auto;
 }
 
 .nav-scrollable {
@@ -601,16 +602,40 @@ main > .container {
 
 /*DASHBOARD*/
 
-.dashboard-container {
+.dashboard-container{
     width: 100%;
+    height: 100%;
     border-bottom: 3px #000000 solid;
     padding-bottom: 20px;
     color: #000000;
+    color: #000000;
+    background-color: #f3f3f1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+.dashboard{
+    width:85%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.dashboard-header{
+
+    border-bottom: 3px #000000 solid;
+    margin:20px;
+    width: 80%;
+    text-align: center;
+    align-content: center;
+
 }
 
-    .dashboard-container h1 h3 {
-        color: #000000;
-    }
+.dashboard-container h1 h3 {
+    color: #000000;
+}
 
 .active-link {
     color: #f7550d !important;
@@ -618,12 +643,158 @@ main > .container {
 }
 
 .retake-btn {
-    background-color: lightgrey;
-    border: solid 2px black;
-    color: black;
+    background-color: #007a7a;
+    color: white;
+    text-align: center;
+    border-radius: 12px;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    transition-duration: 300ms;
+    transition-property: opacity;
+
     text-decoration: none;
     text-align: center;
+    min-width: 300px;
+    width: 20vw;
 }
+.retake-btn:hover {
+    color: white;
+}
+.dashboard-item {
+    margin: 10px;
+    min-width: 300px;
+
+    align-content: center;
+    text-align: center;
+
+}
+.text-items .dashboard-item:hover {
+    background-color: white;
+}
+.chart-items .dashboard-item{
+    padding-bottom: 3vh;
+    height: 30vh;
+    background-color: white;
+}
+.candidate-dashboard .text-items{
+    flex-direction: column;
+}
+.staff-dashboard .text-items .dashboard-item{
+    background-color: white;
+    width: auto;
+    flex-direction:column;
+    flex-grow: 1;
+}
+.staff-dashboard .text-items{
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.staff-dashboard .item-header-break{
+    width: 80%;
+}
+.chart-items {
+    display: flex;
+    flex-wrap: nowrap;
+}
+.text-items .dashboard-item {
+    color: black;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    width: 100%;
+}
+.text-items a {
+    text-decoration: none;
+    user-select: none;
+}
+.candidate-dashboard .dashboard-item {
+    flex-direction: row;
+}
+.candidate-dashboard .text-items a:hover {
+    cursor: pointer;
+}
+.candidate-dashboard .dashboard-item:hover item-actions-container {
+    transform: translate(4px, 0);
+    background-color: lawngreen;
+}
+.candidate-dashboard .text-items .item-text-container {
+    padding: 20px;
+    width: 100%;
+}
+.candidate-dashboard .text-items .item-header{
+    width:100%;
+}
+.item-actions-container{
+    padding: 10px;
+}
+.item-show-icon {
+    transition: opacity .4s, transform .4s;
+}
+
+.text-items h3, .text-items p, .text-items h5{
+    text-align: left;
+}
+.text-items h5{
+    color: gray;
+}
+.dashboard-item-subheading{
+    display: flex;
+    align-items: center;
+}
+.dashboard-item-subheading h2{
+    width: 60%;
+    text-align: center;
+}
+.dashboard-item-subheading > hr{
+    width: 50%;
+}
+.dashboard-item.bar-chart {
+    width: 30vw;
+    padding-right: 3vw;
+    align-items: center;
+}
+.dashboard-item.ring-chart{
+    width: 20vw;
+}
+.dashboard-item > .chart-container{
+    margin: 5px;
+    width: 100%;
+    height: 100%;
+}
+@media(max-width:1605px){
+    .dashboard-item.ring-chart, .dashboard-item.bar-chart{
+        width: 100%;
+    }
+    .chart-items{
+        justify-content: center;
+        flex-direction: column;
+    }
+}
+.dashboard-body{
+    width: 80%;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.staff-dashboard .dashboard-header{
+    width:100%;
+    padding:5px;
+    text-align: center;
+}
+.staff-dashboard .text-items .dashboard-item{
+    flex-direction: column;
+}
+.item-row{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+
 
 /*DASHBOARD MENU*/
 
@@ -973,5 +1144,12 @@ td {
     right: 0;
     bottom: 0;
   }
+
+}
+
+.flex{
+    display: flex;
+}
+.flex-item{
 
 }

@@ -7,98 +7,174 @@
 @using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Services
 @using System.Security.Claims
+
+@inject IJSRuntime jsRunTime;
+@inject StaffDashboardService dashboardService
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-@attribute [Authorize (Roles = "Admin, Candidate")]
+@* @attribute [Authorize (Roles = "Admin, Candidate")] *@
 
-<CascadingAuthenticationState>
-  <AuthorizeView Context="authContext">
-    <Authorized>
-      <div class="dashboard-container">
-          <div class = "dashboard-header">
-              <h1>Dashboard: Welcome @name</h1>
+@* <CascadingAuthenticationState> *@
+@*   <AuthorizeView Context="authContext"> *@
+@*     <Authorized> *@
+    <div class="dashboard-container">
+        <div class="dashboard candidate-dashboard">
+            <div class = "dashboard-header">
+                <h1>Welcome, User!</h1>
+            </div>
+            <div class="dashboard-body">
+                <NavLink href="questionnaire" class="mt-2 retake-btn">
+                    Retake Questionnaire
+                </NavLink>
+                <div class="item-row chart-items">
+                    <div class="dashboard-item bar-chart">
+                        <div class="chart-container">
+                             <canvas id="bar-chart" class=""></canvas> 
+                        </div>
+                    </div>
+                    <div class="dashboard-item ring-chart">
+                       <div class="chart-container">
+                            <canvas id="ring-chart" class="department-ring-chart"></canvas>
+                       </div>
+                    </div>
+                </div>
+                <div class="item-row text-items">
+                    <a class="dashboard-item" href="https://careers.next.co.uk/en/sites/CX_3001/jobs?keyword=Information+Technology&mode=location" target="_blank">
+                        <div class="item-text-container">
+                            <h5>Most Recommended Department</h5>
+                            <h3>Placeholder Department</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        </div>
+                        <div class="item-actions-container">
+                            <div class="item-show-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" /></svg>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="dashboard-item-subheading">
+                        <hr/>
+                        <h2>Recommended Roles</h2>
+                        <hr/>
+                    </div>
+                    <a class="dashboard-item" href="https://careers.next.co.uk/en/sites/CX_3001/jobs?keyword=Information+Technology&mode=location" target="_blank">
+                        <div class="item-text-container">
+                            <h3>Placeholder Role</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        </div>
+                        <div class="item-actions-container">
+                            <div class="item-show-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" /></svg>
+                            </div>
+                        </div>
+                </a>
+                <a class="dashboard-item" href="https://careers.next.co.uk/en/sites/CX_3001/jobs?keyword=Information+Technology&mode=location" target="_blank">
+                    <div class="item-text-container">
+                        <h3>Placeholder Role</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
+                    <div class="item-actions-container">
+                        <div class="item-show-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" /></svg>
+                        </div>
+                    </div>
+                </a>
+                <a class="dashboard-item" href="https://careers.next.co.uk/en/sites/CX_3001/jobs?keyword=Information+Technology&mode=location" target="_blank">
+                    <div class="item-text-container">
+                        <h3>Placeholder Role</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
+                    <div class="item-actions-container">
+                        <div class="item-show-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" /></svg>
+                        </div>
+                    </div>
+                </a>
+                    @* requires login system to test *@
+                    @* @foreach (Role role in dashboardService.TopRoles) *@
+                    @* { *@
+                    @*     <a class="dashboard-item" href="https://careers.next.co.uk/en/sites/CX_3001/jobs?keyword=@role.Name=location" target="_blank"> *@
+                    @*         <div class="item-text-container"> *@
+                    @*             <h3>role.Name</h3> *@
+                    @*             <p>role.Description</p> *@
+                    @*         </div> *@
+                    @*         <div class="item-actions-container"> *@
+                    @*             <div class="item-show-icon"> *@
+                    @*                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" /></svg> *@
+                    @*             </div> *@
+                    @*         </div> *@
+                    @*     </a> *@
+                    @* } *@
+                </div>
 
-              <h3>Current role:</h3>
 
-              <h3>Current department:</h3>
-          </div>
-      </div>
-    </Authorized>
-    <NotAuthorized></NotAuthorized>
-  </AuthorizeView>
-</CascadingAuthenticationState>
+             </div>
+        </div>
+    </div>
+@*     </Authorized> *@
+@*     <NotAuthorized></NotAuthorized> *@
+@*   </AuthorizeView> *@
+@* </CascadingAuthenticationState> *@
 
+<script src="_framework/blazor.server.js"></script>
+<script src="js/chart-scripts.js"></script>
 
-<NavLink href="questionpage" class="mt-2 retake-btn">
-    Retake Questionnaire
-</NavLink>
+    @code {
 
-@code {
-  [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
-  private string name;
+    // LOGIN BRANCH
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+        private string name;
 
-  protected override async Task OnInitializedAsync()
-  {
-    // Candidate authentication state for page view
-    var authstate = await AuthenticationState;
-    var user = authstate.User;
-
-    if (user.Identity != null && user.Identity.IsAuthenticated)
-    {
-      name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
-    }
-    else
-    {
-      name = "Guest";
-    }
-  }
-}
-
-<canvas id="bar-chart" width="400" height="300" class="bar-styling mt-2"></canvas>
+        protected override async Task OnInitializedAsync()
+        {
+            var authstate = await AuthenticationState;
+            var user = authstate.User;
 
 
-<script>
-
-    new Chart(document.getElementById("bar-chart"), {
-        type: 'bar',
-        data: {
-            labels: ["IT", "Finance", "Marketing", "Design", "Trading", "Merchandising"],
-            datasets: [
-                {
-                    label: "Match %",
-                    backgroundColor: ["#000000", "#f7550d", "#000000", "#000000", "#f7550d", "#000000"],
-                    data: [20, 40, 10, 8, 2, 10, 20],
-                    borderWidth: 1
-
-
-                }
-            ]
-        },
-        options: {
-            legend: { display: false },
-            responsive: false,
-            title: {
-                display: true,
-                text: ''
-            },
-
-            scales:
+            if (user.Identity != null && user.Identity.IsAuthenticated)
             {
-                yAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Match Percentage',
-                        color: '#000000'
-                    }
-                }],
-
-                xAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Department',
-                        color: '#000000'
-                    }
-                }]
+                name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
             }
+            else
+            {
+                name = "Guest";
+            }
+
+
+            StateHasChanged();
+
+            await base.OnInitializedAsync();
+            await Task.CompletedTask;
         }
-    });
-</script>
+
+        // CHART FUNCTIONALITY
+        private List<string> DepartmentChartColors = new List<string>();
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await dashboardService.GetDepartments();
+                await dashboardService.GetOverallPoints();
+
+                await dashboardService.DepartmentPointsToDoubleList();
+                string[] potentialColors = ["#2274A5", "#FFBE0B", "#D62828", "#00A878"];
+                int currentColor = 0;
+                foreach (var dep in dashboardService.Departments)
+                {
+
+                    DepartmentChartColors.Add(potentialColors[currentColor]);
+
+                    if (currentColor < potentialColors.Length - 1)
+                    {
+                        currentColor++;
+                    }
+                    else { currentColor = 0; }
+                }
+                await jsRunTime.InvokeVoidAsync("CreateBarChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentDoubleList, DepartmentChartColors);
+
+                await jsRunTime.InvokeVoidAsync("CreateRingChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentDoubleList, DepartmentChartColors);
+            }
+            await base.OnAfterRenderAsync(firstRender);
+        }
+
+
+    }
