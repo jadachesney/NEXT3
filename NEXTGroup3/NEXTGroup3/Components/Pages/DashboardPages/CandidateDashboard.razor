@@ -38,6 +38,7 @@
 
   protected override async Task OnInitializedAsync()
   {
+    // Candidate authentication state for page view
     var authstate = await AuthenticationState;
     var user = authstate.User;
 

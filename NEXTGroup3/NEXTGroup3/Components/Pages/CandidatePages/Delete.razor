@@ -64,6 +64,7 @@
 
     if (user.Identity != null && user.Identity.IsAuthenticated)
     {
+      // Makes sure to find their authenticated email and first name & cross-checks before allowing deletion.
       email = user.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown User";
       firstName = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
       LoginModel.Email = email;
@@ -76,6 +77,7 @@
     var isValid = await userManager.CheckPasswordAsync(candidate, LoginModel.Password);
 
     var claims = await userManager.GetClaimsAsync(candidate);
+    // Fetches the candidates claim and then removes it before deleting them.
     foreach (var claim in claims)
     {
       await userManager.RemoveClaimAsync(candidate, claim);

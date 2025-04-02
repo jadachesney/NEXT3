@@ -91,14 +91,17 @@
 
     private async Task UpdateCandidate()
     {
+        // Finds the user by their logged in Id
         var user = userManager.FindByIdAsync(userId).Result;
 
+        // Sets a new variable for their updated information using the EditModel to overwrite this information.
         user.FirstName = EditModel.FirstName;
         user.LastName = EditModel.LastName;
         user.Email = EditModel.Email;
 
         if (!string.IsNullOrEmpty(EditModel.Password))
         {
+           // Changes the password if the user has entered a new password and rehashes it.
             var result = await userManager.ChangePasswordAsync(user, EditModel.CurrentPassword, EditModel.Password);
 
             if (!result.Succeeded)

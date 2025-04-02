@@ -14,6 +14,7 @@
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
+    // If they are authenticated and logged in, sign them out and redirect them to the landing page.
     if (HttpContext.User.Identity.IsAuthenticated)
     {
       await HttpContext.SignOutAsync();

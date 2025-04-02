@@ -51,14 +51,15 @@
 
     protected override async Task OnInitializedAsync()
     {
+      // Gets all departments in the database
         departments = await departmentService.GetAllDepartments();
         foreach(Department department in departments)
             roles.AddRange(await roleService.GetAllRolesInDepartment(department));
     }
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddTextAnswer()
     {
+       // Adds the text answer to the database
         using var context = DbFactory.CreateDbContext();
         context.TextAnswer.Add(TextAnswer);
         await context.SaveChangesAsync();

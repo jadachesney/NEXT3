@@ -5,107 +5,102 @@
 @using NEXTGroup3.Services
 @using Microsoft.AspNetCore.Identity
 @using NEXTGroup3
+@rendermode InteractiveServer
 @inject UserManager<NextUser> userManager
 @inject NavigationManager navigationManager
 @inject LoginManagerService loginManagerService
+@inject IHttpContextAccessor HttpContextAccessor
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_left" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_right" />
 
 <body>
-    <div class="login-container">
-        <header>
-            <h1 class="login-header">
-                Manage Your Staff Profile
-            </h1>
-            <style>
-                input::-webkit-outer-spin-button,
-                input::-webkit-inner-spin-button {
-                    -webkit-appearance: none;
-                    margin: 0;
-                }
-            </style>
-        </header>
-        <div class="login-form">
-            <section class="login-content">
-                <div class="text-row">
-                    <p1 class="login-text">
-                        Enter your credentials linked to your staff profile. Once your identity is confirmed, you will be able to manage your profile.
-                    </p1>
-                </div>
-                <EditForm Model="@LoginModel" OnValidSubmit="Authenticate" FormName="@loginForm">
-                    <DataAnnotationsValidator />
-                    <div class="login-input">
-                        @* <div class="input-spacer">   *@
-                        @*   <label class="staff-id-input">   *@
-                        @*     <span class="id-input-label">   *@
-                        @*       Staff ID   *@
-                        @*     </span>   *@
-                        @*     <span class="verification-star">   *@
-                        @*       *   *@
-                        @*     </span>   *@
-                        @*   </label>   *@
-                        @* <InputNumber @bind-Value="LoginModel.StaffId" placeholder="Staff ID" class="input-row" />   *@
-                        @* <ValidationMessage For="() => LoginModel.StaffId" />   *@
-                        @* </div>   *@
-                        <div class="input-spacer">
-                            <label class="email-input">
-                                <span class="email-input-label">
-                                    Email Address
-                                </span>
-                                <span class="verification-star">
-                                    *
-                                </span>
-                            </label>
-                            <InputText @bind-Value="LoginModel.Email" placeholder="Email" class="input-row" />
-                            <ValidationMessage For="() => LoginModel.Email" />
-                        </div>
-                        <div class="input-spacer">
-                            <label class="password-input">
-                                <span class="password-input-label">
-                                    Password
-                                </span>
-                                <span class="verification-star">
-                                    *
-                                </span>
-                            </label>
-                            <InputText @bind-Value="LoginModel.Password" type="password" placeholder="Password" class="input-row" />
-                            <ValidationMessage For="() => LoginModel.Password" />
-                        </div>
-                    </div>
-                    <span class="text-danger">@errorMessage</span>
-                    <footer class="buttons-bar">
-                        <div class="buttons-bar-inner">
-                            <NavLink href="/" class="login-page-btn">
-                                <span class="button-label">Back</span>
-                                <span class="material-symbols-outlined-left button-arrow button-arrow-left">
-                                    arrow_left
-                                </span>
-                            </NavLink>
-                            <div class="buttons-spacer"></div>
-                            <button type="submit" class="login-page-btn">
-                                <span class="button-label">Login</span>
-                                <span class="material-symbols-outlined button-arrow button-arrow-right">
-                                    arrow_right
-                                </span>
-                            </button>
-                        </div>
-                    </footer>
-                </EditForm>
-            </section>
+  <div class="login-container">
+    <header>
+      <h1 class="login-header">
+        Manage Your Staff Profile
+      </h1>
+      <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+      </style>
+    </header>
+    <div class="login-form">
+      <section class="login-content">
+        <div class="text-row">
+          <p1 class="login-text">
+            Enter your credentials linked to your staff profile. Once your identity is confirmed, you will be able to manage your profile.
+          </p1>
         </div>
+        <EditForm Model="@LoginModel" OnValidSubmit="Authenticate" FormName="@loginForm">
+          <DataAnnotationsValidator />
+          <div class="login-input">
+            <div class="input-spacer">
+              <!-- STAFF EMAIL -->
+              <label class="email-input">
+                <span class="email-input-label">
+                  Email Address
+                </span>
+                <span class="verification-star">
+                  *
+                </span>
+              </label>
+              <InputText @bind-Value="LoginModel.Email" placeholder="Email" class="input-row" />
+              <ValidationMessage For="() => LoginModel.Email" />
+            </div>
+            <div class="input-spacer">
+              <!-- STAFF PASSWORD -->
+              <label class="password-input">
+                <span class="password-input-label">
+                  Password
+                </span>
+                <span class="verification-star">
+                  *
+                </span>
+              </label>
+              <InputText @bind-Value="LoginModel.Password" type="password" placeholder="Password" class="input-row" />
+              <ValidationMessage For="() => LoginModel.Password" />
+            </div>
+          </div>
+          <span class="text-danger">@errorMessage</span>
+          <footer class="buttons-bar">
+            <div class="buttons-bar-inner">
+              <NavLink href="/" class="login-page-btn">
+                <span class="button-label">Back</span>
+                <span class="material-symbols-outlined-left button-arrow button-arrow-left">
+                  arrow_left
+                </span>
+              </NavLink>
+              <div class="buttons-spacer"></div>
+              <button type="submit" class="login-page-btn">
+                <span class="button-label">Login</span>
+                <span class="material-symbols-outlined button-arrow button-arrow-right">
+                  arrow_right
+                </span>
+              </button>
+            </div>
+          </footer>
+        </EditForm>
+      </section>
     </div>
+  </div>
 </body>
 
 
 @code {
-    [CascadingParameter] public HttpContext HttpContext { get; set; } = default!;
-    private const string loginForm = "LoginForm";
-    [SupplyParameterFromForm(FormName = loginForm)] public LoginModel LoginModel { get; set; } = new();
-    private string? errorMessage;
+  // Originally we were using this to get the HttpContext, but it was not working. We tried using changing it to the down below example, but didn't get much further.
+  // [CascadingParameter] public HttpContext HttpContext { get; set; }
+  private const string loginForm = "LoginForm";
+  [SupplyParameterFromForm(FormName = loginForm)] public LoginModel LoginModel { get; set; } = new();
+  private string? errorMessage;
 
-    private async Task Authenticate()
-    {
-        var staffs = await userManager.GetUsersInRoleAsync("Staff");
+
+  private async Task Authenticate()
+  {
+     
+    var staffs = await userManager.GetUsersInRoleAsync("Staff");
         var staff = await userManager.FindByEmailAsync(LoginModel.Email);
         if (!staffs.Contains(staff))
             staff = null;
@@ -139,26 +134,26 @@
 
         var principal = new ClaimsPrincipal(identity);
 
-        //Signs candidate in and stores claims in an authentication cookie
+        //Signs staff in and stores claims in an authentication cookie
         try
         {
+            // For some reason this HttpContext is true, but the claim becomes false and turns IsAuthenticated to false. This occured after merge to dev.
+            HttpContext HttpContext = HttpContextAccessor.HttpContext;
             await HttpContext.SignInAsync(Constant.Authscheme, principal);
             navigationManager.NavigateTo("/", forceLoad: true);
             Console.WriteLine("Sign-in successful.");
         }
         catch (Exception ex)
         {
-            // Log or break here to investigate the issue
             Console.WriteLine("Sign-in failed: " + ex.Message);
             Console.WriteLine("Stack Trace: " + ex.StackTrace);
-            // You can also log the inner exception if available
             if (ex.InnerException != null)
             {
                 Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
             }
         }
 
-        //Redirected to candidate dashboard
+        //Redirected to staff dashboard
         navigationManager.NavigateTo("/StaffDashboard", forceLoad: true);
     }
 }

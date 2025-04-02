@@ -89,14 +89,17 @@
 
   private async Task UpdateStaff()
   {
+    // Finds staff by their userId
     var user = userManager.FindByIdAsync(userId).Result;
 
+    // Updates the staff values that were changed using the EditModel to overwrite these changes and set.
     user.FirstName = EditModel.FirstName;
     user.LastName = EditModel.LastName;
     user.Email = EditModel.Email;
 
     if (!string.IsNullOrEmpty(EditModel.Password))
     {
+      // Changes the password if the user has entered a new password and hashes it again for the database.
       var result = await userManager.ChangePasswordAsync(user, EditModel.CurrentPassword, EditModel.Password);
 
       if (!result.Succeeded)

@@ -39,6 +39,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+       // Fetches the textanswer details from the database based on the Id to display the details in the row
         using var context = DbFactory.CreateDbContext();
         textanswer = await context.TextAnswer.FirstOrDefaultAsync(m => m.Id == Id);
 
