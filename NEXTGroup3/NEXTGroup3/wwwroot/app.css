@@ -683,10 +683,20 @@ main > .container {
 .candidate-dashboard .text-items{
     flex-direction: column;
 }
-.text-items{
-
+.staff-dashboard .text-items .dashboard-item{
+    background-color: white;
+    width: auto;
+    flex-direction:column;
+    flex-grow: 1;
 }
-chart-items{
+.staff-dashboard .text-items{
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.staff-dashboard .item-header-break{
+    width: 80%;
+}
+.chart-items {
     display: flex;
     flex-wrap: nowrap;
 }
@@ -750,6 +760,11 @@ chart-items{
 .dashboard-item.ring-chart{
     width: 20vw;
 }
+.dashboard-item > .chart-container{
+    margin: 5px;
+    width: 100%;
+    height: 100%;
+}
 @media(max-width:1605px){
     .dashboard-item.ring-chart, .dashboard-item.bar-chart{
         width: 100%;
@@ -766,13 +781,13 @@ chart-items{
     align-items: center;
     flex-direction: column;
 }
-.chart-container{
-    height: 30em;
-}
 .staff-dashboard .dashboard-header{
     width:100%;
     padding:5px;
     text-align: center;
+}
+.staff-dashboard .text-items .dashboard-item{
+    flex-direction: column;
 }
 .item-row{
     display: flex;

@@ -16,48 +16,48 @@
 @*   <AuthorizeView Context="authContext"> *@
 @*     <Authorized> *@
 <div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1>Analytics</h1>
-    </div>
-    <div class="dashboard-body">
-        <div class="container-fluid staff-dashboard">
+    <div class="dashboard staff-dashboard">
+        <div class="dashboard-header">
+            <h1>Analytics</h1>
+        </div>
+        <div class="dashboard-body">
             <div class="item-row chart-items">
-                <div class="staff-dashboard-item bar-chart">
+                <div class="dashboard-item bar-chart">
                     <div class="chart-container">
-                        <canvas id="bar-chart" class="department-bar-chart"></canvas>
+                        <canvas id="bar-chart" class="bar-chart"></canvas>
                     </div>
                 </div>
-                <div class="staff-dashboard-item ring-chart">
+                <div class="dashboard-item ring-chart">
                     <div class="chart-container">
                         <canvas id="ring-chart" class="department-ring-chart"></canvas>
                     </div>
                 </div> 
             </div>
             <div class="item-row text-items">
-                <div class="col-md-4 staff-dashboard-item">  
-                    <h2 class="item-header">Highest Matched Department</h2>
+                <div class="col-md-4 dashboard-item">  
+                    <h3 class="item-header">Highest Matched Department</h3>
                     <hr class="item-header-break"/>
-                    @if(dashboardService.HighestDepartment != null){
-                        <h3 class="item-content">@dashboardService.HighestDepartment.Name</h3>
-                    }
+                    @* @if(dashboardService.HighestDepartment != null){ *@
+                    @*     <h4 class="item-content">@dashboardService.HighestDepartment.Name</h4> *@
+                    @* } *@
+                    <h4 class="item-content">Design</h4>
                 </div>
-                <div class="col-md-4 staff-dashboard-item">
-                    <h2 class="item-header">Questionnaires Completed</h2>
-                    <hr class="item-header-break" />
+                <div class="col-md-4 dashboard-item">
+                    <h3 class="item-header">Questionnaires Completed</h3>
+                    <hr class="item-header-break"/>
 
-                    @if (dashboardService.ResultsCount != 0)
-                    {
-                        <h3 class="item-content">@dashboardService.ResultsCount</h3>
-                    }
+                    @* @if (dashboardService.ResultsCount != 0) *@
+                    @* { *@
+                    @*     <h4 class="item-content">@dashboardService.ResultsCount</h4> *@
+                    @* } *@
+                    <h4 class="item-content">16</h4>
                 </div>
-                <div class="col-md-4 staff-dashboard-item">
-                    <h2 class="item-header">Placeholder</h2>                    
-                    <hr class="item-header-break" />
-                    <h3 class="item-content">placeholder</h3>
+                <div class="col-md-4 dashboard-item">
+                    <h3 class="item-header">Placeholder</h3>                    
+                    <hr class="item-header-break"/>
+                    <h4 class="item-content">placeholder</h4>
                 </div>
             </div>
-
-
         </div>
     </div>
 
@@ -83,6 +83,7 @@
         var authstate = await AuthenticationState;
         var user = authstate.User;
 
+
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
             name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
@@ -92,9 +93,11 @@
             name = "Guest";
         }
 
+
         StateHasChanged();
 
         await base.OnInitializedAsync();
+        await Task.CompletedTask;
     }
 
     // CHART FUNCTIONALITY
@@ -106,6 +109,8 @@
         {
             await dashboardService.GetDepartments();
             await dashboardService.GetOverallPoints();
+
+            await dashboardService.DepartmentPointsToDoubleList();
             string[] potentialColors = ["#2274A5", "#FFBE0B", "#D62828", "#00A878"];
             int currentColor = 0;
             foreach (var dep in dashboardService.Departments)
@@ -119,9 +124,9 @@
                 }
                 else { currentColor = 0; }
             }
-            await jsRunTime.InvokeVoidAsync("CreateBarChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentPointsToDoubleList(), DepartmentChartColors);
+            await jsRunTime.InvokeVoidAsync("CreateBarChart", await dashboardService.GetDepartmentStringList(),dashboardService.DepartmentDoubleList, DepartmentChartColors);
 
-            await jsRunTime.InvokeVoidAsync("CreateRingChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentPointsToDoubleList(), DepartmentChartColors);
+            await jsRunTime.InvokeVoidAsync("CreateRingChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentDoubleList, DepartmentChartColors);
         }
         await base.OnAfterRenderAsync(firstRender);
   }

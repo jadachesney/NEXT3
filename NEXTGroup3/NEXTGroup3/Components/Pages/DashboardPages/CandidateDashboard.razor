@@ -7,6 +7,9 @@
 @using NEXTGroup3.Components.Layout
 @using NEXTGroup3.Services
 @using System.Security.Claims
+
+@inject IJSRuntime jsRunTime;
+@inject StaffDashboardService dashboardService
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 @* @attribute [Authorize (Roles = "Admin, Candidate")] *@
 
@@ -24,18 +27,14 @@
                 </NavLink>
                 <div class="item-row chart-items">
                     <div class="dashboard-item bar-chart">
-                        @* <div class="chart-container"> *@
-                        @*      <canvas id="bar-chart" class=""></canvas> *@ 
-                            
-                        @* </div> *@
-                        <p>PLACEHOLDER</p>
+                        <div class="chart-container">
+                             <canvas id="bar-chart" class=""></canvas> 
+                        </div>
                     </div>
                     <div class="dashboard-item ring-chart">
-                        @* <div class="chart-container"> *@
-                       @* <canvas id="ring-chart" class="department-ring-chart"></canvas> *@
-
-                        @* </div>  *@
-                        <p>PLACEHOLDER</p>
+                       <div class="chart-container">
+                            <canvas id="ring-chart" class="department-ring-chart"></canvas>
+                       </div>
                     </div>
                 </div>
                 <div class="item-row text-items">
@@ -43,7 +42,7 @@
                         <div class="item-text-container">
                             <h5>Most Recommended Department</h5>
                             <h3>Placeholder Department</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
                         </div>
                         <div class="item-actions-container">
                             <div class="item-show-icon">
@@ -59,15 +58,37 @@
                     <a class="dashboard-item" href="https://careers.next.co.uk/en/sites/CX_3001/jobs?keyword=Information+Technology&mode=location" target="_blank">
                         <div class="item-text-container">
                             <h3>Placeholder Role</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
                         </div>
                         <div class="item-actions-container">
                             <div class="item-show-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" /></svg>
                             </div>
                         </div>
-                    </a>
-                    @* waiting for db to test *@
+                </a>
+                <a class="dashboard-item" href="https://careers.next.co.uk/en/sites/CX_3001/jobs?keyword=Information+Technology&mode=location" target="_blank">
+                    <div class="item-text-container">
+                        <h3>Placeholder Role</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
+                    <div class="item-actions-container">
+                        <div class="item-show-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" /></svg>
+                        </div>
+                    </div>
+                </a>
+                <a class="dashboard-item" href="https://careers.next.co.uk/en/sites/CX_3001/jobs?keyword=Information+Technology&mode=location" target="_blank">
+                    <div class="item-text-container">
+                        <h3>Placeholder Role</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
+                    <div class="item-actions-container">
+                        <div class="item-show-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" /></svg>
+                        </div>
+                    </div>
+                </a>
+                    @* requires login system to test *@
                     @* @foreach (Role role in dashboardService.TopRoles) *@
                     @* { *@
                     @*     <a class="dashboard-item" href="https://careers.next.co.uk/en/sites/CX_3001/jobs?keyword=@role.Name=location" target="_blank"> *@
@@ -93,54 +114,67 @@
 @*   </AuthorizeView> *@
 @* </CascadingAuthenticationState> *@
 
+<script src="_framework/blazor.server.js"></script>
+<script src="js/chart-scripts.js"></script>
+
+    @code {
+
+    // LOGIN BRANCH
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+        private string name;
+
+        protected override async Task OnInitializedAsync()
+        {
+            var authstate = await AuthenticationState;
+            var user = authstate.User;
 
 
-@code {
-  // [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
-  private string name;
+            if (user.Identity != null && user.Identity.IsAuthenticated)
+            {
+                name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
+            }
+            else
+            {
+                name = "Guest";
+            }
 
-  protected override async Task OnInitializedAsync()
-  {
-        // var authstate = await AuthenticationState;
-        // var user = authstate.User;
 
-        // if (user.Identity != null && user.Identity.IsAuthenticated)
-        // {
-        //   name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
-        // }
-        // else
-        // {
-        //   name = "Guest";
-        // }
+            StateHasChanged();
 
-        // await dashboardService.GetDepartments();
-        // await dashboardService.GetOverallPoints();
-        // StateHasChanged();
+            await base.OnInitializedAsync();
+            await Task.CompletedTask;
+        }
 
-        await base.OnInitializedAsync();
-  }
-    private List<string> DepartmentChartColors = new List<string>();
+        // CHART FUNCTIONALITY
+        private List<string> DepartmentChartColors = new List<string>();
 
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     string[] potentialColors = ["#2274A5", "#FFBE0B", "#D62828", "#00A878"];
-    //     int currentColor = 0;
-    //     foreach (var dep in dashboardService.Departments)
-    //     {
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await dashboardService.GetDepartments();
+                await dashboardService.GetOverallPoints();
 
-    //         DepartmentChartColors.Add(potentialColors[currentColor]);
+                await dashboardService.DepartmentPointsToDoubleList();
+                string[] potentialColors = ["#2274A5", "#FFBE0B", "#D62828", "#00A878"];
+                int currentColor = 0;
+                foreach (var dep in dashboardService.Departments)
+                {
 
-    //         if (currentColor < potentialColors.Length - 1)
-    //         {
-    //             currentColor++;
-    //         }
-    //         else { currentColor = 0; }
-    //     }
-    //     await CreateChartAsync();
-    //     await base.OnAfterRenderAsync(firstRender);
-    // }
-    // public async Task CreateChartAsync()
-    // {
-    //     await jsRunTime.InvokeVoidAsync("CreateChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentPointsToDoubleList(), DepartmentChartColors);
-    // }
-}
+                    DepartmentChartColors.Add(potentialColors[currentColor]);
+
+                    if (currentColor < potentialColors.Length - 1)
+                    {
+                        currentColor++;
+                    }
+                    else { currentColor = 0; }
+                }
+                await jsRunTime.InvokeVoidAsync("CreateBarChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentDoubleList, DepartmentChartColors);
+
+                await jsRunTime.InvokeVoidAsync("CreateRingChart", await dashboardService.GetDepartmentStringList(), dashboardService.DepartmentDoubleList, DepartmentChartColors);
+            }
+            await base.OnAfterRenderAsync(firstRender);
+        }
+
+
+    }

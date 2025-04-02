@@ -11,6 +11,7 @@ namespace NEXTGroup3.Services
     {
         private readonly IDbContextFactory<AzureContext> contextFactory;
         public List<Point> DepartmentPoints { get; set; } = new List<Point>();
+        public List<Double> DepartmentDoubleList { get; set; } = new();
         public List<Point> RolePoints { get; set; } = new List<Point>();
         public List<Department> Departments { get; set; }
         public Department HighestDepartment { get; set; }
@@ -34,7 +35,7 @@ namespace NEXTGroup3.Services
             AzureContext context = contextFactory.CreateDbContext();
             List<Result> results;
             if(candidateId <= 0) { results = context.Result.ToList(); }
-            else { results = context.Result.Where(x => x.CandidateId == candidateId).ToList(); }
+            else { results = await context.Result.Where(x => x.CandidateId == candidateId).ToListAsync(); }
             
 
             int[] departmentIds = await context.Department.Select(d => d.Id).ToArrayAsync();
@@ -80,11 +81,10 @@ namespace NEXTGroup3.Services
         {
             return Departments.Select(x => x.Name).ToList();
         }
-        public async Task<List<Double?>> DepartmentPointsToDoubleList()
+        public async Task DepartmentPointsToDoubleList()
         {
-            List<Double?> output = new List<Double?>();
-            foreach (var department in DepartmentPoints) { output.Add(Convert.ToDouble(department.Points)); }
-            return output;
+            foreach (var department in DepartmentPoints) { DepartmentDoubleList.Add(Convert.ToDouble(department.Points)); }
+            await Task.CompletedTask;
         }
 
         public async Task GetHighestDepartment()

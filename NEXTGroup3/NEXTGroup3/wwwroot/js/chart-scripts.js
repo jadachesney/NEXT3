@@ -49,6 +49,16 @@
                                 display: true,
                                 labelString: 'Department',
                                 color: '#000000'
+                            },
+                            ticks:
+                            {
+                                callback: function (label) {
+                                    if (/\s/.test(label)) {
+                                        return label.split(" ");
+                                    } else {
+                                        return label;
+                                    }
+                                }
                             }
                         }]
                 }
